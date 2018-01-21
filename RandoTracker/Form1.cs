@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -10,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -28,6 +24,12 @@ namespace RandoTracker
         string gameFont = "";
         string gameFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "sml2.xml");
         Stopwatch clock = new Stopwatch();
+        Label lblPlayerA = new Label();
+        Label lblPlayerB = new Label();
+        Label lblPlayerC = new Label();
+        Label lblPlayerD = new Label();
+        Label lblCommentary = new Label();
+        Label lblClock = new Label();
 
         private Socket m_sock;                      // Server connection
         private byte[] m_byBuff = new byte[256];    // Recieved data buffer
@@ -61,6 +63,37 @@ namespace RandoTracker
 
             this.Left = 200;
             this.Top = 200;
+
+            lblPlayerA.Parent = pictureBox1;
+            lblPlayerA.BackColor = Color.Transparent;
+            lblPlayerA.ForeColor = Color.White;
+            pictureBox1.Controls.Add(lblPlayerA);
+
+            lblPlayerB.Parent = pictureBox1;
+            lblPlayerB.BackColor = Color.Transparent;
+            lblPlayerB.ForeColor = Color.White;
+            pictureBox1.Controls.Add(lblPlayerB);
+
+            lblPlayerC.Parent = pictureBox1;
+            lblPlayerC.BackColor = Color.Transparent;
+            lblPlayerC.ForeColor = Color.White;
+            pictureBox1.Controls.Add(lblPlayerC);
+
+            lblPlayerD.Parent = pictureBox1;
+            lblPlayerD.BackColor = Color.Transparent;
+            lblPlayerD.ForeColor = Color.White;
+            pictureBox1.Controls.Add(lblPlayerD);
+
+            lblCommentary.Parent = pictureBox1;
+            lblCommentary.BackColor = Color.Transparent;
+            lblCommentary.ForeColor = Color.White;
+            pictureBox1.Controls.Add(lblCommentary);
+
+            lblClock.Parent = pictureBox1;
+            lblClock.BackColor = Color.Transparent;
+            lblClock.ForeColor = Color.White;
+            lblClock.Text = "0:00:00.0";
+            pictureBox1.Controls.Add(lblClock);
 
             //label1.Parent = pictureBox1;
             //label1.BackColor = Color.FromArgb(127, Color.Black);
@@ -145,8 +178,11 @@ namespace RandoTracker
             pictures = new PictureBox[players, pics];
             finalTime = new Label[players];
 
-            this.BackgroundImage = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\")));
-            this.BackgroundImageLayout = ImageLayout.Stretch;
+            //this.BackgroundImage = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\")));
+            //this.BackgroundImageLayout = ImageLayout.Tile; // .Stretch
+
+            pictureBox1.BackgroundImage = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\")));
+            pictureBox1.BackgroundImageLayout = ImageLayout.Stretch; // .Stretch
 
             int picXGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xGap").Value);
             int picYGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("yGap").Value);
@@ -172,13 +208,24 @@ namespace RandoTracker
                 finalTime[i].Visible = false;
                 finalTime[i].Font = finalFont;
                 finalTime[i].TextAlign = ContentAlignment.MiddleCenter;
-                Controls.Add(finalTime[i]);
+                pictureBox1.Controls.Add(finalTime[i]);
 
                 for (int j = 0; j < pics; j++)
                 {
                     pictures[i, j] = new PictureBox();
 
-                    pictures[i, j].Image = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("picture").Skip(j).First().Attribute("src").Value.Replace("/", "\\")));
+                    string firstPicture = "";
+                    int numberOfPics = -1;
+                    if (gameXML.Descendants("picture").Skip(j).First().Attribute("src") == null)
+                    {
+                        firstPicture = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("picture").Skip(j).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                        numberOfPics = gameXML.Descendants("picture").Skip(j).First().Descendants("state").Count();
+                    }
+                    else
+                    {
+                        firstPicture = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("picture").Skip(j).First().Attribute("src").Value.Replace("/", "\\"));
+                    }
+                    pictures[i, j].Image = Image.FromFile(firstPicture);
 
                     pictures[i, j].Left = picX + (picXGap * (j % xNumber));
                     pictures[i, j].Top = picY + (picYGap * (j / xNumber));
@@ -189,12 +236,13 @@ namespace RandoTracker
 
                     pictures[i, j].Invalidate();
 
-                    Controls.Add(pictures[i, j]);
+                    pictureBox1.Controls.Add(pictures[i, j]);
 
                     picCovers[i, j] = new picLabel();
+                    picCovers[i, j].loadPictures(gameXML.Descendants("picture").Skip(j).First());
 
                     picCovers[i, j].Parent = pictures[i, j];
-                    picCovers[i, j].BackColor = Color.FromArgb(127, Color.Black);
+                    picCovers[i, j].BackColor = Color.FromArgb(numberOfPics == -1 ? 128 : 0, Color.Black);
                     picCovers[i, j].Left = 0; // picX + (picXGap * (j % xNumber));
                     picCovers[i, j].Top = 0; // picY + (picYGap * (j / xNumber));
                     picCovers[i, j].Width = picXSize;
@@ -226,10 +274,17 @@ namespace RandoTracker
         {
             picLabel clicked = picCovers[playerNumber, labelNumber];
 
-            if (clicked.BackColor == Color.FromArgb(0, Color.Black))
-                clicked.BackColor = Color.FromArgb(128, Color.Black);
-            else
-                clicked.BackColor = Color.FromArgb(0, Color.Black);
+            if (clicked.multiState)
+            {
+                PictureBox picClicked = pictures[playerNumber, labelNumber];
+                picClicked.Image = clicked.nextImage();
+            } else
+            {
+                if (clicked.BackColor == Color.FromArgb(0, Color.Black))
+                    clicked.BackColor = Color.FromArgb(128, Color.Black);
+                else
+                    clicked.BackColor = Color.FromArgb(0, Color.Black);
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -269,12 +324,6 @@ namespace RandoTracker
             {
                 MessageBox.Show(this, ex.Message, "Server Connect failed!");
             }
-        }
-
-        public class picLabel : Label
-        {
-            public int playerNumber = 0;
-            public int labelNumber = 0;
         }
 
         // *****************************************************************************************************
@@ -404,6 +453,7 @@ namespace RandoTracker
         {
             clock.Reset();
             timer1.Enabled = false;
+            lblClock.Text = "0:00:00.0";
         }
 
         // *****************************************************************************************************
@@ -448,7 +498,6 @@ namespace RandoTracker
             // Setup a callback to be notified of connection requests
             listener.BeginAccept(new AsyncCallback(OnConnectRequest), listener);
             listBox1.Items.Insert(0, "Accepting connections");
-            server = true;
         }
 
         /// <summary>
@@ -776,6 +825,42 @@ namespace RandoTracker
             Array.Copy(m_byBuff, byReturn, nBytesRec);
 
             return byReturn;
+        }
+    }
+
+    public class picLabel : Label
+    {
+        public int playerNumber = 0;
+        public int labelNumber = 0;
+        public bool multiState = false;
+        private Image[] images;
+        private int numberOfStates = -1;
+        private int currentState = 0;
+
+        public void loadPictures(XElement xPic)
+        {
+            numberOfStates = xPic.Descendants("state").Count();
+            if (numberOfStates > 0)
+            {
+                images = new Image[numberOfStates];
+                int lnI = 0;
+                foreach (XElement pic in xPic.Descendants("state"))
+                {
+                    images[lnI] = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), pic.Attribute("src").Value.Replace("/", "\\")));
+                    lnI++;
+                }
+                multiState = true;
+            } else
+            {
+                multiState = false;
+            }
+        }
+
+        public Image nextImage()
+        {
+            currentState++;
+            if (currentState == numberOfStates) currentState = 0;
+            return images[currentState];
         }
     }
 }
