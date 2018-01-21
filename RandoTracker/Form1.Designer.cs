@@ -29,11 +29,510 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtPort = new System.Windows.Forms.TextBox();
+            this.txtIP = new System.Windows.Forms.TextBox();
+            this.cmdConnect = new System.Windows.Forms.Button();
+            this.cmdStartServer = new System.Windows.Forms.Button();
+            this.btnChooseGame = new System.Windows.Forms.Button();
+            this.lblGameName = new System.Windows.Forms.Label();
+            this.lblPlayerD = new System.Windows.Forms.Label();
+            this.lblPlayerC = new System.Windows.Forms.Label();
+            this.lblCommentary = new System.Windows.Forms.Label();
+            this.lblPlayerB = new System.Windows.Forms.Label();
+            this.lblPlayerA = new System.Windows.Forms.Label();
+            this.lblClock = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCommentary = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtPlayerA = new System.Windows.Forms.TextBox();
+            this.txtPlayerC = new System.Windows.Forms.TextBox();
+            this.txtPlayerB = new System.Windows.Forms.TextBox();
+            this.txtPlayerD = new System.Windows.Forms.TextBox();
+            this.txtTimeD = new System.Windows.Forms.TextBox();
+            this.txtTimeB = new System.Windows.Forms.TextBox();
+            this.txtTimeC = new System.Windows.Forms.TextBox();
+            this.txtTimeA = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.btnAudioA = new System.Windows.Forms.RadioButton();
+            this.btnAudioB = new System.Windows.Forms.RadioButton();
+            this.btnAudioC = new System.Windows.Forms.RadioButton();
+            this.btnAudioD = new System.Windows.Forms.RadioButton();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.SuspendLayout();
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(925, 47);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.TabIndex = 92;
+            this.label3.Text = "Port:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(925, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(61, 13);
+            this.label2.TabIndex = 91;
+            this.label2.Text = "IP Address:";
+            // 
+            // txtPort
+            // 
+            this.txtPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPort.Location = new System.Drawing.Point(992, 44);
+            this.txtPort.Name = "txtPort";
+            this.txtPort.Size = new System.Drawing.Size(67, 20);
+            this.txtPort.TabIndex = 2;
+            // 
+            // txtIP
+            // 
+            this.txtIP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIP.Location = new System.Drawing.Point(992, 19);
+            this.txtIP.Name = "txtIP";
+            this.txtIP.Size = new System.Drawing.Size(135, 20);
+            this.txtIP.TabIndex = 1;
+            // 
+            // cmdConnect
+            // 
+            this.cmdConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdConnect.Location = new System.Drawing.Point(1020, 70);
+            this.cmdConnect.Name = "cmdConnect";
+            this.cmdConnect.Size = new System.Drawing.Size(87, 23);
+            this.cmdConnect.TabIndex = 4;
+            this.cmdConnect.Text = "Connect";
+            this.cmdConnect.UseVisualStyleBackColor = true;
+            this.cmdConnect.Click += new System.EventHandler(this.cmdConnect_Click);
+            // 
+            // cmdStartServer
+            // 
+            this.cmdStartServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdStartServer.Location = new System.Drawing.Point(927, 70);
+            this.cmdStartServer.Name = "cmdStartServer";
+            this.cmdStartServer.Size = new System.Drawing.Size(87, 23);
+            this.cmdStartServer.TabIndex = 3;
+            this.cmdStartServer.Text = "Start Server";
+            this.cmdStartServer.UseVisualStyleBackColor = true;
+            this.cmdStartServer.Click += new System.EventHandler(this.cmdStartServer_Click);
+            // 
+            // btnChooseGame
+            // 
+            this.btnChooseGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChooseGame.Location = new System.Drawing.Point(31, 22);
+            this.btnChooseGame.Name = "btnChooseGame";
+            this.btnChooseGame.Size = new System.Drawing.Size(87, 23);
+            this.btnChooseGame.TabIndex = 20;
+            this.btnChooseGame.Text = "Choose Game";
+            this.btnChooseGame.UseVisualStyleBackColor = true;
+            // 
+            // lblGameName
+            // 
+            this.lblGameName.AutoSize = true;
+            this.lblGameName.BackColor = System.Drawing.Color.Transparent;
+            this.lblGameName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGameName.ForeColor = System.Drawing.Color.White;
+            this.lblGameName.Location = new System.Drawing.Point(124, 26);
+            this.lblGameName.Name = "lblGameName";
+            this.lblGameName.Size = new System.Drawing.Size(142, 13);
+            this.lblGameName.TabIndex = 93;
+            this.lblGameName.Text = "Game:  Dragon Quest 1 SFC";
+            // 
+            // lblPlayerD
+            // 
+            this.lblPlayerD.BackColor = System.Drawing.Color.Transparent;
+            this.lblPlayerD.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPlayerD.ForeColor = System.Drawing.Color.White;
+            this.lblPlayerD.Location = new System.Drawing.Point(460, 387);
+            this.lblPlayerD.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblPlayerD.Name = "lblPlayerD";
+            this.lblPlayerD.Size = new System.Drawing.Size(429, 30);
+            this.lblPlayerD.TabIndex = 100;
+            this.lblPlayerD.Text = "PlayerD";
+            this.lblPlayerD.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblPlayerC
+            // 
+            this.lblPlayerC.BackColor = System.Drawing.Color.Transparent;
+            this.lblPlayerC.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPlayerC.ForeColor = System.Drawing.Color.White;
+            this.lblPlayerC.Location = new System.Drawing.Point(393, 669);
+            this.lblPlayerC.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblPlayerC.Name = "lblPlayerC";
+            this.lblPlayerC.Size = new System.Drawing.Size(88, 25);
+            this.lblPlayerC.TabIndex = 99;
+            this.lblPlayerC.Text = "PlayerC";
+            // 
+            // lblCommentary
+            // 
+            this.lblCommentary.BackColor = System.Drawing.Color.Transparent;
+            this.lblCommentary.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCommentary.ForeColor = System.Drawing.Color.White;
+            this.lblCommentary.Location = new System.Drawing.Point(511, 133);
+            this.lblCommentary.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblCommentary.Name = "lblCommentary";
+            this.lblCommentary.Size = new System.Drawing.Size(277, 78);
+            this.lblCommentary.TabIndex = 98;
+            this.lblCommentary.Text = "Commentary:";
+            this.lblCommentary.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblPlayerB
+            // 
+            this.lblPlayerB.BackColor = System.Drawing.Color.Transparent;
+            this.lblPlayerB.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPlayerB.ForeColor = System.Drawing.Color.White;
+            this.lblPlayerB.Location = new System.Drawing.Point(526, 18);
+            this.lblPlayerB.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblPlayerB.Name = "lblPlayerB";
+            this.lblPlayerB.Size = new System.Drawing.Size(363, 30);
+            this.lblPlayerB.TabIndex = 97;
+            this.lblPlayerB.Text = "PlayerB";
+            this.lblPlayerB.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblPlayerA
+            // 
+            this.lblPlayerA.BackColor = System.Drawing.Color.Transparent;
+            this.lblPlayerA.Font = new System.Drawing.Font("Press Start 2P", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPlayerA.ForeColor = System.Drawing.Color.White;
+            this.lblPlayerA.Location = new System.Drawing.Point(614, 301);
+            this.lblPlayerA.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblPlayerA.Name = "lblPlayerA";
+            this.lblPlayerA.Size = new System.Drawing.Size(164, 21);
+            this.lblPlayerA.TabIndex = 96;
+            this.lblPlayerA.Text = "PlayerA";
+            // 
+            // lblClock
+            // 
+            this.lblClock.BackColor = System.Drawing.Color.Transparent;
+            this.lblClock.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblClock.ForeColor = System.Drawing.Color.White;
+            this.lblClock.Location = new System.Drawing.Point(526, 526);
+            this.lblClock.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.lblClock.Name = "lblClock";
+            this.lblClock.Size = new System.Drawing.Size(277, 58);
+            this.lblClock.TabIndex = 101;
+            this.lblClock.Text = "0:00:00.0";
+            this.lblClock.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(28, 52);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.TabIndex = 103;
+            this.label1.Text = "Commentary:";
+            // 
+            // txtCommentary
+            // 
+            this.txtCommentary.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCommentary.Location = new System.Drawing.Point(102, 49);
+            this.txtCommentary.Name = "txtCommentary";
+            this.txtCommentary.Size = new System.Drawing.Size(235, 20);
+            this.txtCommentary.TabIndex = 21;
+            this.txtCommentary.TextChanged += new System.EventHandler(this.txtCommentary_TextChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(28, 109);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(41, 13);
+            this.label4.TabIndex = 104;
+            this.label4.Text = "Players";
+            // 
+            // txtPlayerA
+            // 
+            this.txtPlayerA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPlayerA.Location = new System.Drawing.Point(31, 133);
+            this.txtPlayerA.Name = "txtPlayerA";
+            this.txtPlayerA.Size = new System.Drawing.Size(67, 20);
+            this.txtPlayerA.TabIndex = 5;
+            this.txtPlayerA.TextChanged += new System.EventHandler(this.txtPlayerA_TextChanged);
+            // 
+            // txtPlayerC
+            // 
+            this.txtPlayerC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPlayerC.Location = new System.Drawing.Point(31, 184);
+            this.txtPlayerC.Name = "txtPlayerC";
+            this.txtPlayerC.Size = new System.Drawing.Size(67, 20);
+            this.txtPlayerC.TabIndex = 7;
+            this.txtPlayerC.TextChanged += new System.EventHandler(this.txtPlayerC_TextChanged);
+            // 
+            // txtPlayerB
+            // 
+            this.txtPlayerB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPlayerB.Location = new System.Drawing.Point(31, 159);
+            this.txtPlayerB.Name = "txtPlayerB";
+            this.txtPlayerB.Size = new System.Drawing.Size(67, 20);
+            this.txtPlayerB.TabIndex = 6;
+            this.txtPlayerB.TextChanged += new System.EventHandler(this.txtPlayerB_TextChanged);
+            // 
+            // txtPlayerD
+            // 
+            this.txtPlayerD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPlayerD.Location = new System.Drawing.Point(31, 210);
+            this.txtPlayerD.Name = "txtPlayerD";
+            this.txtPlayerD.Size = new System.Drawing.Size(67, 20);
+            this.txtPlayerD.TabIndex = 8;
+            this.txtPlayerD.TextChanged += new System.EventHandler(this.txtPlayerD_TextChanged);
+            // 
+            // txtTimeD
+            // 
+            this.txtTimeD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTimeD.Location = new System.Drawing.Point(171, 210);
+            this.txtTimeD.Name = "txtTimeD";
+            this.txtTimeD.Size = new System.Drawing.Size(67, 20);
+            this.txtTimeD.TabIndex = 16;
+            this.txtTimeD.Leave += new System.EventHandler(this.txtTimeD_Leave);
+            // 
+            // txtTimeB
+            // 
+            this.txtTimeB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTimeB.Location = new System.Drawing.Point(171, 159);
+            this.txtTimeB.Name = "txtTimeB";
+            this.txtTimeB.Size = new System.Drawing.Size(67, 20);
+            this.txtTimeB.TabIndex = 14;
+            this.txtTimeB.Leave += new System.EventHandler(this.txtTimeB_Leave);
+            // 
+            // txtTimeC
+            // 
+            this.txtTimeC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTimeC.Location = new System.Drawing.Point(171, 184);
+            this.txtTimeC.Name = "txtTimeC";
+            this.txtTimeC.Size = new System.Drawing.Size(67, 20);
+            this.txtTimeC.TabIndex = 15;
+            this.txtTimeC.Leave += new System.EventHandler(this.txtTimeC_Leave);
+            // 
+            // txtTimeA
+            // 
+            this.txtTimeA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTimeA.Location = new System.Drawing.Point(171, 133);
+            this.txtTimeA.Name = "txtTimeA";
+            this.txtTimeA.Size = new System.Drawing.Size(67, 20);
+            this.txtTimeA.TabIndex = 13;
+            this.txtTimeA.Leave += new System.EventHandler(this.txtTimeA_Leave);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(168, 109);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 112;
+            this.label5.Text = "Final Time";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(114, 109);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(34, 13);
+            this.label6.TabIndex = 117;
+            this.label6.Text = "Audio";
+            // 
+            // btnAudioA
+            // 
+            this.btnAudioA.AutoSize = true;
+            this.btnAudioA.Location = new System.Drawing.Point(124, 137);
+            this.btnAudioA.Name = "btnAudioA";
+            this.btnAudioA.Size = new System.Drawing.Size(14, 13);
+            this.btnAudioA.TabIndex = 9;
+            this.btnAudioA.TabStop = true;
+            this.btnAudioA.UseVisualStyleBackColor = true;
+            // 
+            // btnAudioB
+            // 
+            this.btnAudioB.AutoSize = true;
+            this.btnAudioB.Location = new System.Drawing.Point(124, 162);
+            this.btnAudioB.Name = "btnAudioB";
+            this.btnAudioB.Size = new System.Drawing.Size(14, 13);
+            this.btnAudioB.TabIndex = 10;
+            this.btnAudioB.TabStop = true;
+            this.btnAudioB.UseVisualStyleBackColor = true;
+            // 
+            // btnAudioC
+            // 
+            this.btnAudioC.AutoSize = true;
+            this.btnAudioC.Location = new System.Drawing.Point(124, 187);
+            this.btnAudioC.Name = "btnAudioC";
+            this.btnAudioC.Size = new System.Drawing.Size(14, 13);
+            this.btnAudioC.TabIndex = 11;
+            this.btnAudioC.TabStop = true;
+            this.btnAudioC.UseVisualStyleBackColor = true;
+            // 
+            // btnAudioD
+            // 
+            this.btnAudioD.AutoSize = true;
+            this.btnAudioD.Location = new System.Drawing.Point(124, 213);
+            this.btnAudioD.Name = "btnAudioD";
+            this.btnAudioD.Size = new System.Drawing.Size(14, 13);
+            this.btnAudioD.TabIndex = 12;
+            this.btnAudioD.TabStop = true;
+            this.btnAudioD.UseVisualStyleBackColor = true;
+            // 
+            // btnStart
+            // 
+            this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStart.Location = new System.Drawing.Point(31, 237);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(45, 23);
+            this.btnStart.TabIndex = 17;
+            this.btnStart.Text = "Start";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStop.Location = new System.Drawing.Point(91, 237);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(45, 23);
+            this.btnStop.TabIndex = 18;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // btnReset
+            // 
+            this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReset.Location = new System.Drawing.Point(151, 237);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(45, 23);
+            this.btnReset.TabIndex = 19;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 90;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // listBox1
+            // 
+            this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(928, 97);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(300, 56);
+            this.listBox1.TabIndex = 118;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Form1";
+            this.BackColor = System.Drawing.Color.DarkGreen;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(1278, 718);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.btnReset);
+            this.Controls.Add(this.btnStop);
+            this.Controls.Add(this.btnStart);
+            this.Controls.Add(this.btnAudioD);
+            this.Controls.Add(this.btnAudioC);
+            this.Controls.Add(this.btnAudioB);
+            this.Controls.Add(this.btnAudioA);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.txtTimeD);
+            this.Controls.Add(this.txtTimeB);
+            this.Controls.Add(this.txtTimeC);
+            this.Controls.Add(this.txtTimeA);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txtPlayerD);
+            this.Controls.Add(this.txtPlayerB);
+            this.Controls.Add(this.txtPlayerC);
+            this.Controls.Add(this.txtPlayerA);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtCommentary);
+            this.Controls.Add(this.lblClock);
+            this.Controls.Add(this.lblPlayerD);
+            this.Controls.Add(this.lblPlayerC);
+            this.Controls.Add(this.lblCommentary);
+            this.Controls.Add(this.lblPlayerB);
+            this.Controls.Add(this.lblPlayerA);
+            this.Controls.Add(this.btnChooseGame);
+            this.Controls.Add(this.lblGameName);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.txtPort);
+            this.Controls.Add(this.txtIP);
+            this.Controls.Add(this.cmdConnect);
+            this.Controls.Add(this.cmdStartServer);
+            this.DoubleBuffered = true;
+            this.Name = "Form1";
+            this.Text = "RandoTracker";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtPort;
+        private System.Windows.Forms.TextBox txtIP;
+        private System.Windows.Forms.Button cmdConnect;
+        private System.Windows.Forms.Button cmdStartServer;
+        private System.Windows.Forms.Button btnChooseGame;
+        private System.Windows.Forms.Label lblGameName;
+        public System.Windows.Forms.Label lblPlayerD;
+        public System.Windows.Forms.Label lblPlayerC;
+        public System.Windows.Forms.Label lblCommentary;
+        public System.Windows.Forms.Label lblPlayerB;
+        public System.Windows.Forms.Label lblPlayerA;
+        public System.Windows.Forms.Label lblClock;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtCommentary;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtPlayerA;
+        private System.Windows.Forms.TextBox txtPlayerC;
+        private System.Windows.Forms.TextBox txtPlayerB;
+        private System.Windows.Forms.TextBox txtPlayerD;
+        private System.Windows.Forms.TextBox txtTimeD;
+        private System.Windows.Forms.TextBox txtTimeB;
+        private System.Windows.Forms.TextBox txtTimeC;
+        private System.Windows.Forms.TextBox txtTimeA;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.RadioButton btnAudioA;
+        private System.Windows.Forms.RadioButton btnAudioB;
+        private System.Windows.Forms.RadioButton btnAudioC;
+        private System.Windows.Forms.RadioButton btnAudioD;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 
