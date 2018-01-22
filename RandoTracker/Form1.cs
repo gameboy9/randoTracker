@@ -105,8 +105,8 @@ namespace RandoTracker
             {
                 for (int j = 0; j < players; j++)
                 {
-                    Controls.Remove(pictures[j, i]);
-                    Controls.Remove(picCovers[j, i]);
+                    pictureBox1.Controls.Remove(pictures[j, i]);
+                    pictureBox1.Controls.Remove(picCovers[j, i]);
                 }
             }
 
@@ -233,6 +233,7 @@ namespace RandoTracker
                     pictures[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
                     pictures[i, j].Width = picXSize;
                     pictures[i, j].Height = picYSize;
+                    pictures[i, j].BackColor = Color.Transparent;
 
                     pictures[i, j].Invalidate();
 
@@ -250,6 +251,7 @@ namespace RandoTracker
                     picCovers[i, j].Click += new EventHandler(picClick);
                     picCovers[i, j].playerNumber = i;
                     picCovers[i, j].labelNumber = j;
+                    //picCovers[i, j].Visible = (numberOfPics == -1);
 
                     pictures[i, j].Controls.Add(picCovers[i, j]);
                     picCovers[i, j].BringToFront();
@@ -765,6 +767,24 @@ namespace RandoTracker
         {
             while (listBox1.Items.Count > 20)
                 listBox1.Items.RemoveAt(20);
+        }
+
+        private void btnChooseGame_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            openFileDialog1.InitialDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 2;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                gameFile = openFileDialog1.FileName;
+                // Mandatory reset clock
+                resetClocks();
+                loadGame();
+            }
         }
     }
 

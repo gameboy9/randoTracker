@@ -134,6 +134,7 @@
             this.btnChooseGame.TabIndex = 20;
             this.btnChooseGame.Text = "Choose Game";
             this.btnChooseGame.UseVisualStyleBackColor = true;
+            this.btnChooseGame.Click += new System.EventHandler(this.btnChooseGame_Click);
             // 
             // lblGameName
             // 
