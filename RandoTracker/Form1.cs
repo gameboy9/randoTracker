@@ -30,6 +30,7 @@ namespace RandoTracker
         Label lblPlayerD = new Label();
         Label lblCommentary = new Label();
         Label lblClock = new Label();
+        Label lblFreeText = new Label();
 
         private Socket m_sock;                      // Server connection
         private byte[] m_byBuff = new byte[256];    // Recieved data buffer
@@ -95,8 +96,10 @@ namespace RandoTracker
             lblClock.Text = "0:00:00.0";
             pictureBox1.Controls.Add(lblClock);
 
-            //label1.Parent = pictureBox1;
-            //label1.BackColor = Color.FromArgb(127, Color.Black);
+            lblFreeText.Parent = pictureBox1;
+            lblFreeText.BackColor = Color.Transparent;
+            lblFreeText.ForeColor = Color.White;
+            pictureBox1.Controls.Add(lblFreeText);
         }
 
         private void loadGame()
@@ -110,7 +113,14 @@ namespace RandoTracker
                 }
             }
 
-            XDocument gameXML = XDocument.Load(gameFile);
+            XDocument gameXML = new XDocument();
+            try
+            {
+                gameXML = XDocument.Load(gameFile);
+            } catch (Exception ex)
+            {
+                var asdf = 1234;
+            }
             XElement game = gameXML.Root.Element("game");
 
             lblGameName.Text = "Game:  " + gameXML.Element("game").Attribute("name").Value;
@@ -174,8 +184,16 @@ namespace RandoTracker
             lblCommentary.Height = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("height").Value);
             lblCommentary.TextAlign = ContentAlignment.MiddleLeft;
 
-            picCovers = new picLabel[players, pics];
-            pictures = new PictureBox[players, pics];
+            lblFreeText.AutoSize = false;
+            lblFreeText.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value));
+            lblFreeText.Left = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value);
+            lblFreeText.Top = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locY").Value);
+            lblFreeText.Width = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("width").Value);
+            lblFreeText.Height = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("height").Value);
+            lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+
+            picCovers = new picLabel[5, pics];
+            pictures = new PictureBox[5, pics];
             finalTime = new Label[players];
 
             //this.BackgroundImage = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\")));
@@ -258,6 +276,69 @@ namespace RandoTracker
                     //Controls.Add(picCovers[i, j]);
                 }
             }
+
+            if (gameXML.Descendants("neutralPics").Count() > 0)
+            {
+                int neutralPicCount = gameXML.Descendants("neutralPic").Count();
+                int picX = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locX").Value);
+                int picY = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locY").Value);
+
+                for (int j = 0; j < neutralPicCount; j++)
+                {
+                    int i = 4;
+
+                    string firstNeutralPic = "";
+                    int neutralPics = -1;
+                    if (gameXML.Descendants("neutralPic").Skip(j).First().Attribute("src") == null)
+                    {
+                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(j).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                        neutralPics = gameXML.Descendants("neutralPic").Skip(j).First().Descendants("state").Count();
+                    }
+                    else
+                    {
+                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(j).First().Attribute("src").Value.Replace("/", "\\"));
+                    }
+
+                    pictures[i, j] = new PictureBox();
+                    try
+                    {
+                        pictures[i, j].Image = Image.FromFile(firstNeutralPic);
+                    } catch (Exception ex)
+                    {
+                        var asdf = 1234;
+                    }
+
+                    pictures[i, j].Left = picX + (picXGap * (j % xNumber));
+                    pictures[i, j].Top = picY + (picYGap * (j / xNumber));
+
+                    pictures[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
+                    pictures[i, j].Width = picXSize;
+                    pictures[i, j].Height = picYSize;
+                    pictures[i, j].BackColor = Color.Transparent;
+
+                    pictures[i, j].Invalidate();
+
+                    pictureBox1.Controls.Add(pictures[i, j]);
+
+                    picCovers[i, j] = new picLabel();
+                    picCovers[i, j].loadPictures(gameXML.Descendants("neutralPic").Skip(j).First());
+
+                    picCovers[i, j].Parent = pictures[i, j];
+                    picCovers[i, j].BackColor = Color.FromArgb(neutralPics == -1 ? 128 : 0, Color.Black);
+                    picCovers[i, j].Left = 0; // picX + (picXGap * (j % xNumber));
+                    picCovers[i, j].Top = 0; // picY + (picYGap * (j / xNumber));
+                    picCovers[i, j].Width = picXSize;
+                    picCovers[i, j].Height = picYSize;
+                    picCovers[i, j].Click += new EventHandler(picClick);
+                    picCovers[i, j].playerNumber = i;
+                    picCovers[i, j].labelNumber = j;
+                    //picCovers[i, j].Visible = (numberOfPics == -1);
+
+                    pictures[i, j].Controls.Add(picCovers[i, j]);
+                    picCovers[i, j].BringToFront();
+                }
+            }
+            //Controls.Add(picCovers[i, j]);
         }
 
         private void picClick(object sender, EventArgs e)
@@ -785,6 +866,11 @@ namespace RandoTracker
                 resetClocks();
                 loadGame();
             }
+        }
+
+        private void txtFreeText_TextChanged(object sender, EventArgs e)
+        {
+            lblFreeText.Text = txtFreeText.Text;
         }
     }
 
