@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -9,6 +12,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.TextRenderer;
 
 namespace RandoTracker
 {
@@ -16,21 +20,24 @@ namespace RandoTracker
     {
         int players = 2;
         int pics = 0;
+        int neutralPics = 0;
         picLabel[,] picCovers;
         PictureBox[,] pictures;
+        PictureBox[] neutralPictures;
+        picLabel[] NPicCovers;
+        PictureBox picClock = new PictureBox();
         Label[] finalTime;
         int playerFontSize = 0;
         int finalFontSize = 0;
         string gameFont = "";
         string gameFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "sml2.xml");
         Stopwatch clock = new Stopwatch();
-        Label lblPlayerA = new Label();
-        Label lblPlayerB = new Label();
-        Label lblPlayerC = new Label();
-        Label lblPlayerD = new Label();
+        SimpleLabel[] lblPlayers = new SimpleLabel[4];
         Label lblCommentary = new Label();
         Label lblClock = new Label();
+        SimpleLabel lblClock2 = new SimpleLabel();
         Label lblFreeText = new Label();
+        Graphics canvas;
 
         private Socket m_sock;                      // Server connection
         private byte[] m_byBuff = new byte[256];    // Recieved data buffer
@@ -45,6 +52,8 @@ namespace RandoTracker
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.DoubleBuffered = true;
+
             try
             {
                 using (TextReader reader = File.OpenText("randoSettings.txt"))
@@ -65,36 +74,15 @@ namespace RandoTracker
             this.Left = 200;
             this.Top = 200;
 
-            lblPlayerA.Parent = pictureBox1;
-            lblPlayerA.BackColor = Color.Transparent;
-            lblPlayerA.ForeColor = Color.White;
-            pictureBox1.Controls.Add(lblPlayerA);
-
-            lblPlayerB.Parent = pictureBox1;
-            lblPlayerB.BackColor = Color.Transparent;
-            lblPlayerB.ForeColor = Color.White;
-            pictureBox1.Controls.Add(lblPlayerB);
-
-            lblPlayerC.Parent = pictureBox1;
-            lblPlayerC.BackColor = Color.Transparent;
-            lblPlayerC.ForeColor = Color.White;
-            pictureBox1.Controls.Add(lblPlayerC);
-
-            lblPlayerD.Parent = pictureBox1;
-            lblPlayerD.BackColor = Color.Transparent;
-            lblPlayerD.ForeColor = Color.White;
-            pictureBox1.Controls.Add(lblPlayerD);
-
             lblCommentary.Parent = pictureBox1;
             lblCommentary.BackColor = Color.Transparent;
             lblCommentary.ForeColor = Color.White;
             pictureBox1.Controls.Add(lblCommentary);
 
-            lblClock.Parent = pictureBox1;
-            lblClock.BackColor = Color.Transparent;
-            lblClock.ForeColor = Color.White;
-            lblClock.Text = "0:00:00.0";
-            pictureBox1.Controls.Add(lblClock);
+            picClock.Paint += picClock_Paint;
+            picClock.Parent = pictureBox1;
+            picClock.BackColor = Color.Transparent;
+            pictureBox1.Controls.Add(picClock);
 
             lblFreeText.Parent = pictureBox1;
             lblFreeText.BackColor = Color.Transparent;
@@ -104,14 +92,26 @@ namespace RandoTracker
 
         private void loadGame()
         {
-            for (int i = 0; i < pics; i++)
+            try
             {
-                for (int j = 0; j < players; j++)
+                for (int i = 0; i < 4; i++)
                 {
-                    pictureBox1.Controls.Remove(pictures[j, i]);
-                    pictureBox1.Controls.Remove(picCovers[j, i]);
+                    for (int j = 0; j < pics; j++)
+                    {
+                        pictureBox1.Controls.Remove(pictures[i, j]);
+                        pictureBox1.Controls.Remove(picCovers[i, j]);
+                    }
                 }
-            }
+            } catch { }
+
+            try
+            {
+                for (int i = 0; i < neutralPics; i++)
+                {
+                    pictureBox1.Controls.Remove(neutralPictures[i]);
+                    pictureBox1.Controls.Remove(NPicCovers[i]);
+                }
+            } catch { }
 
             XDocument gameXML = new XDocument();
             try
@@ -129,11 +129,7 @@ namespace RandoTracker
 
             gameFont = gameXML.Element("game").Attribute("Font").Value;
             pics = gameXML.Descendants("picture").Count();
-
-            lblPlayerA.Visible = (gameXML.Descendants("player").Skip(0).First().Attribute("visible").Value.ToUpper().Substring(0, 1) == "T");
-            lblPlayerB.Visible = (gameXML.Descendants("player").Skip(1).First().Attribute("visible").Value.ToUpper().Substring(0, 1) == "T");
-            lblPlayerC.Visible = (players == 4 && gameXML.Descendants("player").Skip(2).First().Attribute("visible").Value.ToUpper().Substring(0, 1) == "T");
-            lblPlayerD.Visible = (players == 4 && gameXML.Descendants("player").Skip(3).First().Attribute("visible").Value.ToUpper().Substring(0, 1) == "T");
+            neutralPics = gameXML.Descendants("neutralPic").Count();
 
             if (gameXML.Descendants("mic").First().Attribute("visible").Value == "false")
                 lblCommentary.Visible = false;
@@ -144,37 +140,38 @@ namespace RandoTracker
             finalFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalFont").Value);
 
             Font playerFont = new Font(gameFont, playerFontSize);
-            lblPlayerA.Left = Convert.ToInt32(gameXML.Descendants("player").Skip(0).First().Attribute("locX").Value);
-            lblPlayerA.Top = Convert.ToInt32(gameXML.Descendants("player").Skip(0).First().Attribute("locY").Value);
-            lblPlayerB.Left = Convert.ToInt32(gameXML.Descendants("player").Skip(1).First().Attribute("locX").Value);
-            lblPlayerB.Top = Convert.ToInt32(gameXML.Descendants("player").Skip(1).First().Attribute("locY").Value);
-            if (players == 4)
+            for (int i = 0; i < 4; i++)
             {
-                lblPlayerC.Left = Convert.ToInt32(gameXML.Descendants("player").Skip(2).First().Attribute("locX").Value);
-                lblPlayerC.Top = Convert.ToInt32(gameXML.Descendants("player").Skip(2).First().Attribute("locY").Value);
-                lblPlayerD.Left = Convert.ToInt32(gameXML.Descendants("player").Skip(3).First().Attribute("locX").Value);
-                lblPlayerD.Top = Convert.ToInt32(gameXML.Descendants("player").Skip(3).First().Attribute("locY").Value);
+                lblPlayers[i] = new SimpleLabel();
+                lblPlayers[i].Font = playerFont;
+                lblPlayers[i].X = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locX").Value);
+                lblPlayers[i].Y = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locY").Value);
+                lblPlayers[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("width").Value);
+                lblPlayers[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value);
+                lblPlayers[i].ForeColor = Color.White;
+                lblPlayers[i].ShadowColor = Color.Black;
+                lblPlayers[i].HorizontalAlignment = (i % 2 == 0 ? StringAlignment.Near : StringAlignment.Far);
             }
 
-            lblPlayerA.Width = lblPlayerB.Width = lblPlayerC.Width = lblPlayerD.Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("width").Value);
-            lblPlayerA.Height = lblPlayerB.Height = lblPlayerC.Height = lblPlayerD.Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value);
+            lblClock2.Text = "0:00:00.00";
+            lblClock2.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value));
+            lblClock2.IsMonospaced = true;
+            lblClock2.ForeColor = Color.White;
+            lblClock2.ShadowColor = Color.Black;
+            lblClock2.Y = 5;
+            lblClock2.X = 5;
+            lblClock2.Height = 30;
+            lblClock2.HasShadow = true;
+            lblClock2.Width = 180;
 
-            lblPlayerA.Font = playerFont;
-            lblPlayerB.Font = playerFont;
-            lblPlayerC.Font = playerFont;
-            lblPlayerD.Font = playerFont;
-            lblPlayerA.TextAlign = ContentAlignment.MiddleLeft;
-            lblPlayerB.TextAlign = ContentAlignment.MiddleRight;
-            lblPlayerC.TextAlign = ContentAlignment.MiddleLeft;
-            lblPlayerD.TextAlign = ContentAlignment.MiddleRight;
-
-            lblClock.AutoSize = false;
-            lblClock.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value));
-            lblClock.Left = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locX").Value);
-            lblClock.Top = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locY").Value);
-            lblClock.Width = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value);
-            lblClock.Height = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value);
-            lblClock.TextAlign = ContentAlignment.MiddleCenter;
+            //lblClock.AutoSize = false;
+            //lblClock.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value), FontStyle.Regular, GraphicsUnit.Pixel);
+            picClock.Left = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locX").Value);
+            picClock.Top = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locY").Value);
+            picClock.Width = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value) + 10;
+            lblClock2.Width = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value);
+            picClock.Height = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value) + 10;
+            lblClock2.Height = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value);
 
             lblCommentary.AutoSize = false;
             lblCommentary.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("fontSize").Value));
@@ -184,17 +181,24 @@ namespace RandoTracker
             lblCommentary.Height = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("height").Value);
             lblCommentary.TextAlign = ContentAlignment.MiddleLeft;
 
-            lblFreeText.AutoSize = false;
-            lblFreeText.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value));
-            lblFreeText.Left = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value);
-            lblFreeText.Top = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locY").Value);
-            lblFreeText.Width = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("width").Value);
-            lblFreeText.Height = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("height").Value);
-            lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+            try
+            {
+                lblFreeText.AutoSize = false;
+                lblFreeText.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value));
+                lblFreeText.Left = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value);
+                lblFreeText.Top = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locY").Value);
+                lblFreeText.Width = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("width").Value);
+                lblFreeText.Height = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("height").Value);
+                lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+            } catch
+            {
+            }
 
-            picCovers = new picLabel[5, pics];
-            pictures = new PictureBox[5, pics];
+            picCovers = new picLabel[players, pics];
+            pictures = new PictureBox[players, pics];
             finalTime = new Label[players];
+            neutralPictures = new PictureBox[neutralPics];
+            NPicCovers = new picLabel[neutralPics];
 
             //this.BackgroundImage = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\")));
             //this.BackgroundImageLayout = ImageLayout.Tile; // .Stretch
@@ -279,63 +283,62 @@ namespace RandoTracker
 
             if (gameXML.Descendants("neutralPics").Count() > 0)
             {
-                int neutralPicCount = gameXML.Descendants("neutralPic").Count();
                 int picX = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locX").Value);
                 int picY = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locY").Value);
 
-                for (int j = 0; j < neutralPicCount; j++)
+                for (int i = 0; i < neutralPics; i++)
                 {
-                    int i = 4;
-
                     string firstNeutralPic = "";
                     int neutralPics = -1;
-                    if (gameXML.Descendants("neutralPic").Skip(j).First().Attribute("src") == null)
+                    if (gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src") == null)
                     {
-                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(j).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
-                        neutralPics = gameXML.Descendants("neutralPic").Skip(j).First().Descendants("state").Count();
+                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                        neutralPics = gameXML.Descendants("neutralPic").Skip(i).First().Descendants("state").Count();
                     }
                     else
                     {
-                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(j).First().Attribute("src").Value.Replace("/", "\\"));
+                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src").Value.Replace("/", "\\"));
                     }
 
-                    pictures[i, j] = new PictureBox();
                     try
                     {
-                        pictures[i, j].Image = Image.FromFile(firstNeutralPic);
+                        neutralPictures[i] = new PictureBox();
+                        neutralPictures[i].Image = Image.FromFile(firstNeutralPic);
                     } catch (Exception ex)
                     {
                         var asdf = 1234;
                     }
 
-                    pictures[i, j].Left = picX + (picXGap * (j % xNumber));
-                    pictures[i, j].Top = picY + (picYGap * (j / xNumber));
+                    neutralPictures[i].Left = picX + (picXGap * (i % xNumber));
+                    neutralPictures[i].Top = picY + (picYGap * (i / xNumber));
 
-                    pictures[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
-                    pictures[i, j].Width = picXSize;
-                    pictures[i, j].Height = picYSize;
-                    pictures[i, j].BackColor = Color.Transparent;
+                    neutralPictures[i].SizeMode = PictureBoxSizeMode.StretchImage;
+                    neutralPictures[i].Width = picXSize;
+                    neutralPictures[i].Height = picYSize;
+                    neutralPictures[i].BackColor = Color.Transparent;
 
-                    pictures[i, j].Invalidate();
+                    neutralPictures[i].Invalidate();
 
-                    pictureBox1.Controls.Add(pictures[i, j]);
+                    pictureBox1.Controls.Add(neutralPictures[i]);
 
-                    picCovers[i, j] = new picLabel();
-                    picCovers[i, j].loadPictures(gameXML.Descendants("neutralPic").Skip(j).First());
+                    NPicCovers[i] = new picLabel();
+                    NPicCovers[i].loadPictures(gameXML.Descendants("neutralPic").Skip(i).First());
 
-                    picCovers[i, j].Parent = pictures[i, j];
-                    picCovers[i, j].BackColor = Color.FromArgb(neutralPics == -1 ? 128 : 0, Color.Black);
-                    picCovers[i, j].Left = 0; // picX + (picXGap * (j % xNumber));
-                    picCovers[i, j].Top = 0; // picY + (picYGap * (j / xNumber));
-                    picCovers[i, j].Width = picXSize;
-                    picCovers[i, j].Height = picYSize;
-                    picCovers[i, j].Click += new EventHandler(picClick);
-                    picCovers[i, j].playerNumber = i;
-                    picCovers[i, j].labelNumber = j;
-                    //picCovers[i, j].Visible = (numberOfPics == -1);
+                    NPicCovers[i].Parent = neutralPictures[i];
+                    NPicCovers[i].BackColor = Color.Transparent;
+                    NPicCovers[i].Left = 0; // picX + (picXGap * (j % xNumber));
+                    NPicCovers[i].Top = 0; // picY + (picYGap * (j / xNumber));
+                    NPicCovers[i].Width = picXSize;
+                    NPicCovers[i].Height = picYSize;
+                    NPicCovers[i].Click += new EventHandler(picClick);
+                    NPicCovers[i].playerNumber = 5;
+                    NPicCovers[i].labelNumber = i;
+                    //picCovers[i].Visible = (numberOfPics == -1);
 
-                    pictures[i, j].Controls.Add(picCovers[i, j]);
-                    picCovers[i, j].BringToFront();
+                    neutralPictures[i].Controls.Add(NPicCovers[i]);
+                    NPicCovers[i].BringToFront();
+                    //Controls.Add(picCovers[i]);
+                    neutralPictures[i].Controls.Add(NPicCovers[i]);
                 }
             }
             //Controls.Add(picCovers[i, j]);
@@ -355,18 +358,28 @@ namespace RandoTracker
 
         private void changePicture(int playerNumber, int labelNumber)
         {
-            picLabel clicked = picCovers[playerNumber, labelNumber];
-
-            if (clicked.multiState)
+            if (playerNumber != 5)
             {
-                PictureBox picClicked = pictures[playerNumber, labelNumber];
-                picClicked.Image = clicked.nextImage();
+                picLabel clicked = picCovers[playerNumber, labelNumber];
+
+                if (clicked.multiState)
+                {
+                    PictureBox picClicked = pictures[playerNumber, labelNumber];
+                    picClicked.Image = clicked.nextImage();
+                }
+                else
+                {
+                    if (clicked.BackColor == Color.FromArgb(0, Color.Black))
+                        clicked.BackColor = Color.FromArgb(128, Color.Black);
+                    else
+                        clicked.BackColor = Color.FromArgb(0, Color.Black);
+                }
             } else
             {
-                if (clicked.BackColor == Color.FromArgb(0, Color.Black))
-                    clicked.BackColor = Color.FromArgb(128, Color.Black);
-                else
-                    clicked.BackColor = Color.FromArgb(0, Color.Black);
+                picLabel clicked = NPicCovers[labelNumber];
+
+                PictureBox picClicked = neutralPictures[labelNumber];
+                picClicked.Image = clicked.nextImage();
             }
         }
 
@@ -420,27 +433,31 @@ namespace RandoTracker
 
         private void txtPlayerA_TextChanged(object sender, EventArgs e)
         {
-            lblPlayerA.Text = txtPlayerA.Text;
+            lblPlayers[0].Text = txtPlayerA.Text;
+            pictureBox1.Invalidate();
         }
 
         private void txtPlayerB_TextChanged(object sender, EventArgs e)
         {
-            lblPlayerB.Text = txtPlayerB.Text;
+            lblPlayers[1].Text = txtPlayerB.Text;
+            pictureBox1.Invalidate();
         }
 
         private void txtPlayerC_TextChanged(object sender, EventArgs e)
         {
-            lblPlayerC.Text = txtPlayerC.Text;
+            lblPlayers[2].Text = txtPlayerC.Text;
+            pictureBox1.Invalidate();
         }
 
         private void txtPlayerD_TextChanged(object sender, EventArgs e)
         {
-            lblPlayerD.Text = txtPlayerD.Text;
+            lblPlayers[3].Text = txtPlayerD.Text;
+            pictureBox1.Invalidate();
         }
 
         private void txtTimeA_Leave(object sender, EventArgs e)
         {
-            lblPlayerA.Font = new Font(gameFont, txtTimeA.Text != "" ? finalFontSize : playerFontSize);
+            lblPlayers[0].Font = new Font(gameFont, txtTimeA.Text != "" ? finalFontSize : playerFontSize);
             finalTime[0].Text = txtTimeA.Text;
             finalTime[0].Visible = (txtTimeA.Text != "");
             finalTime[0].BringToFront();
@@ -448,7 +465,7 @@ namespace RandoTracker
 
         private void txtTimeB_Leave(object sender, EventArgs e)
         {
-            lblPlayerB.Font = new Font(gameFont, txtTimeB.Text != "" ? finalFontSize : playerFontSize);
+            lblPlayers[1].Font = new Font(gameFont, txtTimeB.Text != "" ? finalFontSize : playerFontSize);
             finalTime[1].Text = txtTimeB.Text;
             finalTime[1].Visible = (txtTimeB.Text != "");
             finalTime[1].BringToFront();
@@ -456,7 +473,7 @@ namespace RandoTracker
 
         private void txtTimeC_Leave(object sender, EventArgs e)
         {
-            lblPlayerC.Font = new Font(gameFont, txtTimeC.Text != "" ? finalFontSize : playerFontSize);
+            lblPlayers[2].Font = new Font(gameFont, txtTimeC.Text != "" ? finalFontSize : playerFontSize);
             finalTime[2].Text = txtTimeC.Text;
             finalTime[2].Visible = (txtTimeC.Text != "");
             finalTime[2].BringToFront();
@@ -464,7 +481,7 @@ namespace RandoTracker
 
         private void txtTimeD_Leave(object sender, EventArgs e)
         {
-            lblPlayerD.Font = new Font(gameFont, txtTimeD.Text != "" ? finalFontSize : playerFontSize);
+            lblPlayers[3].Font = new Font(gameFont, txtTimeD.Text != "" ? finalFontSize : playerFontSize);
             finalTime[3].Text = txtTimeD.Text;
             finalTime[3].Visible = (txtTimeD.Text != "");
             finalTime[3].BringToFront();
@@ -480,7 +497,9 @@ namespace RandoTracker
             {
                 TimeSpan ts = clock.Elapsed;
                 string timeElapsed = Math.Floor(ts.TotalHours) + ":" + Math.Floor((double)ts.Minutes).ToString("00") + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
-                lblClock.Text = timeElapsed;
+                //lblClock.Text = timeElapsed;
+                lblClock2.Text = timeElapsed;
+                picClock.Invalidate();
             }
         }
 
@@ -536,7 +555,7 @@ namespace RandoTracker
         {
             clock.Reset();
             timer1.Enabled = false;
-            lblClock.Text = "0:00:00.0";
+            //lblClock.Text = "0:00:00.0";
         }
 
         // *****************************************************************************************************
@@ -663,7 +682,7 @@ namespace RandoTracker
                 if (aryRet[0] == 0xf1) startClocks();
                 else if (aryRet[0] == 0xf2) stopClocks();
                 else if (aryRet[0] == 0xf3) resetClocks();
-                else if (aryRet[0] <= 0x03)
+                else if (aryRet[0] <= 0x05)
                     changePicture(aryRet[0], aryRet[1]);
             }));
 
@@ -772,7 +791,7 @@ namespace RandoTracker
                         if (m_byBuff[0] == 0xf1) startClocks();
                         else if (m_byBuff[0] == 0xf2) stopClocks();
                         else if (m_byBuff[0] == 0xf3) resetClocks();
-                        else if (m_byBuff[0] <= 0x03)
+                        else if (m_byBuff[0] <= 0x05)
                             changePicture(m_byBuff[0], m_byBuff[1]);
                     }));
 
@@ -872,6 +891,17 @@ namespace RandoTracker
         {
             lblFreeText.Text = txtFreeText.Text;
         }
+
+        private void picClock_Paint(object sender, PaintEventArgs e)
+        {
+            lblClock2.Draw(e.Graphics);
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            for (int i = 0; i < 4; i++)
+                lblPlayers[i].Draw(e.Graphics);
+        }
     }
 
     /// <summary>
@@ -967,6 +997,251 @@ namespace RandoTracker
             currentState++;
             if (currentState == numberOfStates) currentState = 0;
             return images[currentState];
+        }
+    }
+
+    public class SimpleLabel
+    {
+        public string Text { get; set; }
+        public ICollection<string> AlternateText { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
+        public Font Font { get; set; }
+        public Brush Brush { get; set; }
+        public StringAlignment HorizontalAlignment { get; set; }
+        public StringAlignment VerticalAlignment { get; set; }
+        public Color ShadowColor { get; set; }
+        public Color OutlineColor { get; set; }
+
+        public bool HasShadow { get; set; }
+        public bool IsMonospaced { get; set; }
+
+        private StringFormat Format { get; set; }
+
+        public float ActualWidth { get; set; }
+
+        public Color ForeColor
+        {
+            get
+            {
+                return ((SolidBrush)Brush).Color;
+            }
+            set
+            {
+                try
+                {
+                    if (Brush is SolidBrush)
+                    {
+                        ((SolidBrush)Brush).Color = value;
+                    }
+                    else
+                    {
+                        Brush = new SolidBrush(value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Log.Error(ex);
+                }
+            }
+        }
+
+        public SimpleLabel(
+            string text = "",
+            float x = 0.0f, float y = 0.0f,
+            Font font = null, Brush brush = null,
+            float width = float.MaxValue, float height = float.MaxValue,
+            StringAlignment horizontalAlignment = StringAlignment.Near,
+            StringAlignment verticalAlignment = StringAlignment.Near,
+            IEnumerable<string> alternateText = null)
+        {
+            Text = text;
+            X = x;
+            Y = y;
+            Font = font ?? new Font("Arial", 1.0f);
+            Brush = brush ?? new SolidBrush(Color.Black);
+            Width = width;
+            Height = height;
+            HorizontalAlignment = horizontalAlignment;
+            VerticalAlignment = verticalAlignment;
+            IsMonospaced = false;
+            HasShadow = true;
+            ShadowColor = Color.FromArgb(128, 0, 0, 0);
+            OutlineColor = Color.FromArgb(0, 0, 0, 0);
+            ((List<string>)(AlternateText = new List<string>())).AddRange(alternateText ?? new string[0]);
+            Format = new StringFormat
+            {
+                Alignment = HorizontalAlignment,
+                LineAlignment = VerticalAlignment,
+                FormatFlags = StringFormatFlags.NoWrap,
+                Trimming = StringTrimming.EllipsisCharacter
+            };
+        }
+
+        public void Draw(Graphics g)
+        {
+            Format.Alignment = HorizontalAlignment;
+            Format.LineAlignment = VerticalAlignment;
+
+            if (!IsMonospaced)
+            {
+                var actualText = CalculateAlternateText(g, Width);
+                DrawText(actualText, g, X, Y, Width, Height, Format);
+            }
+            else
+            {
+                var monoFormat = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = VerticalAlignment
+                };
+
+                var measurement = MeasureText(g, "0", Font, new Size((int)(Width + 0.5f), (int)(Height + 0.5f)), TextFormatFlags.NoPadding).Width;
+                var offset = Width;
+                var charIndex = 0;
+                SetActualWidth(g);
+                var cutOffText = CutOff(g);
+
+                offset = Width - MeasureActualWidth(cutOffText, g);
+                if (HorizontalAlignment != StringAlignment.Far)
+                    offset = 0f;
+
+
+                while (charIndex < cutOffText.Length)
+                {
+                    var curOffset = 0f;
+                    var curChar = cutOffText[charIndex];
+
+                    if (char.IsDigit(curChar))
+                        curOffset = measurement;
+                    else
+                        curOffset = MeasureText(g, curChar.ToString(), Font, new Size((int)(Width + 0.5f), (int)(Height + 0.5f)), TextFormatFlags.NoPadding).Width;
+
+                    DrawText(curChar.ToString(), g, X + offset - curOffset / 2f, Y, curOffset * 2f, Height, monoFormat);
+
+                    charIndex++;
+                    offset += curOffset;
+                }
+            }
+        }
+
+        private void DrawText(string text, Graphics g, float x, float y, float width, float height, StringFormat format)
+        {
+            if (text != null)
+            {
+                if (g.TextRenderingHint == TextRenderingHint.AntiAlias && OutlineColor.A > 0)
+                {
+                    var fontSize = GetFontSize(g);
+                    using (var shadowBrush = new SolidBrush(ShadowColor))
+                    using (var gp = new GraphicsPath())
+                    using (var outline = new Pen(OutlineColor, GetOutlineSize(fontSize)) { LineJoin = LineJoin.Round })
+                    {
+                        if (HasShadow)
+                        {
+                            gp.AddString(text, Font.FontFamily, (int)Font.Style, fontSize, new RectangleF(x + 1f, y + 1f, width, height), format);
+                            g.FillPath(shadowBrush, gp);
+                            gp.Reset();
+                            gp.AddString(text, Font.FontFamily, (int)Font.Style, fontSize, new RectangleF(x + 2f, y + 2f, width, height), format);
+                            g.FillPath(shadowBrush, gp);
+                            gp.Reset();
+                        }
+                        gp.AddString(text, Font.FontFamily, (int)Font.Style, fontSize, new RectangleF(x, y, width, height), format);
+                        g.DrawPath(outline, gp);
+                        g.FillPath(Brush, gp);
+                    }
+                }
+                else
+                {
+                    if (HasShadow)
+                    {
+                        using (var shadowBrush = new SolidBrush(ShadowColor))
+                        {
+                            g.DrawString(text, Font, shadowBrush, new RectangleF(x + 1f, y + 1f, width, height), format);
+                            g.DrawString(text, Font, shadowBrush, new RectangleF(x + 2f, y + 2f, width, height), format);
+                        }
+                    }
+                    g.DrawString(text, Font, Brush, new RectangleF(x, y, width, height), format);
+                }
+            }
+        }
+
+        private float GetOutlineSize(float fontSize)
+        {
+            return 2.1f + fontSize * 0.055f;
+        }
+
+        private float GetFontSize(Graphics g)
+        {
+            if (Font.Unit == GraphicsUnit.Point)
+                return Font.Size * g.DpiY / 72;
+            return Font.Size;
+        }
+
+        public void SetActualWidth(Graphics g)
+        {
+            Format.Alignment = HorizontalAlignment;
+            Format.LineAlignment = VerticalAlignment;
+
+            if (!IsMonospaced)
+                ActualWidth = g.MeasureString(Text, Font, 9999, Format).Width;
+            else
+                ActualWidth = MeasureActualWidth(Text, g);
+        }
+
+        public string CalculateAlternateText(Graphics g, float width)
+        {
+            var actualText = Text;
+            ActualWidth = g.MeasureString(Text, Font, 9999, Format).Width;
+            foreach (var curText in AlternateText.OrderByDescending(x => x.Length))
+            {
+                if (width < ActualWidth)
+                {
+                    actualText = curText;
+                    ActualWidth = g.MeasureString(actualText, Font, 9999, Format).Width;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return actualText;
+        }
+
+        private float MeasureActualWidth(string text, Graphics g)
+        {
+            var charIndex = 0;
+            var measurement = MeasureText(g, "0", Font, new Size((int)(Width + 0.5f), (int)(Height + 0.5f)), TextFormatFlags.NoPadding).Width;
+            var offset = 0;
+
+            while (charIndex < text.Length)
+            {
+                var curChar = text[charIndex];
+
+                if (char.IsDigit(curChar))
+                    offset += measurement;
+                else
+                    offset += MeasureText(g, curChar.ToString(), Font, new Size((int)(Width + 0.5f), (int)(Height + 0.5f)), TextFormatFlags.NoPadding).Width;
+
+                charIndex++;
+            }
+            return offset;
+        }
+
+        private string CutOff(Graphics g)
+        {
+            if (ActualWidth < Width)
+                return Text;
+            var cutOffText = Text;
+            while (ActualWidth >= Width && !string.IsNullOrEmpty(cutOffText))
+            {
+                cutOffText = cutOffText.Remove(cutOffText.Length - 1, 1);
+                ActualWidth = MeasureActualWidth(cutOffText + "...", g);
+            }
+            if (ActualWidth >= Width)
+                return "";
+            return cutOffText + "...";
         }
     }
 }
