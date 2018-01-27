@@ -62,6 +62,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtFreeText = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtStartClock = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -155,7 +157,7 @@
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(1305, 70);
+            this.label1.Location = new System.Drawing.Point(1304, 200);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 13);
             this.label1.TabIndex = 103;
@@ -164,11 +166,12 @@
             // txtCommentary
             // 
             this.txtCommentary.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCommentary.Location = new System.Drawing.Point(1379, 67);
+            this.txtCommentary.Location = new System.Drawing.Point(1378, 188);
+            this.txtCommentary.Multiline = true;
             this.txtCommentary.Name = "txtCommentary";
-            this.txtCommentary.Size = new System.Drawing.Size(164, 20);
+            this.txtCommentary.Size = new System.Drawing.Size(164, 40);
             this.txtCommentary.TabIndex = 21;
-            this.txtCommentary.TextChanged += new System.EventHandler(this.txtCommentary_TextChanged);
+            this.txtCommentary.Leave += new System.EventHandler(this.txtCommentary_Leave);
             // 
             // label4
             // 
@@ -176,7 +179,7 @@
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(1305, 105);
+            this.label4.Location = new System.Drawing.Point(1312, 51);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(41, 13);
             this.label4.TabIndex = 104;
@@ -185,43 +188,43 @@
             // txtPlayerA
             // 
             this.txtPlayerA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPlayerA.Location = new System.Drawing.Point(1308, 129);
+            this.txtPlayerA.Location = new System.Drawing.Point(1315, 75);
             this.txtPlayerA.Name = "txtPlayerA";
             this.txtPlayerA.Size = new System.Drawing.Size(67, 20);
             this.txtPlayerA.TabIndex = 5;
-            this.txtPlayerA.TextChanged += new System.EventHandler(this.txtPlayerA_TextChanged);
+            this.txtPlayerA.Leave += new System.EventHandler(this.txtPlayerA_Leave);
             // 
             // txtPlayerC
             // 
             this.txtPlayerC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPlayerC.Location = new System.Drawing.Point(1308, 180);
+            this.txtPlayerC.Location = new System.Drawing.Point(1315, 126);
             this.txtPlayerC.Name = "txtPlayerC";
             this.txtPlayerC.Size = new System.Drawing.Size(67, 20);
             this.txtPlayerC.TabIndex = 7;
-            this.txtPlayerC.TextChanged += new System.EventHandler(this.txtPlayerC_TextChanged);
+            this.txtPlayerC.Leave += new System.EventHandler(this.txtPlayerC_Leave);
             // 
             // txtPlayerB
             // 
             this.txtPlayerB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPlayerB.Location = new System.Drawing.Point(1308, 155);
+            this.txtPlayerB.Location = new System.Drawing.Point(1315, 101);
             this.txtPlayerB.Name = "txtPlayerB";
             this.txtPlayerB.Size = new System.Drawing.Size(67, 20);
             this.txtPlayerB.TabIndex = 6;
-            this.txtPlayerB.TextChanged += new System.EventHandler(this.txtPlayerB_TextChanged);
+            this.txtPlayerB.Leave += new System.EventHandler(this.txtPlayerB_Leave);
             // 
             // txtPlayerD
             // 
             this.txtPlayerD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPlayerD.Location = new System.Drawing.Point(1308, 206);
+            this.txtPlayerD.Location = new System.Drawing.Point(1315, 152);
             this.txtPlayerD.Name = "txtPlayerD";
             this.txtPlayerD.Size = new System.Drawing.Size(67, 20);
             this.txtPlayerD.TabIndex = 8;
-            this.txtPlayerD.TextChanged += new System.EventHandler(this.txtPlayerD_TextChanged);
+            this.txtPlayerD.Leave += new System.EventHandler(this.txtPlayerD_Leave);
             // 
             // txtTimeD
             // 
             this.txtTimeD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTimeD.Location = new System.Drawing.Point(1448, 206);
+            this.txtTimeD.Location = new System.Drawing.Point(1455, 152);
             this.txtTimeD.Name = "txtTimeD";
             this.txtTimeD.Size = new System.Drawing.Size(67, 20);
             this.txtTimeD.TabIndex = 16;
@@ -230,7 +233,7 @@
             // txtTimeB
             // 
             this.txtTimeB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTimeB.Location = new System.Drawing.Point(1448, 155);
+            this.txtTimeB.Location = new System.Drawing.Point(1455, 101);
             this.txtTimeB.Name = "txtTimeB";
             this.txtTimeB.Size = new System.Drawing.Size(67, 20);
             this.txtTimeB.TabIndex = 14;
@@ -239,7 +242,7 @@
             // txtTimeC
             // 
             this.txtTimeC.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTimeC.Location = new System.Drawing.Point(1448, 180);
+            this.txtTimeC.Location = new System.Drawing.Point(1455, 126);
             this.txtTimeC.Name = "txtTimeC";
             this.txtTimeC.Size = new System.Drawing.Size(67, 20);
             this.txtTimeC.TabIndex = 15;
@@ -248,7 +251,7 @@
             // txtTimeA
             // 
             this.txtTimeA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTimeA.Location = new System.Drawing.Point(1448, 129);
+            this.txtTimeA.Location = new System.Drawing.Point(1455, 75);
             this.txtTimeA.Name = "txtTimeA";
             this.txtTimeA.Size = new System.Drawing.Size(67, 20);
             this.txtTimeA.TabIndex = 13;
@@ -260,7 +263,7 @@
             this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(1445, 105);
+            this.label5.Location = new System.Drawing.Point(1452, 51);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 112;
@@ -272,7 +275,7 @@
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(1391, 105);
+            this.label6.Location = new System.Drawing.Point(1398, 51);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(34, 13);
             this.label6.TabIndex = 117;
@@ -281,7 +284,7 @@
             // btnAudioA
             // 
             this.btnAudioA.AutoSize = true;
-            this.btnAudioA.Location = new System.Drawing.Point(1401, 133);
+            this.btnAudioA.Location = new System.Drawing.Point(1408, 79);
             this.btnAudioA.Name = "btnAudioA";
             this.btnAudioA.Size = new System.Drawing.Size(14, 13);
             this.btnAudioA.TabIndex = 9;
@@ -291,7 +294,7 @@
             // btnAudioB
             // 
             this.btnAudioB.AutoSize = true;
-            this.btnAudioB.Location = new System.Drawing.Point(1401, 158);
+            this.btnAudioB.Location = new System.Drawing.Point(1408, 104);
             this.btnAudioB.Name = "btnAudioB";
             this.btnAudioB.Size = new System.Drawing.Size(14, 13);
             this.btnAudioB.TabIndex = 10;
@@ -301,7 +304,7 @@
             // btnAudioC
             // 
             this.btnAudioC.AutoSize = true;
-            this.btnAudioC.Location = new System.Drawing.Point(1401, 183);
+            this.btnAudioC.Location = new System.Drawing.Point(1408, 129);
             this.btnAudioC.Name = "btnAudioC";
             this.btnAudioC.Size = new System.Drawing.Size(14, 13);
             this.btnAudioC.TabIndex = 11;
@@ -311,7 +314,7 @@
             // btnAudioD
             // 
             this.btnAudioD.AutoSize = true;
-            this.btnAudioD.Location = new System.Drawing.Point(1401, 209);
+            this.btnAudioD.Location = new System.Drawing.Point(1408, 155);
             this.btnAudioD.Name = "btnAudioD";
             this.btnAudioD.Size = new System.Drawing.Size(14, 13);
             this.btnAudioD.TabIndex = 12;
@@ -321,9 +324,9 @@
             // btnStart
             // 
             this.btnStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStart.Location = new System.Drawing.Point(1308, 233);
+            this.btnStart.Location = new System.Drawing.Point(1308, 427);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(45, 23);
+            this.btnStart.Size = new System.Drawing.Size(64, 23);
             this.btnStart.TabIndex = 17;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -332,9 +335,9 @@
             // btnStop
             // 
             this.btnStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStop.Location = new System.Drawing.Point(1368, 233);
+            this.btnStop.Location = new System.Drawing.Point(1396, 427);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(45, 23);
+            this.btnStop.Size = new System.Drawing.Size(64, 23);
             this.btnStop.TabIndex = 18;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -343,9 +346,9 @@
             // btnReset
             // 
             this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReset.Location = new System.Drawing.Point(1428, 233);
+            this.btnReset.Location = new System.Drawing.Point(1482, 427);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(45, 23);
+            this.btnReset.Size = new System.Drawing.Size(64, 23);
             this.btnReset.TabIndex = 19;
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = true;
@@ -382,7 +385,7 @@
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(1304, 300);
+            this.label7.Location = new System.Drawing.Point(1304, 258);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(52, 13);
             this.label7.TabIndex = 121;
@@ -391,12 +394,35 @@
             // txtFreeText
             // 
             this.txtFreeText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFreeText.Location = new System.Drawing.Point(1378, 297);
+            this.txtFreeText.Location = new System.Drawing.Point(1378, 240);
             this.txtFreeText.Multiline = true;
             this.txtFreeText.Name = "txtFreeText";
-            this.txtFreeText.Size = new System.Drawing.Size(164, 57);
+            this.txtFreeText.Size = new System.Drawing.Size(164, 52);
             this.txtFreeText.TabIndex = 120;
-            this.txtFreeText.TextChanged += new System.EventHandler(this.txtFreeText_TextChanged);
+            this.txtFreeText.WordWrap = false;
+            this.txtFreeText.Leave += new System.EventHandler(this.txtFreeText_Leave);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(1305, 400);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(73, 13);
+            this.label8.TabIndex = 123;
+            this.label8.Text = "Start clock at ";
+            // 
+            // txtStartClock
+            // 
+            this.txtStartClock.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtStartClock.Location = new System.Drawing.Point(1396, 397);
+            this.txtStartClock.Name = "txtStartClock";
+            this.txtStartClock.Size = new System.Drawing.Size(69, 20);
+            this.txtStartClock.TabIndex = 122;
+            this.txtStartClock.Text = "0:00:00";
+            this.txtStartClock.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // Form1
             // 
@@ -404,6 +430,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1558, 748);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.txtStartClock);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.txtFreeText);
             this.Controls.Add(this.pictureBox1);
@@ -482,6 +510,8 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtFreeText;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtStartClock;
     }
 }
 
