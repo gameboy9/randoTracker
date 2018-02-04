@@ -455,10 +455,12 @@ namespace RandoTracker
                     cboBackground.Items.Add(bgNames[i]);
                 }
                 cboBackground.SelectedIndex = 0;
+                cboBackground.Enabled = true;
                 mainImage = Image.FromFile(bgImages[0]);
             }
             else
             {
+                cboBackground.Enabled = false;
                 string bgImage = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\"));
                 mainImage = Image.FromFile(bgImage);
             }
@@ -721,19 +723,16 @@ namespace RandoTracker
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < players; i++)
-            {
-                TimeSpan ts = clock.Elapsed.Add(new TimeSpan(0, 0, extraTime));
-                string timeElapsed;
-                if (ts.TotalHours >= 1)
-                    timeElapsed = Math.Floor(ts.TotalHours) + ":" + Math.Floor((double)ts.Minutes).ToString("00") + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
-                else if (ts.Minutes >= 1)
-                    timeElapsed = Math.Floor((double)ts.Minutes) + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
-                else
-                    timeElapsed = ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
-                lblClock2.Text = timeElapsed;
-                picClock.Invalidate();
-            }
+            TimeSpan ts = clock.Elapsed.Add(new TimeSpan(0, 0, extraTime));
+            string timeElapsed;
+            if (ts.TotalHours >= 1)
+                timeElapsed = Math.Floor(ts.TotalHours) + ":" + Math.Floor((double)ts.Minutes).ToString("00") + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
+            else if (ts.Minutes >= 1)
+                timeElapsed = Math.Floor((double)ts.Minutes) + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
+            else
+                timeElapsed = ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
+            lblClock2.Text = timeElapsed;
+            picClock.Invalidate();
         }
 
         private void btnStart_Click(object sender, EventArgs e)
