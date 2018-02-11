@@ -31,6 +31,7 @@ namespace RandoTracker
         PictureBox[,] pictures;
         PictureBox[] neutralPictures;
         picLabel[] NPicCovers;
+        PictureBox logo = new PictureBox();
         PictureBox picClock = new PictureBox();
         Label[] finalTime;
         int playerFontSize = 0;
@@ -544,14 +545,8 @@ namespace RandoTracker
                         firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src").Value.Replace("/", "\\"));
                     }
 
-                    try
-                    {
-                        neutralPictures[i] = new PictureBox();
-                        neutralPictures[i].Image = Image.FromFile(firstNeutralPic);
-                    } catch (Exception ex)
-                    {
-                        var asdf = 1234;
-                    }
+                    neutralPictures[i] = new PictureBox();
+                    neutralPictures[i].Image = Image.FromFile(firstNeutralPic);
 
                     neutralPictures[i].Left = picX + (picXGap * (i % xNumber)) + xAdjustment;
                     neutralPictures[i].Top = picY + (picYGap * (i / xNumber)) + yAdjustment;
@@ -582,6 +577,29 @@ namespace RandoTracker
                     NPicCovers[i].BringToFront();
                     neutralPictures[i].Controls.Add(NPicCovers[i]);
                 }
+            }
+
+            try
+            {
+                string logoName = gameXML.Descendants("logo").First().Attribute("file").Value;
+                logo = new PictureBox();
+                logo.Image = Image.FromFile(logoName);
+
+                logo.Left = Convert.ToInt32(gameXML.Descendants("logo").First().Attribute("locX").Value);
+                logo.Top = Convert.ToInt32(gameXML.Descendants("logo").First().Attribute("locY").Value);
+
+                logo.SizeMode = PictureBoxSizeMode.StretchImage;
+                logo.Width = Convert.ToInt32(gameXML.Descendants("logo").First().Attribute("width").Value);
+                logo.Height = Convert.ToInt32(gameXML.Descendants("logo").First().Attribute("height").Value);
+                logo.BackColor = Color.Transparent;
+
+                logo.Invalidate();
+
+                this.Controls.Add(logo);
+            }
+            catch
+            {
+                // Ignore; no logo
             }
             comChange();
             freeTextChange();
