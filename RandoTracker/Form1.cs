@@ -279,6 +279,10 @@ namespace RandoTracker
                     this.Controls.Remove(NPicCovers[i]);
                 }
             } catch { }
+            try
+            {
+                this.Controls.Remove(logo);
+            } catch { }
 
             XDocument gameXML = new XDocument();
             try
