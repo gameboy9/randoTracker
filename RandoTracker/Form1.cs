@@ -263,6 +263,8 @@ namespace RandoTracker
             {
                 for (int i = 0; i < 4; i++)
                 {
+                    lblPlayers[i].Text = "";
+                    lblFinal[i].Text = "";
                     for (int j = 0; j < pics; j++)
                     {
                         this.Controls.Remove(pictures[i, j]);
@@ -298,6 +300,7 @@ namespace RandoTracker
             shortName = gameXML.Element("game").Attribute("shortname").Value;
             players = Convert.ToInt32(gameXML.Element("game").Attribute("players").Value);
             if (players != 4) players = 2;
+            txtPlayer[2].Enabled = txtPlayer[3].Enabled = txtFinalTime[2].Enabled = txtFinalTime[3].Enabled = radAudio[2].Enabled = radAudio[3].Enabled = cboState[2].Enabled = cboState[3].Enabled = (players == 4);
 
             gameFont = gameXML.Element("game").Attribute("Font").Value;
             pics = gameXML.Descendants("picture").Count();
@@ -353,6 +356,7 @@ namespace RandoTracker
                 {
                     lblPlayers[i].HorizontalAlignment = (i % 2 == 0 ? StringAlignment.Near : StringAlignment.Far);
                 }
+                lblPlayers[i].Text = txtPlayer[i].Text;
 
                 lblFinal[i] = new SimpleLabel();
                 lblFinal[i].Font = finalFont;
@@ -366,6 +370,7 @@ namespace RandoTracker
                 lblFinal[i].BackColor = Color.FromArgb(192, 0, 0, 0);
                 lblFinal[i].HorizontalAlignment = StringAlignment.Center;
                 lblFinal[i].VerticalAlignment = StringAlignment.Center;
+                lblFinal[i].Text = txtFinalTime[i].Text;
 
                 try
                 {
@@ -1318,7 +1323,7 @@ namespace RandoTracker
                 lblFree[i].Draw(e.Graphics);
             }
 
-            for (int i = 0; i < lblFinal.Length; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (lblFinal[i] == null || lblFinal[i].Text == "") continue;
                 lblFinal[i].Draw(e.Graphics);
