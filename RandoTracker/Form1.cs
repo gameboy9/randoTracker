@@ -74,6 +74,7 @@ namespace RandoTracker
         private void Form1_Load(object sender, EventArgs e)
         {
             this.DoubleBuffered = true;
+            this.AutoScaleMode = AutoScaleMode.None;
 
             try
             {

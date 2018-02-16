@@ -83,7 +83,7 @@
             // txtPort
             // 
             this.txtPort.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPort.Location = new System.Drawing.Point(1372, 621);
+            this.txtPort.Location = new System.Drawing.Point(1402, 621);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(67, 20);
             this.txtPort.TabIndex = 108;
@@ -91,7 +91,7 @@
             // txtIP
             // 
             this.txtIP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIP.Location = new System.Drawing.Point(1372, 596);
+            this.txtIP.Location = new System.Drawing.Point(1402, 596);
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(135, 20);
             this.txtIP.TabIndex = 107;
@@ -148,9 +148,9 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(1304, 200);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 13);
+            this.label1.Size = new System.Drawing.Size(39, 13);
             this.label1.TabIndex = 103;
-            this.label1.Text = "Commentary:";
+            this.label1.Text = "Comm:";
             // 
             // txtCommentary
             // 
@@ -259,7 +259,7 @@
             // txtStartClock
             // 
             this.txtStartClock.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtStartClock.Location = new System.Drawing.Point(1396, 530);
+            this.txtStartClock.Location = new System.Drawing.Point(1476, 530);
             this.txtStartClock.Name = "txtStartClock";
             this.txtStartClock.Size = new System.Drawing.Size(69, 20);
             this.txtStartClock.TabIndex = 103;
@@ -320,14 +320,13 @@
             this.label5.ForeColor = System.Drawing.Color.White;
             this.label5.Location = new System.Drawing.Point(1305, 312);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 13);
+            this.label5.Size = new System.Drawing.Size(25, 13);
             this.label5.TabIndex = 128;
-            this.label5.Text = "Background";
+            this.label5.Text = "BG:";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1558, 748);
             this.Controls.Add(this.label5);
@@ -355,6 +354,7 @@
             this.Controls.Add(this.cmdConnect);
             this.Controls.Add(this.cmdStartServer);
             this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "RandoTracker";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
