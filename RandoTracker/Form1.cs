@@ -28,7 +28,7 @@ namespace RandoTracker
         PictureBox comMic = new PictureBox();
         PictureBox audioMic = new PictureBox(); 
         picLabel[,] picCovers;
-        PictureBox[,] pictures;
+        superPic[,] pictures;
         PictureBox[] neutralPictures;
         picLabel[] NPicCovers;
         PictureBox logo = new PictureBox();
@@ -45,7 +45,9 @@ namespace RandoTracker
         SimpleLabel[] lblFree = new SimpleLabel[4];
         Label lblCommentary = new Label();
         Label lblFreeText = new Label();
-        Label lblClock = new Label();
+        Label[] lblSplitNames = new Label[4];
+        Label[] lblSplitTimes = new Label[4];
+
         SimpleLabel lblClock2 = new SimpleLabel();
         Image mainImage;
         Image[] playerImages = new Image[4];
@@ -100,6 +102,9 @@ namespace RandoTracker
               
             for (int i = 0; i < 4; i++)
             {
+                lblSplitNames[i] = new Label();
+                lblSplitTimes[i] = new Label();
+
                 txtPlayer[i] = new superText();
                 radAudio[i] = new superCheck();
                 if (i == 0) radAudio[i].Checked = true;
@@ -114,9 +119,17 @@ namespace RandoTracker
                 txtPlayer[i].player = radAudio[i].player = txtFinalTime[i].player = cboState[i].player = i;
 
                 txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 75 + (25 * i);
-                txtPlayer[i].Left = 1305;
+                txtPlayer[i].Left = lblSplitNames[i].Left = 1305;
                 txtPlayer[i].Width = 70;
                 radAudio[i].Left = txtFinalTime[i].Left = cboState[i].Left = 1390;
+
+                lblSplitTimes[i].Left = 1400;
+                lblSplitNames[i].Top = lblSplitTimes[i].Top = 365 + (25 * i);
+                lblSplitNames[i].AutoSize = false;
+                lblSplitNames[i].Width = 80;
+                lblSplitTimes[i].Text = lblSplitNames[i].Text = "";
+                lblSplitNames[i].BackColor = lblSplitTimes[i].BackColor = Color.Transparent;
+                lblSplitNames[i].ForeColor = lblSplitTimes[i].ForeColor = Color.White;
 
                 txtPlayer[i].Leave += playerChange;
                 radAudio[i].Click += audioChange;
@@ -127,6 +140,8 @@ namespace RandoTracker
                 this.Controls.Add(radAudio[i]);
                 this.Controls.Add(txtFinalTime[i]);
                 this.Controls.Add(cboState[i]);
+                this.Controls.Add(lblSplitNames[i]);
+                this.Controls.Add(lblSplitTimes[i]);
             }
 
             audioMic.Image = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "speaker.png"));
@@ -216,6 +231,7 @@ namespace RandoTracker
             if (lblPlayers[player] == null) return;
             txtPlayer[player].Text = playerName;
             lblPlayers[player].Text = playerName;
+            lblSplitNames[player].Text = playerName;
             this.Invalidate();
         }
 
@@ -448,7 +464,7 @@ namespace RandoTracker
             }
 
             picCovers = new picLabel[players, pics];
-            pictures = new PictureBox[players, pics];
+            pictures = new superPic[players, pics];
             finalTime = new Label[players];
             neutralPictures = new PictureBox[neutralPics];
             NPicCovers = new picLabel[neutralPics];
@@ -491,7 +507,7 @@ namespace RandoTracker
 
                 for (int j = 0; j < pics; j++)
                 {
-                    pictures[i, j] = new PictureBox();
+                    pictures[i, j] = new superPic();
 
                     string firstPicture = "";
                     int numberOfPics = -1;
@@ -618,12 +634,35 @@ namespace RandoTracker
         private void picClick(object sender, EventArgs e)
         {
             picLabel clicked = (picLabel)sender;
-            if (client == true)
-                sendBytes(new byte[] { (byte)clicked.playerNumber, (byte)clicked.labelNumber });
-            else
+
+            MouseEventArgs me = (MouseEventArgs)e;
+            if ((ModifierKeys & Keys.Control) == Keys.Control)
             {
-                changePicture(clicked.playerNumber, clicked.labelNumber);
-                serverSendBytes(new byte[] { (byte)clicked.playerNumber, (byte)clicked.labelNumber });
+                showTimes(clicked);
+            }
+            else // Proceed as normal
+            {
+                if (client == true)
+                    sendBytes(new byte[] { (byte)clicked.playerNumber, (byte)clicked.labelNumber });
+                else
+                {
+                    changePicture(clicked.playerNumber, clicked.labelNumber);
+                    serverSendBytes(new byte[] { (byte)clicked.playerNumber, (byte)clicked.labelNumber });
+                }
+            }
+        }
+
+        private void showTimes(picLabel clicked)
+        {
+            // Show times for that state on the right
+            lblSplitTitle.Text = "Splits - " + (clicked.multiState ? clicked.imageName[clicked.currentState] : "");
+            for (int i = 0; i < players; i++)
+            {
+                TimeSpan ts = picCovers[i, clicked.labelNumber].elapsed[clicked.currentState];
+                if (ts.TotalHours >= 1)
+                    lblSplitTimes[i].Text = Math.Floor(ts.TotalHours) + ":" + Math.Floor((double)ts.Minutes).ToString("00") + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
+                else
+                    lblSplitTimes[i].Text = Math.Floor((double)ts.Minutes) + ":" + Math.Floor((double)ts.Seconds).ToString("00") + "." + ts.Milliseconds / 100;
             }
         }
 
@@ -636,21 +675,28 @@ namespace RandoTracker
                 if (clicked.multiState)
                 {
                     PictureBox picClicked = pictures[playerNumber, labelNumber];
-                    picClicked.Image = clicked.nextImage();
+                    picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
                 }
                 else
                 {
                     if (clicked.BackColor == Color.FromArgb(0, Color.Black))
+                    {
                         clicked.BackColor = Color.FromArgb(192, Color.Black);
+                        picCovers[playerNumber, labelNumber].elapsed[0] = new TimeSpan(0, 0, 0);
+                    }
                     else
+                    {
                         clicked.BackColor = Color.FromArgb(0, Color.Black);
+                        picCovers[playerNumber, labelNumber].elapsed[0] = clock.Elapsed.Add(new TimeSpan(0, 0, extraTime));
+                    }
                 }
+                showTimes(clicked);
             } else
             {
                 picLabel clicked = NPicCovers[labelNumber];
 
                 PictureBox picClicked = neutralPictures[labelNumber];
-                picClicked.Image = clicked.nextImage();
+                picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
             }
         }
 
@@ -1428,8 +1474,10 @@ namespace RandoTracker
         public int labelNumber = 0;
         public bool multiState = false;
         private Image[] images;
+        public string[] imageName;
+        public TimeSpan[] elapsed;
         private int numberOfStates = -1;
-        private int currentState = 0;
+        public int currentState = 0;
 
         public void loadPictures(XElement xPic)
         {
@@ -1437,23 +1485,31 @@ namespace RandoTracker
             if (numberOfStates > 0)
             {
                 images = new Image[numberOfStates];
+                elapsed = new TimeSpan[numberOfStates];
+                imageName = new string[numberOfStates];
                 int lnI = 0;
                 foreach (XElement pic in xPic.Descendants("state"))
                 {
-                    images[lnI] = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), pic.Attribute("src").Value.Replace("/", "\\")));
+                    string fileName = pic.Attribute("src").Value.Replace("/", "\\");
+                    images[lnI] = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), fileName));
+                    elapsed[lnI] = new TimeSpan();
+                    imageName[lnI] = fileName.Substring(fileName.LastIndexOf("\\") + 1);
                     lnI++;
                 }
                 multiState = true;
             } else
             {
+                elapsed = new TimeSpan[1];
+                elapsed[0] = new TimeSpan();
                 multiState = false;
             }
         }
 
-        public Image nextImage()
+        public Image nextImage(TimeSpan clock)
         {
             currentState++;
             if (currentState == numberOfStates) currentState = 0;
+            elapsed[currentState] = clock;
             return images[currentState];
         }
     }
@@ -1733,5 +1789,10 @@ namespace RandoTracker
         public int player = 0;
         public int X = 0;
         public int Y = 0;
+    }
+
+    public class superPic : PictureBox
+    {
+        public TimeSpan elapsed = new TimeSpan();
     }
 }

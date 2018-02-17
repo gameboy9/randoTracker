@@ -54,6 +54,7 @@
             this.radVisState = new System.Windows.Forms.RadioButton();
             this.cboBackground = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.lblSplitTitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label3
@@ -324,11 +325,24 @@
             this.label5.TabIndex = 128;
             this.label5.Text = "BG:";
             // 
+            // lblSplitTitle
+            // 
+            this.lblSplitTitle.AutoSize = true;
+            this.lblSplitTitle.BackColor = System.Drawing.Color.Transparent;
+            this.lblSplitTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSplitTitle.ForeColor = System.Drawing.Color.White;
+            this.lblSplitTitle.Location = new System.Drawing.Point(1305, 340);
+            this.lblSplitTitle.Name = "lblSplitTitle";
+            this.lblSplitTitle.Size = new System.Drawing.Size(41, 13);
+            this.lblSplitTitle.TabIndex = 129;
+            this.lblSplitTitle.Text = "Splits - ";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1558, 748);
+            this.Controls.Add(this.lblSplitTitle);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.cboBackground);
             this.Controls.Add(this.radVisState);
@@ -392,6 +406,7 @@
         private System.Windows.Forms.RadioButton radVisState;
         private System.Windows.Forms.ComboBox cboBackground;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblSplitTitle;
     }
 }
 
