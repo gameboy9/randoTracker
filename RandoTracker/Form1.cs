@@ -124,13 +124,13 @@ namespace RandoTracker
 
                 txtPlayer[i].player = radAudio[i].player = txtFinalTime[i].player = cboState[i].player = i;
 
-                txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 75 + (25 * i);
+                txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 410 + (25 * i);
                 txtPlayer[i].Left = lblSplitNames[i].Left = 5 + consoleXAdjust;
                 txtPlayer[i].Width = 70;
                 radAudio[i].Left = txtFinalTime[i].Left = cboState[i].Left = 85 + consoleXAdjust;
 
                 lblSplitTimes[i].Left = 95 + consoleXAdjust;
-                lblSplitNames[i].Top = lblSplitTimes[i].Top = 365 + (25 * i);
+                lblSplitNames[i].Top = lblSplitTimes[i].Top = 240 + (22 * i);
                 lblSplitNames[i].AutoSize = false;
                 lblSplitNames[i].Width = 80;
                 lblSplitTimes[i].Text = lblSplitNames[i].Text = "";
@@ -359,6 +359,14 @@ namespace RandoTracker
                 comMic.Height = comMic.Width = 32;
             }
 
+            int xNumber = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xNumber").Value);
+            int picXGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xGap").Value);
+            int picYGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("yGap").Value);
+            int picXSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xSize").Value);
+            int picYSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("ySize").Value);
+            int finalWidth = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value);
+            int finalHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value);
+
             for (int i = 0; i < players; i++)
             {
                 lblPlayers[i] = new SimpleLabel();
@@ -367,7 +375,13 @@ namespace RandoTracker
                 {
                     lblPlayers[i].X = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
                     lblPlayers[i].Y = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locY").Value) + yAdjustment;
-                } else
+                }
+                else if (cboCompression.SelectedIndex == 1)
+                {
+                    lblPlayers[i].X = 10 + (i % 2 == 1 ? (xNumber + 2) * picXGap : 0) + LayoutXAdjust;
+                    lblPlayers[i].Y = (i / 2 == 1 ? 300 : 10);
+                }
+                else
                 {
                     lblPlayers[i].X = -1000;
                     lblPlayers[i].Y = -1000;
@@ -489,8 +503,15 @@ namespace RandoTracker
                 lblCommentary.Width = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("width").Value) - 50;
                 lblCommentary.Height = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("height").Value);
                 lblCommentary.TextAlign = ContentAlignment.MiddleLeft;
-                comMic.Left = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
-                comMic.Top = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) + yAdjustment;
+                if (cboCompression.SelectedIndex == 0)
+                {
+                    comMic.Left = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
+                    comMic.Top = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) + yAdjustment;
+                } else
+                {
+                    comMic.Left = -1000;
+                    comMic.Top = -1000;
+                }
             }
             catch
             {
@@ -498,6 +519,8 @@ namespace RandoTracker
                 lblCommentary.Top = -1000;
                 lblCommentary.Width = 1;
                 lblCommentary.Height = 1;
+                comMic.Left = -1000;
+                comMic.Top = -1000;
             }
 
             try
@@ -548,20 +571,22 @@ namespace RandoTracker
                 mainImage = Image.FromFile(bgImage);
             }
 
-            int picXGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xGap").Value);
-            int picYGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("yGap").Value);
-            int picXSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xSize").Value);
-            int picYSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("ySize").Value);
-            int xNumber = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xNumber").Value);
-            int finalWidth = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value);
-            int finalHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value);
-
             if (cboCompression.SelectedIndex == 0)
+            {
                 this.Width = 1574;
+                this.Height = 786;
+            }
             else if (cboCompression.SelectedIndex == 1)
+            {
                 this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * picXGap), picClock.Left + picClock.Width + 20);
+                this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                this.Height = 786;
+            }
             else
+            {
                 this.Width = LayoutXAdjust + 30;
+                this.Height = 400;
+            }
 
             for (int i = 0; i < players; i++)
             {
@@ -592,7 +617,7 @@ namespace RandoTracker
                     } else if (cboCompression.SelectedIndex == 1)
                     {
                         pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * picXGap : 0) + (picXGap * (j % xNumber)) + LayoutXAdjust;
-                        pictures[i, j].Top = 10 + (i / 2 == 1 ? 300 : 0) + (picYGap * (j / xNumber));
+                        pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (picYGap * (j / xNumber));
                     } else
                     {
                         pictures[i, j].Left = -1000;
