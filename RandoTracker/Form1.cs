@@ -99,8 +99,6 @@ namespace RandoTracker
                 // ignore error
             }
 
-            if (cboCompression.SelectedIndex < 0) cboCompression.SelectedIndex = 0;
-
             this.Left = 200;
             this.Top = 200;
 
@@ -176,6 +174,8 @@ namespace RandoTracker
             radVisState.Checked = false;
 
             loadGame();
+
+            if (cboCompression.SelectedIndex < 0) cboCompression.SelectedIndex = 0;
         }
 
         private void playerChange(object sender, EventArgs e)
