@@ -48,6 +48,8 @@ namespace RandoTracker
         Label[] lblSplitNames = new Label[4];
         Label[] lblSplitTimes = new Label[4];
 
+        int sizeRestriction = 100;
+
         SimpleLabel lblClock2 = new SimpleLabel();
         Image mainImage;
         Image[] playerImages = new Image[4];
@@ -124,13 +126,13 @@ namespace RandoTracker
 
                 txtPlayer[i].player = radAudio[i].player = txtFinalTime[i].player = cboState[i].player = i;
 
-                txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 410 + (25 * i);
+                txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 330 + (25 * i);
                 txtPlayer[i].Left = lblSplitNames[i].Left = 5 + consoleXAdjust;
                 txtPlayer[i].Width = 70;
                 radAudio[i].Left = txtFinalTime[i].Left = cboState[i].Left = 85 + consoleXAdjust;
 
                 lblSplitTimes[i].Left = 95 + consoleXAdjust;
-                lblSplitNames[i].Top = lblSplitTimes[i].Top = 240 + (22 * i);
+                lblSplitNames[i].Top = lblSplitTimes[i].Top = 216 + (22 * i);
                 lblSplitNames[i].AutoSize = false;
                 lblSplitNames[i].Width = 80;
                 lblSplitTimes[i].Text = lblSplitNames[i].Text = "";
@@ -324,6 +326,37 @@ namespace RandoTracker
             {
                 var asdf = 1234;
             }
+
+            int xNumber = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xNumber").Value);
+            int picXGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xGap").Value);
+            int picYGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("yGap").Value);
+            int picXSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xSize").Value);
+            int picYSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("ySize").Value);
+            int finalWidth = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value) * sizeRestriction / 100;
+            int finalHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value) * sizeRestriction / 100;
+
+            if (cboCompression.SelectedIndex == 0)
+            {
+                this.Width = 1574;
+                this.Height = 786;
+                int optimalSize = 1574 - LayoutXAdjust;
+                int actualSize = optimalSize - (1574 - this.Width);
+                sizeRestriction = Math.Min(actualSize * 100 / optimalSize, this.Height * 100 / 786);
+            }
+            else if (cboCompression.SelectedIndex == 1)
+            {
+                // Ignore for now.
+                //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * picXGap), picClock.Left + picClock.Width + 20);
+                //this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                //this.Height = 786;
+            }
+            else
+            {
+                this.Width = LayoutXAdjust + 30;
+                this.Height = 344;
+            }
+
+
             XElement game = gameXML.Root.Element("game");
 
             lblGameName.Text = "Game:  " + gameXML.Element("game").Attribute("name").Value;
@@ -336,13 +369,32 @@ namespace RandoTracker
             pics = gameXML.Descendants("picture").Count();
             neutralPics = gameXML.Descendants("neutralPic").Count();
 
+            if (gameXML.Descendants("neutralPics").Count() > 0)
+            {
+                int finalNeutral = 0;
+                for (int i = 0; i < neutralPics; i++)
+                {
+                    int repeat = 1;
+                    try
+                    {
+                        repeat = Convert.ToInt32(gameXML.Descendants("neutralPic").Skip(i).First().Attribute("repeat").Value);
+                    }
+                    catch
+                    {
+                        // Do nothing and do one repeat.
+                    }
+                    finalNeutral += repeat;
+                }
+                neutralPics = finalNeutral;
+            }
+
             if (gameXML.Descendants("mic").First().Attribute("visible").Value == "false")
                 lblCommentary.Visible = false;
             else
                 lblCommentary.Visible = true;
 
-            playerFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("fontSize").Value);
-            finalFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalFont").Value);
+            playerFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("fontSize").Value) * sizeRestriction / 100;
+            finalFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalFont").Value) * sizeRestriction / 100;
 
             Font playerFont = new Font(gameFont, playerFontSize);
             Font finalFont = new Font(gameFont, finalFontSize);
@@ -350,22 +402,14 @@ namespace RandoTracker
             int playerHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value); // audioMic.Width = audioMic.Height = comMic.Width = comMic.Height = 
             try
             {
-                audioMic.Height = audioMic.Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("speakerHeight").Value);
-                comMic.Height = comMic.Width = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("micHeight").Value);
+                audioMic.Height = audioMic.Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("speakerHeight").Value) * sizeRestriction / 100;
+                comMic.Height = comMic.Width = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("micHeight").Value) * sizeRestriction / 100;
             }
             catch
             {
-                audioMic.Height = audioMic.Width = 32;
-                comMic.Height = comMic.Width = 32;
+                audioMic.Height = audioMic.Width = 32 * sizeRestriction / 100;
+                comMic.Height = comMic.Width = 32 * sizeRestriction / 100;
             }
-
-            int xNumber = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xNumber").Value);
-            int picXGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xGap").Value);
-            int picYGap = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("yGap").Value);
-            int picXSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("xSize").Value);
-            int picYSize = Convert.ToInt32(gameXML.Descendants("pictures").First().Attribute("ySize").Value);
-            int finalWidth = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value);
-            int finalHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value);
 
             for (int i = 0; i < players; i++)
             {
@@ -373,8 +417,8 @@ namespace RandoTracker
                 lblPlayers[i].Font = playerFont;
                 if (cboCompression.SelectedIndex == 0)
                 {
-                    lblPlayers[i].X = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
-                    lblPlayers[i].Y = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locY").Value) + yAdjustment;
+                    lblPlayers[i].X = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                    lblPlayers[i].Y = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
                 }
                 else if (cboCompression.SelectedIndex == 1)
                 {
@@ -386,8 +430,8 @@ namespace RandoTracker
                     lblPlayers[i].X = -1000;
                     lblPlayers[i].Y = -1000;
                 }
-                lblPlayers[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("width").Value);
-                lblPlayers[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value);
+                lblPlayers[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("width").Value) * sizeRestriction / 100;
+                lblPlayers[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value) * sizeRestriction / 100;
                 try
                 {
                     lblPlayers[i].hasBG = (cboCompression.SelectedIndex == 0 && gameXML.Descendants("players").First().Attribute("background").Value.ToLower() == "true");
@@ -413,16 +457,16 @@ namespace RandoTracker
                 lblFinal[i].Font = finalFont;
                 if (cboCompression.SelectedIndex == 0)
                 {
-                    lblFinal[i].X = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("finalX").Value) + xAdjustment + LayoutXAdjust;
-                    lblFinal[i].Y = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("finalY").Value) + yAdjustment;
+                    lblFinal[i].X = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("finalX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                    lblFinal[i].Y = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("finalY").Value) * sizeRestriction / 100) + yAdjustment;
                 }
                 else
                 {
                     lblFinal[i].X = -1000;
                     lblFinal[i].Y = -1000;
                 }
-                lblFinal[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value);
-                lblFinal[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value);
+                lblFinal[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value) * sizeRestriction / 100;
+                lblFinal[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value) * sizeRestriction / 100;
                 lblFinal[i].ForeColor = Color.LightGreen;
                 lblFinal[i].ShadowColor = Color.Blue;
                 lblFinal[i].hasBG = true;
@@ -435,12 +479,12 @@ namespace RandoTracker
                 {
                     if (cboCompression.SelectedIndex == 0)
                     {
-                        radAudio[i].X = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("audioX").Value) + xAdjustment;
-                        radAudio[i].Y = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("audioY").Value) + yAdjustment;
+                        radAudio[i].X = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("audioX").Value) * sizeRestriction / 100) + xAdjustment;
+                        radAudio[i].Y = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("audioY").Value) * sizeRestriction / 100) + yAdjustment;
                         if (radAudio[i].Checked)
                         {
-                            audioMic.Left = radAudio[i].X + xAdjustment + LayoutXAdjust;
-                            audioMic.Top = radAudio[i].Y + yAdjustment;
+                            audioMic.Left = (radAudio[i].X * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                            audioMic.Top = (radAudio[i].Y * sizeRestriction / 100) + yAdjustment;
                         }
                     } else
                     {
@@ -460,8 +504,15 @@ namespace RandoTracker
                 }
             }
 
+            if (cboCompression.SelectedIndex == 1)
+            {
+                this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * picXGap), picClock.Left + picClock.Width + 20);
+                this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                this.Height = 786;
+            }
+
             lblClock2.Text = ":00.0";
-            lblClock2.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value));
+            lblClock2.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value) * sizeRestriction / 100);
             lblClock2.IsMonospaced = true;
             lblClock2.ForeColor = Color.White;
             lblClock2.ShadowColor = Color.Black;
@@ -474,8 +525,8 @@ namespace RandoTracker
 
             if (cboCompression.SelectedIndex == 0)
             {
-                picClock.Left = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
-                picClock.Top = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locY").Value) + yAdjustment;
+                picClock.Left = (Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                picClock.Top = (Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
             }
             else if (cboCompression.SelectedIndex == 1)
             {
@@ -487,26 +538,26 @@ namespace RandoTracker
                 picClock.Left = -1000;
                 picClock.Top = -1000;
             }
-            picClock.Width = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value) + 10;
-            lblClock2.Width = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value);
-            picClock.Height = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value) + 10;
-            lblClock2.Height = Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value);
+            picClock.Width = (Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value) * sizeRestriction / 100) + 10;
+            lblClock2.Width = (Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("width").Value) * sizeRestriction / 100);
+            picClock.Height = (Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value) * sizeRestriction / 100) + 10;
+            lblClock2.Height = (Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("height").Value) * sizeRestriction / 100);
 
             try
             {
-                lblCommentary.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("fontSize").Value));
+                lblCommentary.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("fontSize").Value) * sizeRestriction / 100);
                 if (cboCompression.SelectedIndex == 0)
-                    lblCommentary.Left = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + 50 + xAdjustment + LayoutXAdjust;
+                    lblCommentary.Left = ((Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + 50) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                 else
                     lblCommentary.Left = -1000;
-                lblCommentary.Top = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) + yAdjustment;
-                lblCommentary.Width = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("width").Value) - 50;
-                lblCommentary.Height = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("height").Value);
+                lblCommentary.Top = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                lblCommentary.Width = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("width").Value) - 50) * sizeRestriction / 100;
+                lblCommentary.Height = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("height").Value)) * sizeRestriction / 100;
                 lblCommentary.TextAlign = ContentAlignment.MiddleLeft;
                 if (cboCompression.SelectedIndex == 0)
                 {
-                    comMic.Left = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
-                    comMic.Top = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) + yAdjustment;
+                    comMic.Left = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                    comMic.Top = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
                 } else
                 {
                     comMic.Left = -1000;
@@ -525,14 +576,14 @@ namespace RandoTracker
 
             try
             {
-                lblFreeText.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value));
+                lblFreeText.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value) * sizeRestriction / 100);
                 if (cboCompression.SelectedIndex == 0)
-                    lblFreeText.Left = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value) + xAdjustment + LayoutXAdjust;
+                    lblFreeText.Left = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                 else
                     lblFreeText.Left = -1000;
-                lblFreeText.Top = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locY").Value) + yAdjustment;
-                lblFreeText.Width = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("width").Value);
-                lblFreeText.Height = Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("height").Value);
+                lblFreeText.Top = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                lblFreeText.Width = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("width").Value) * sizeRestriction / 100);
+                lblFreeText.Height = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("height").Value) * sizeRestriction / 100);
                 lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
             } catch
             {
@@ -571,27 +622,10 @@ namespace RandoTracker
                 mainImage = Image.FromFile(bgImage);
             }
 
-            if (cboCompression.SelectedIndex == 0)
-            {
-                this.Width = 1574;
-                this.Height = 786;
-            }
-            else if (cboCompression.SelectedIndex == 1)
-            {
-                this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * picXGap), picClock.Left + picClock.Width + 20);
-                this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
-                this.Height = 786;
-            }
-            else
-            {
-                this.Width = LayoutXAdjust + 30;
-                this.Height = 400;
-            }
-
             for (int i = 0; i < players; i++)
             {
-                int picX = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picX").Value);
-                int picY = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picY").Value);
+                int picX = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picX").Value) * sizeRestriction / 100;
+                int picY = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picY").Value) * sizeRestriction / 100;
 
                 for (int j = 0; j < pics; j++)
                 {
@@ -612,8 +646,8 @@ namespace RandoTracker
 
                     if (cboCompression.SelectedIndex == 0)
                     {
-                        pictures[i, j].Left = picX + (picXGap * (j % xNumber)) + xAdjustment + LayoutXAdjust;
-                        pictures[i, j].Top = picY + (picYGap * (j / xNumber)) + yAdjustment;
+                        pictures[i, j].Left = (picX + (picXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                        pictures[i, j].Top = (picY + (picYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
                     } else if (cboCompression.SelectedIndex == 1)
                     {
                         pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * picXGap : 0) + (picXGap * (j % xNumber)) + LayoutXAdjust;
@@ -625,8 +659,8 @@ namespace RandoTracker
                     }
 
                     pictures[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
-                    pictures[i, j].Width = picXSize;
-                    pictures[i, j].Height = picYSize;
+                    pictures[i, j].Width = picXSize * sizeRestriction / 100;
+                    pictures[i, j].Height = picYSize * sizeRestriction / 100;
                     pictures[i, j].BackColor = Color.Transparent;
 
                     pictures[i, j].Invalidate();
@@ -640,9 +674,12 @@ namespace RandoTracker
                     picCovers[i, j].BackColor = Color.FromArgb(numberOfPics == -1 ? 192 : 0, Color.Black);
                     picCovers[i, j].Left = 0; // picX + (picXGap * (j % xNumber));
                     picCovers[i, j].Top = 0; // picY + (picYGap * (j / xNumber));
-                    picCovers[i, j].Width = picXSize;
-                    picCovers[i, j].Height = picYSize;
+                    picCovers[i, j].Width = picXSize * sizeRestriction / 100;
+                    picCovers[i, j].Height = picYSize * sizeRestriction / 100;
                     picCovers[i, j].Click += new EventHandler(picClick);
+                    picCovers[i, j].DoubleClick += new EventHandler(picClick);
+                    picCovers[i, j].MouseWheel += new MouseEventHandler(picWheel);
+                    picCovers[i, j].MouseHover += new EventHandler(picHover);
                     picCovers[i, j].playerNumber = i;
                     picCovers[i, j].labelNumber = j;
 
@@ -656,64 +693,81 @@ namespace RandoTracker
                 int picX = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locX").Value);
                 int picY = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locY").Value);
 
-                for (int i = 0; i < neutralPics; i++)
+                int k = -1;
+                for (int i = 0; i < gameXML.Descendants("neutralPic").Count(); i++)
                 {
-                    string firstNeutralPic = "";
-                    int neutralPics = -1;
-                    if (gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src") == null)
+                    int repeat = 1;
+                    try
                     {
-                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
-                        neutralPics = gameXML.Descendants("neutralPic").Skip(i).First().Descendants("state").Count();
-                    }
-                    else
-                    {
-                        firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src").Value.Replace("/", "\\"));
+                        repeat = Convert.ToInt32(gameXML.Descendants("neutralPic").Skip(i).First().Attribute("repeat").Value);
+                    } catch
+                    { 
+                        // Do nothing and do one repeat.
                     }
 
-                    neutralPictures[i] = new PictureBox();
-                    neutralPictures[i].Image = Image.FromFile(firstNeutralPic);
-
-                    if (cboCompression.SelectedIndex == 0)
+                    for (int j = 0; j < repeat; j++)
                     {
-                        neutralPictures[i].Left = picX + (picXGap * (i % xNumber)) + xAdjustment + LayoutXAdjust;
-                        neutralPictures[i].Top = picY + (picYGap * (i / xNumber)) + yAdjustment;
+                        k++;
+                        string firstNeutralPic = "";
+                        int neutralPics = -1;
+                        if (gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src") == null)
+                        {
+                            firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                            neutralPics = gameXML.Descendants("neutralPic").Skip(i).First().Descendants("state").Count();
+                        }
+                        else
+                        {
+                            firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("neutralPic").Skip(i).First().Attribute("src").Value.Replace("/", "\\"));
+                        }
+
+                        neutralPictures[k] = new PictureBox();
+                        neutralPictures[k].Image = Image.FromFile(firstNeutralPic);
+
+                        if (cboCompression.SelectedIndex == 0)
+                        {
+                            neutralPictures[k].Left = ((picX + (picXGap * (k % xNumber))) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                            neutralPictures[k].Top = ((picY + (picYGap * (k / xNumber))) * sizeRestriction / 100) + yAdjustment;
+                        }
+                        else if (cboCompression.SelectedIndex == 1)
+                        {
+                            neutralPictures[k].Left = 10 + (picXGap * (k % xNumber)) + LayoutXAdjust;
+                            neutralPictures[k].Top = 610 + (picYGap * (k / xNumber));
+                        }
+                        else
+                        {
+                            neutralPictures[k].Left = -1000;
+                            neutralPictures[k].Top = -1000;
+                        }
+
+                        neutralPictures[k].SizeMode = PictureBoxSizeMode.StretchImage;
+                        neutralPictures[k].Width = picXSize * sizeRestriction / 100;
+                        neutralPictures[k].Height = picYSize * sizeRestriction / 100;
+                        neutralPictures[k].BackColor = Color.Transparent;
+
+                        neutralPictures[k].Invalidate();
+
+                        this.Controls.Add(neutralPictures[k]);
+
+                        NPicCovers[k] = new picLabel();
+                        NPicCovers[k].loadPictures(gameXML.Descendants("neutralPic").Skip(i).First());
+
+                        NPicCovers[k].Parent = neutralPictures[k];
+                        NPicCovers[k].BackColor = Color.Transparent;
+                        NPicCovers[k].Left = 0;
+                        NPicCovers[k].Top = 0;
+                        NPicCovers[k].Width = picXSize * sizeRestriction / 100;
+                        NPicCovers[k].Height = picYSize * sizeRestriction / 100;
+                        NPicCovers[k].Click += new EventHandler(picClick);
+                        NPicCovers[k].DoubleClick += new EventHandler(picClick);
+                        NPicCovers[k].MouseWheel += new MouseEventHandler(picWheel);
+                        NPicCovers[k].MouseHover += new EventHandler(picHover);
+                        NPicCovers[k].playerNumber = 5;
+                        NPicCovers[k].labelNumber = k;
+
+                        neutralPictures[k].Controls.Add(NPicCovers[k]);
+                        NPicCovers[k].BringToFront();
+                        neutralPictures[k].Controls.Add(NPicCovers[k]);
                     }
-                    else if (cboCompression.SelectedIndex == 1)
-                    {
-                        neutralPictures[i].Left = 10 + (picXGap * (i % xNumber)) + LayoutXAdjust;
-                        neutralPictures[i].Top = 610 + (picYGap * (i / xNumber));
-                    }
-                    else
-                    {
-                        neutralPictures[i].Left = -1000;
-                        neutralPictures[i].Top = -1000;
-                    }
-
-                    neutralPictures[i].SizeMode = PictureBoxSizeMode.StretchImage;
-                    neutralPictures[i].Width = picXSize;
-                    neutralPictures[i].Height = picYSize;
-                    neutralPictures[i].BackColor = Color.Transparent;
-
-                    neutralPictures[i].Invalidate();
-
-                    this.Controls.Add(neutralPictures[i]);
-
-                    NPicCovers[i] = new picLabel();
-                    NPicCovers[i].loadPictures(gameXML.Descendants("neutralPic").Skip(i).First());
-
-                    NPicCovers[i].Parent = neutralPictures[i];
-                    NPicCovers[i].BackColor = Color.Transparent;
-                    NPicCovers[i].Left = 0;
-                    NPicCovers[i].Top = 0;
-                    NPicCovers[i].Width = picXSize;
-                    NPicCovers[i].Height = picYSize;
-                    NPicCovers[i].Click += new EventHandler(picClick);
-                    NPicCovers[i].playerNumber = 5;
-                    NPicCovers[i].labelNumber = i;
-
-                    neutralPictures[i].Controls.Add(NPicCovers[i]);
-                    NPicCovers[i].BringToFront();
-                    neutralPictures[i].Controls.Add(NPicCovers[i]);
                 }
             }
 
@@ -750,6 +804,18 @@ namespace RandoTracker
             freeTextChange();
         }
 
+        private void picHover(object sender, EventArgs e)
+        {
+            picLabel clicked = (picLabel)sender;
+            clicked.Focus();
+        }
+
+
+        private void picWheel(object sender, MouseEventArgs me)
+        {
+            picClick(sender, me);
+        }
+
         private void picClick(object sender, EventArgs e)
         {
             picLabel clicked = (picLabel)sender;
@@ -762,11 +828,11 @@ namespace RandoTracker
             else // Proceed as normal
             {
                 if (client == true)
-                    sendBytes(new byte[] { (byte)clicked.playerNumber, (byte)clicked.labelNumber });
+                    sendBytes(new byte[] { (byte)(clicked.playerNumber + (me.Button == MouseButtons.Right ? 0x10 : 0)), (byte)clicked.labelNumber });
                 else
                 {
-                    changePicture(clicked.playerNumber, clicked.labelNumber);
-                    serverSendBytes(new byte[] { (byte)clicked.playerNumber, (byte)clicked.labelNumber });
+                    changePicture(clicked.playerNumber, clicked.labelNumber, (me.Button == MouseButtons.Right));
+                    serverSendBytes(new byte[] { (byte)(clicked.playerNumber + (me.Button == MouseButtons.Right ? 0x10 : 0)), (byte)clicked.labelNumber });
                 }
             }
         }
@@ -823,7 +889,7 @@ namespace RandoTracker
             Process.Start("notepad.exe", "analysis.txt");
         }
 
-        private void changePicture(int playerNumber, int labelNumber)
+        private void changePicture(int playerNumber, int labelNumber, bool backwards)
         {
             if (playerNumber != 5)
             {
@@ -832,7 +898,10 @@ namespace RandoTracker
                 if (clicked.multiState)
                 {
                     PictureBox picClicked = pictures[playerNumber, labelNumber];
-                    picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
+                    if (!backwards)
+                        picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
+                    else
+                        picClicked.Image = clicked.prevImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
                 }
                 else
                 {
@@ -853,7 +922,10 @@ namespace RandoTracker
                 picLabel clicked = NPicCovers[labelNumber];
 
                 PictureBox picClicked = neutralPictures[labelNumber];
-                picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
+                if (!backwards)
+                    picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
+                else
+                    picClicked.Image = clicked.prevImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
             }
         }
 
@@ -907,7 +979,7 @@ namespace RandoTracker
             for (int i = 0; i < 4; i++)
             {
                 string comText = (i >= comLines.Length ? "" : comLines[i]);
-                lblCom[i] = new SimpleLabel(comText, lblCommentary.Left + LayoutXAdjust, lblCommentary.Top + (i * lblCommentary.Height), lblCommentary.Font, new SolidBrush(Color.White), lblCommentary.Width, lblCommentary.Height);
+                lblCom[i] = new SimpleLabel(comText, lblCommentary.Left, lblCommentary.Top + (i * lblCommentary.Height), lblCommentary.Font, new SolidBrush(Color.White), lblCommentary.Width, lblCommentary.Height);
                 lblCom[i].HasShadow = true;
                 lblCom[i].ShadowColor = Color.Black;
             }
@@ -920,7 +992,7 @@ namespace RandoTracker
             for (int i = 0; i < 4; i++)
             {
                 string comText = (i >= comLines.Length ? "" : comLines[i]);
-                lblFree[i] = new SimpleLabel(comText, lblFreeText.Left + LayoutXAdjust, lblFreeText.Top + (i * lblFreeText.Height), lblFreeText.Font, new SolidBrush(Color.White), lblFreeText.Width, lblFreeText.Height);
+                lblFree[i] = new SimpleLabel(comText, lblFreeText.Left, lblFreeText.Top + (i * lblFreeText.Height), lblFreeText.Font, new SolidBrush(Color.White), lblFreeText.Width, lblFreeText.Height);
                 lblFree[i].HasShadow = true;
                 lblFree[i].ShadowColor = Color.Black;
             }
@@ -1219,7 +1291,9 @@ namespace RandoTracker
                     playerChange2(3, Encoding.UTF8.GetString(byteArray.ToArray()));
                 }
                 else if (aryRet[0] <= 0x05)
-                    changePicture(aryRet[0], aryRet[1]);
+                    changePicture(aryRet[0], aryRet[1], false);
+                else if (aryRet[0] <= 0x15 && aryRet[0] >= 0x10)
+                    changePicture(aryRet[0], aryRet[1], true);
                 else if (aryRet[0] == 0x0f)
                     newBackground(aryRet[1]);
             }));
@@ -1379,7 +1453,9 @@ namespace RandoTracker
                             playerChange2(3, Encoding.UTF8.GetString(byteArray.ToArray()));
                         }
                         else if (m_byBuff[0] <= 0x05)
-                            changePicture(m_byBuff[0], m_byBuff[1]);
+                            changePicture(m_byBuff[0], m_byBuff[1], false);
+                        else if (m_byBuff[0] <= 0x15 && m_byBuff[0] >= 0x10)
+                            changePicture(m_byBuff[0], m_byBuff[1], true);
                         else if (m_byBuff[0] == 0x0f)
                             newBackground(m_byBuff[1]);
                     }));
@@ -1510,29 +1586,36 @@ namespace RandoTracker
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            if (cboCompression.SelectedIndex == 0)
-                e.Graphics.DrawImage(mainImage, new Rectangle(10 + LayoutXAdjust, 10, 1280, 720));
+            try
+            {
+                //MessageBox.Show(mainImage.ToString());
+                if (cboCompression.SelectedIndex == 0)
+                    e.Graphics.DrawImage(mainImage, new Rectangle(10 + LayoutXAdjust, 10, 1280 * sizeRestriction / 100, 720 * sizeRestriction / 100));
 
-            for (int i = 0; i < 4; i++)
-            {
-                if (lblPlayers[i] == null) continue;
-                lblPlayers[i].Draw(e.Graphics);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                if (lblCom[i] == null) continue;
-                lblCom[i].Draw(e.Graphics);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                if (lblFree[i] == null) continue;
-                lblFree[i].Draw(e.Graphics);
-            }
+                for (int i = 0; i < 4; i++)
+                {
+                    if (lblPlayers[i] == null) continue;
+                    lblPlayers[i].Draw(e.Graphics);
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    if (lblCom[i] == null) continue;
+                    lblCom[i].Draw(e.Graphics);
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    if (lblFree[i] == null) continue;
+                    lblFree[i].Draw(e.Graphics);
+                }
 
-            for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++)
+                {
+                    if (lblFinal[i] == null || lblFinal[i].Text == "") continue;
+                    lblFinal[i].Draw(e.Graphics);
+                }
+            } catch (Exception ex)
             {
-                if (lblFinal[i] == null || lblFinal[i].Text == "") continue;
-                lblFinal[i].Draw(e.Graphics);
+                MessageBox.Show("PAINT:" + ex.Message);
             }
         }
 
@@ -1672,6 +1755,14 @@ namespace RandoTracker
             currentState++;
             if (currentState == numberOfStates) currentState = 0;
             elapsed[currentState] = clock;
+            return images[currentState];
+        }
+
+        public Image prevImage(TimeSpan clock)
+        {
+            elapsed[currentState] = new TimeSpan(0);
+            currentState--;
+            if (currentState == -1) currentState = (numberOfStates - 1);
             return images[currentState];
         }
     }
