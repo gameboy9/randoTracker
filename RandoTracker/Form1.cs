@@ -688,6 +688,8 @@ namespace RandoTracker
                 }
             }
 
+            xNumber = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("xNumber").Value);
+
             if (gameXML.Descendants("neutralPics").Count() > 0)
             {
                 int picX = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locX").Value);
