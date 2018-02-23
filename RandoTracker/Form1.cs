@@ -688,12 +688,14 @@ namespace RandoTracker
                 }
             }
 
-            xNumber = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("xNumber").Value);
+            XElement neutralPicsElement = gameXML.Descendants("neutralPics").FirstOrDefault();
 
-            if (gameXML.Descendants("neutralPics").Count() > 0)
+            if (neutralPicsElement != null)
             {
-                int picX = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locX").Value);
-                int picY = Convert.ToInt32(gameXML.Descendants("neutralPics").First().Attribute("locY").Value);
+                xNumber = Convert.ToInt32(neutralPicsElement.Attribute("xNumber").Value);
+
+                int picX = Convert.ToInt32(neutralPicsElement.Attribute("locX").Value);
+                int picY = Convert.ToInt32(neutralPicsElement.Attribute("locY").Value);
 
                 int k = -1;
                 for (int i = 0; i < gameXML.Descendants("neutralPic").Count(); i++)
