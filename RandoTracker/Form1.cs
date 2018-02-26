@@ -36,8 +36,9 @@ namespace RandoTracker
         Label[] finalTime;
         int playerFontSize = 0;
         int finalFontSize = 0;
-        string gameFont = "";
-        string gameFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "sml2.xml");
+        PrivateFontCollection privateFontCollection = new PrivateFontCollection();
+        FontFamily gameFontFamily;
+        string gameFile = Path.Combine(GetExecutingDirectory(), "sml2.xml");
         Stopwatch clock = new Stopwatch();
         SimpleLabel[] lblPlayers = new SimpleLabel[4];
         SimpleLabel[] lblFinal = new SimpleLabel[4];
@@ -78,6 +79,11 @@ namespace RandoTracker
         public Form1()
         {
             InitializeComponent();
+        }
+
+        public static string GetExecutingDirectory()
+        {
+            return Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -152,13 +158,13 @@ namespace RandoTracker
                 this.Controls.Add(lblSplitTimes[i]);
             }
 
-            audioMic.Image = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "speaker.png"));
+            audioMic.Image = Image.FromFile(Path.Combine(GetExecutingDirectory(), "speaker.png"));
             audioMic.SizeMode = PictureBoxSizeMode.StretchImage;
             audioMic.BackColor = Color.Transparent;
             audioMic.Height = 40;
             audioMic.Width = 40;
 
-            comMic.Image = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "mic2.png"));
+            comMic.Image = Image.FromFile(Path.Combine(GetExecutingDirectory(), "mic2.png"));
             comMic.SizeMode = PictureBoxSizeMode.StretchImage;
             comMic.BackColor = Color.Transparent;
             comMic.Height = 40;
@@ -176,6 +182,7 @@ namespace RandoTracker
             radVisState.Checked = false;
 
             initialLoad = false;
+            loadFonts();
             loadGame();
 
             if (cboCompression.SelectedIndex < 0) cboCompression.SelectedIndex = 0;
@@ -285,10 +292,45 @@ namespace RandoTracker
 
         private void loadGame(byte[] gameBytes)
         {
-            string startDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string startDir = GetExecutingDirectory();
             string gameName = (Encoding.UTF8.GetString(gameBytes)).Replace("\0", "") + ".XML";
             gameFile = Path.Combine(startDir, gameName);
             loadGame();
+        }
+
+        private void loadFonts()
+        {
+            if (privateFontCollection.Families.Any())
+            {
+                // We already did load our fonts, so we're good.
+                return;
+            }
+
+            foreach (var file in Directory.GetFiles(Path.Combine(Path.Combine(GetExecutingDirectory(), "fonts"))))
+            {
+                privateFontCollection.AddFontFile(file);
+            }
+        }
+
+        private FontFamily loadFont(string fontName)
+        {
+            FontFamily fontFamily = privateFontCollection.Families.FirstOrDefault(f => string.Equals(f.Name, fontName, StringComparison.OrdinalIgnoreCase));
+
+            if (fontFamily != null)
+            {
+                return fontFamily;
+            }
+
+            // Let's see if they have it installed
+            fontFamily = new FontFamily(fontName);
+
+            if (fontFamily != null)
+            {
+                return fontFamily;
+            }
+
+            MessageBox.Show($"Unable to load font {fontName}.  Defaulting to Arial");
+            return gameFontFamily = new FontFamily("Arial");
         }
 
         private void loadGame()
@@ -373,8 +415,11 @@ namespace RandoTracker
             players = Convert.ToInt32(gameXML.Element("game").Attribute("players").Value);
             if (players != 4) players = 2;
             txtPlayer[2].Enabled = txtPlayer[3].Enabled = txtFinalTime[2].Enabled = txtFinalTime[3].Enabled = radAudio[2].Enabled = radAudio[3].Enabled = cboState[2].Enabled = cboState[3].Enabled = (players == 4);
+            
+            string gameFont = gameXML.Element("game").Attribute("Font").Value;
 
-            gameFont = gameXML.Element("game").Attribute("Font").Value;
+            gameFontFamily = loadFont(gameFont);
+
             pics = gameXML.Descendants("picture").Count();
             neutralPics = gameXML.Descendants("neutralPic").Count();
 
@@ -404,9 +449,9 @@ namespace RandoTracker
 
             playerFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("fontSize").Value) * sizeRestriction / 100;
             finalFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalFont").Value) * sizeRestriction / 100;
-
-            Font playerFont = new Font(gameFont, playerFontSize);
-            Font finalFont = new Font(gameFont, finalFontSize);
+            
+            Font playerFont = new Font(gameFontFamily, playerFontSize);
+            Font finalFont = new Font(gameFontFamily, finalFontSize);
             int playerWidth = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("width").Value);
             int playerHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value); // audioMic.Width = audioMic.Height = comMic.Width = comMic.Height = 
 
@@ -519,7 +564,7 @@ namespace RandoTracker
             }
 
             lblClock2.Text = ":00.0";
-            lblClock2.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value) * sizeRestriction / 100);
+            lblClock2.Font = new Font(gameFontFamily, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value) * sizeRestriction / 100);
             lblClock2.IsMonospaced = true;
             lblClock2.ForeColor = Color.White;
             lblClock2.ShadowColor = Color.Black;
@@ -552,7 +597,7 @@ namespace RandoTracker
 
             try
             {
-                lblCommentary.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("fontSize").Value) * sizeRestriction / 100);
+                lblCommentary.Font = new Font(gameFontFamily, Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("fontSize").Value) * sizeRestriction / 100);
                 if (cboCompression.SelectedIndex == 0)
                     lblCommentary.Left = ((Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + 50) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                 else
@@ -583,7 +628,7 @@ namespace RandoTracker
 
             if (gameXML.Descendants("freetext").Count() > 0)
             {
-                lblFreeText.Font = new Font(gameFont, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value) * sizeRestriction / 100);
+                lblFreeText.Font = new Font(gameFontFamily, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value) * sizeRestriction / 100);
                 if (cboCompression.SelectedIndex == 0)
                     lblFreeText.Left = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                 else
@@ -614,7 +659,7 @@ namespace RandoTracker
                 cboBackground.Items.Clear();
                 for (int i = 0; i < bgPics; i++)
                 {
-                    bgImages[i] = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("background").Skip(i).First().Attribute("file").Value.Replace("/", "\\"));
+                    bgImages[i] = Path.Combine(GetExecutingDirectory(), gameXML.Descendants("background").Skip(i).First().Attribute("file").Value.Replace("/", "\\"));
                     bgNames[i] = gameXML.Descendants("background").Skip(i).First().Attribute("name").Value;
                     cboBackground.Items.Add(bgNames[i]);
                 }
@@ -625,7 +670,7 @@ namespace RandoTracker
             else
             {
                 cboBackground.Enabled = false;
-                string bgImage = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\"));
+                string bgImage = Path.Combine(GetExecutingDirectory(), gameXML.Descendants("game").First().Attribute("background").Value.Replace("/", "\\"));
                 mainImage = Image.FromFile(bgImage);
             }
 
@@ -642,12 +687,12 @@ namespace RandoTracker
                     int numberOfPics = -1;
                     if (gameXML.Descendants("picture").Skip(j).First().Attribute("src") == null)
                     {
-                        firstPicture = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("picture").Skip(j).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                        firstPicture = Path.Combine(GetExecutingDirectory(), gameXML.Descendants("picture").Skip(j).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
                         numberOfPics = gameXML.Descendants("picture").Skip(j).First().Descendants("state").Count();
                     }
                     else
                     {
-                        firstPicture = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), gameXML.Descendants("picture").Skip(j).First().Attribute("src").Value.Replace("/", "\\"));
+                        firstPicture = Path.Combine(GetExecutingDirectory(), gameXML.Descendants("picture").Skip(j).First().Attribute("src").Value.Replace("/", "\\"));
                     }
                     pictures[i, j].Image = Image.FromFile(firstPicture);
 
@@ -727,12 +772,12 @@ namespace RandoTracker
                         int neutralPics = -1;
                         if (neutralPicsElement.Descendants("neutralPic").Skip(i).First().Attribute("src") == null)
                         {
-                            firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), neutralPicsElement.Descendants("neutralPic").Skip(i).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                            firstNeutralPic = Path.Combine(GetExecutingDirectory(), neutralPicsElement.Descendants("neutralPic").Skip(i).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
                             neutralPics = neutralPicsElement.Descendants("neutralPic").Skip(i).First().Descendants("state").Count();
                         }
                         else
                         {
-                            firstNeutralPic = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), neutralPicsElement.Descendants("neutralPic").Skip(i).First().Attribute("src").Value.Replace("/", "\\"));
+                            firstNeutralPic = Path.Combine(GetExecutingDirectory(), neutralPicsElement.Descendants("neutralPic").Skip(i).First().Attribute("src").Value.Replace("/", "\\"));
                         }
 
                         neutralPictures[k] = new PictureBox();
@@ -1567,7 +1612,7 @@ namespace RandoTracker
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
 
-            openFileDialog1.InitialDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            openFileDialog1.InitialDirectory = GetExecutingDirectory();
             openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 2;
             openFileDialog1.RestoreDirectory = true;
@@ -1744,7 +1789,7 @@ namespace RandoTracker
                 foreach (XElement pic in xPic.Descendants("state"))
                 {
                     string fileName = pic.Attribute("src").Value.Replace("/", "\\");
-                    images[lnI] = Image.FromFile(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), fileName));
+                    images[lnI] = Image.FromFile(Path.Combine(Form1.GetExecutingDirectory(), fileName));
                     elapsed[lnI] = new TimeSpan();
                     imageName[lnI] = fileName.Substring(fileName.LastIndexOf("\\") + 1);
                     lnI++;
