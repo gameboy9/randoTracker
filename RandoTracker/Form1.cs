@@ -631,8 +631,8 @@ namespace RandoTracker
 
             for (int i = 0; i < players; i++)
             {
-                int picX = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picX").Value) * sizeRestriction / 100;
-                int picY = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picY").Value) * sizeRestriction / 100;
+                int picX = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picX")?.Value) * sizeRestriction / 100;
+                int picY = Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("picY")?.Value) * sizeRestriction / 100;
 
                 for (int j = 0; j < pics; j++)
                 {
