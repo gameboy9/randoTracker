@@ -322,15 +322,16 @@ namespace RandoTracker
             }
 
             // Let's see if they have it installed
-            fontFamily = new FontFamily(fontName);
-
-            if (fontFamily != null)
+            try
             {
+                fontFamily = new FontFamily(fontName);
                 return fontFamily;
             }
-
-            MessageBox.Show($"Unable to load font {fontName}.  Defaulting to Arial");
-            return gameFontFamily = new FontFamily("Arial");
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to load font {fontName}.  Defaulting to Arial");
+                return gameFontFamily = new FontFamily("Arial");
+            }
         }
 
         private void loadGame()
@@ -753,10 +754,12 @@ namespace RandoTracker
 
                 picXSize = Convert.ToInt32(neutralPicsElement.Attribute("xSize").Value);
                 picYSize = Convert.ToInt32(neutralPicsElement.Attribute("ySize").Value);
-
+                
                 for (int i = 0; i < neutralPicsElement.Descendants("neutralPic").Count(); i++)
                 {
+                    int neutralPicIndex = -1;
                     int repeat = 1;
+
                     try
                     {
                         repeat = Convert.ToInt32(neutralPicsElement.Descendants("neutralPic").Skip(i).First().Attribute("repeat").Value);
@@ -767,6 +770,7 @@ namespace RandoTracker
 
                     for (int j = 0; j < repeat; j++)
                     {
+                        neutralPicIndex++;
                         k++;
                         string firstNeutralPic = "";
                         int neutralPics = -1;
@@ -785,13 +789,13 @@ namespace RandoTracker
 
                         if (cboCompression.SelectedIndex == 0)
                         {
-                            neutralPictures[k].Left = ((picX + (picXGap * (k % xNumber))) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                            neutralPictures[k].Top = ((picY + (picYGap * (k / xNumber))) * sizeRestriction / 100) + yAdjustment;
+                            neutralPictures[k].Left = ((picX + (picXGap * (neutralPicIndex % xNumber))) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                            neutralPictures[k].Top = ((picY + (picYGap * (neutralPicIndex / xNumber))) * sizeRestriction / 100) + yAdjustment;
                         }
                         else if (cboCompression.SelectedIndex == 1)
                         {
-                            neutralPictures[k].Left = 10 + (picXGap * (k % xNumber)) + LayoutXAdjust;
-                            neutralPictures[k].Top = 610 + (picYGap * (k / xNumber));
+                            neutralPictures[k].Left = 10 + (picXGap * (neutralPicIndex % xNumber)) + LayoutXAdjust;
+                            neutralPictures[k].Top = 610 + (picYGap * (neutralPicIndex / xNumber));
                         }
                         else
                         {
