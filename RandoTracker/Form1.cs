@@ -312,6 +312,27 @@ namespace RandoTracker
             }
         }
 
+        private FontFamily loadFont(string fontName)
+        {
+            FontFamily fontFamily = privateFontCollection.Families.FirstOrDefault(f => string.Equals(f.Name, fontName, StringComparison.OrdinalIgnoreCase));
+
+            if (fontFamily != null)
+            {
+                return fontFamily;
+            }
+
+            // Let's see if they have it installed
+            fontFamily = new FontFamily(fontName);
+
+            if (fontFamily != null)
+            {
+                return fontFamily;
+            }
+
+            MessageBox.Show($"Unable to load font {fontName}.  Defaulting to Arial");
+            return gameFontFamily = new FontFamily("Arial");
+        }
+
         private void loadGame()
         {
             if (initialLoad) return;
@@ -396,13 +417,8 @@ namespace RandoTracker
             txtPlayer[2].Enabled = txtPlayer[3].Enabled = txtFinalTime[2].Enabled = txtFinalTime[3].Enabled = radAudio[2].Enabled = radAudio[3].Enabled = cboState[2].Enabled = cboState[3].Enabled = (players == 4);
             
             string gameFont = gameXML.Element("game").Attribute("Font").Value;
-            gameFontFamily = privateFontCollection.Families.FirstOrDefault(f => string.Equals(f.Name, gameFont, StringComparison.OrdinalIgnoreCase));
 
-            if (gameFontFamily == null)
-            {
-                MessageBox.Show($"Unable to load font {gameFont}.  Defaulting to Arial");
-                gameFontFamily = new FontFamily("Arial");
-            }
+            gameFontFamily = loadFont(gameFont);
 
             pics = gameXML.Descendants("picture").Count();
             neutralPics = gameXML.Descendants("neutralPic").Count();
