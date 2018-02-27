@@ -885,8 +885,15 @@ namespace RandoTracker
             }
             else // Proceed as normal
             {
+                if (clicked.isClicked(me) == false)
+                {
+                    return;
+                }
+
                 if (client == true)
+                {
                     sendBytes(new byte[] { (byte)(clicked.playerNumber + (me.Button == MouseButtons.Right ? 0x10 : 0)), (byte)clicked.labelNumber });
+                }
                 else
                 {
                     changePicture(clicked.playerNumber, clicked.labelNumber, (me.Button == MouseButtons.Right));
@@ -1820,10 +1827,12 @@ namespace RandoTracker
         public TimeSpan[] elapsed;
         private int numberOfStates = -1;
         public int currentState = 0;
+        private bool transparentClickable = true;
 
         public void loadPictures(XElement xPic)
         {
             numberOfStates = xPic.Descendants("state").Count();
+
             if (numberOfStates > 0)
             {
                 images = new Image[numberOfStates];
@@ -1839,7 +1848,8 @@ namespace RandoTracker
                     lnI++;
                 }
                 multiState = true;
-            } else
+            }
+            else
             {
                 elapsed = new TimeSpan[1];
                 imageName = new string[1];
@@ -1848,8 +1858,41 @@ namespace RandoTracker
                 elapsed[0] = new TimeSpan();
                 multiState = false;
             }
+
+            XAttribute transparentClickableAttribute = xPic.Attribute("transparentClickable");
+
+            if (transparentClickableAttribute != null)
+            {
+                bool.TryParse(transparentClickableAttribute.Value, out transparentClickable);
+            }
         }
 
+        public bool isClicked(MouseEventArgs me)
+        {
+            if (transparentClickable)
+            {
+                return true;
+            }
+
+            // See if the pixel clicked is transparent or not
+            Image image = images[currentState];
+
+            using (Bitmap bitmap = new Bitmap(image))
+            {
+                int pixelX = (int)((me.X * 1.0f / Width) * image.Width);
+                int pixelY = (int)((me.Y * 1.0f / Height) * image.Height);
+                Color pixel = bitmap.GetPixel(pixelX, pixelY);
+
+                if (pixel.A == 0)
+                {
+                    // Transparent, ignore click event
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
         public Image nextImage(TimeSpan clock)
         {
             currentState++;
