@@ -1036,6 +1036,11 @@ namespace RandoTracker
         
         private static Color parseColor(string colorValue, Color defaultColor)
         {
+            if (string.IsNullOrWhiteSpace(colorValue))
+            {
+                return defaultColor;
+            }
+
             try
             {
                 return ColorTranslator.FromHtml(colorValue);
