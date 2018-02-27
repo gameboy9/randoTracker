@@ -493,8 +493,8 @@ namespace RandoTracker
                 else
                     lblPlayers[i].hasBG = false;
 
-                lblPlayers[i].ForeColor = Color.White;
-                lblPlayers[i].ShadowColor = Color.Black;
+                lblPlayers[i].ForeColor = parseColor(gameXML.Descendants("players").First().Attribute("fontColor")?.Value, Color.White);
+                lblPlayers[i].ShadowColor = parseColor(gameXML.Descendants("players").First().Attribute("fontShadowColor")?.Value, Color.Black);
                 lblPlayers[i].VerticalAlignment = StringAlignment.Center;
 
                 if (gameXML.Descendants("player").Skip(i).First().Attribute("align") != null)
@@ -520,8 +520,8 @@ namespace RandoTracker
                 }
                 lblFinal[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value) * sizeRestriction / 100;
                 lblFinal[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value) * sizeRestriction / 100;
-                lblFinal[i].ForeColor = Color.LightGreen;
-                lblFinal[i].ShadowColor = Color.Blue;
+                lblFinal[i].ForeColor = parseColor(gameXML.Descendants("players").First().Attribute("finalFontColor")?.Value, Color.LightGreen);
+                lblFinal[i].ShadowColor = parseColor(gameXML.Descendants("players").First().Attribute("finalFontShadowColor")?.Value, Color.Blue);
                 lblFinal[i].hasBG = true;
                 lblFinal[i].BackColor = Color.FromArgb(192, 0, 0, 0);
                 lblFinal[i].HorizontalAlignment = StringAlignment.Center;
@@ -566,8 +566,8 @@ namespace RandoTracker
             lblClock2.Text = ":00.0";
             lblClock2.Font = new Font(gameFontFamily, Convert.ToInt32(gameXML.Descendants("clock").First().Attribute("fontSize").Value) * sizeRestriction / 100);
             lblClock2.IsMonospaced = true;
-            lblClock2.ForeColor = Color.White;
-            lblClock2.ShadowColor = Color.Black;
+            lblClock2.ForeColor = parseColor(gameXML.Descendants("clock").First().Attribute("fontColor")?.Value, Color.White);
+            lblClock2.ShadowColor = parseColor(gameXML.Descendants("clock").First().Attribute("fontShadowColor")?.Value, Color.Black);
             lblClock2.Y = 5;
             lblClock2.X = 5;
             lblClock2.Height = 30;
@@ -868,8 +868,7 @@ namespace RandoTracker
             picLabel clicked = (picLabel)sender;
             clicked.Focus();
         }
-
-
+        
         private void picWheel(object sender, MouseEventArgs me)
         {
             picClick(sender, me);
@@ -1025,6 +1024,18 @@ namespace RandoTracker
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Server Connect failed!");
+            }
+        }
+        
+        private static Color parseColor(string colorValue, Color defaultColor)
+        {
+            try
+            {
+                return ColorTranslator.FromHtml(colorValue);
+            }
+            catch (Exception)
+            {
+                return defaultColor;
             }
         }
 
