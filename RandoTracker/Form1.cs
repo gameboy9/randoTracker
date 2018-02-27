@@ -507,7 +507,6 @@ namespace RandoTracker
                     radAudio[i].Y = -100;
                     audioMic.Left = -100;
                     audioMic.Top = -100;
-                    //MessageBox.Show("AudioX - " + ex.Message);
                 }
             }
 
@@ -1626,7 +1625,6 @@ namespace RandoTracker
                 }
             } catch (Exception ex)
             {
-                MessageBox.Show("PAINT:" + ex.Message);
             }
         }
 
