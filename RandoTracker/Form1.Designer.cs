@@ -56,6 +56,7 @@
             this.lblSplitTitle = new System.Windows.Forms.Label();
             this.cboCompression = new System.Windows.Forms.ComboBox();
             this.cmdSplitReport = new System.Windows.Forms.Button();
+            this.btnReloadLayout = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label2
@@ -350,11 +351,22 @@
             this.cmdSplitReport.UseVisualStyleBackColor = true;
             this.cmdSplitReport.Click += new System.EventHandler(this.cmdSplitReport_Click);
             // 
+            // btnReloadLayout
+            // 
+            this.btnReloadLayout.Location = new System.Drawing.Point(10, 713);
+            this.btnReloadLayout.Name = "btnReloadLayout";
+            this.btnReloadLayout.Size = new System.Drawing.Size(90, 23);
+            this.btnReloadLayout.TabIndex = 132;
+            this.btnReloadLayout.Text = "Reload Layout";
+            this.btnReloadLayout.UseVisualStyleBackColor = true;
+            this.btnReloadLayout.Click += new System.EventHandler(this.btnReloadLayout_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1558, 748);
+            this.Controls.Add(this.btnReloadLayout);
             this.Controls.Add(this.cmdSplitReport);
             this.Controls.Add(this.cboCompression);
             this.Controls.Add(this.lblSplitTitle);
@@ -421,6 +433,7 @@
         private System.Windows.Forms.Label lblSplitTitle;
         private System.Windows.Forms.ComboBox cboCompression;
         private System.Windows.Forms.Button cmdSplitReport;
+        private System.Windows.Forms.Button btnReloadLayout;
     }
 }
 

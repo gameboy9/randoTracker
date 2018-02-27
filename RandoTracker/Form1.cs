@@ -1611,6 +1611,32 @@ namespace RandoTracker
                 listBox1.Items.RemoveAt(20);
         }
 
+        private void reloadLayout()
+        {
+            if (clock.IsRunning)
+            {
+                var result = MessageBox.Show("Your clock is currently running.  Are you sure you want to reset?", "Confirmation", MessageBoxButtons.YesNo);
+
+                if (result != DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            // Mandatory reset clock
+            resetClocks();
+
+            if (client == true)
+            {
+                sendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
+            }
+            else
+            {
+                loadGame();
+                serverSendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
+            }
+        }
+
         private void btnChooseGame_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -1623,18 +1649,7 @@ namespace RandoTracker
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 gameFile = openFileDialog1.FileName;
-                // Mandatory reset clock
-                resetClocks();
-
-                if (client == true)
-                    sendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
-                else
-                {
-                    loadGame();
-                    serverSendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
-                }
-
-                //loadGame();
+                reloadLayout();
             }
         }
 
@@ -1705,6 +1720,22 @@ namespace RandoTracker
 
             mainImage = Image.FromFile(bgImages[cboBackground.SelectedIndex]);
             this.Invalidate();
+        }
+
+        private void btnReloadLayout_Click(object sender, EventArgs e)
+        {
+            reloadLayout();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.F5)
+            {
+                reloadLayout();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 
