@@ -1,0 +1,35 @@
+<game name="Super Mario Land 2 Rando-2 player" Font="Early Gameboy" players="2" background="sml2\sml2r-2p.png" shortname="SML2-2p">
+	<players fontSize="16" width="355" height="50" finalWidth="130" finalHeight="50" finalFont="12" speakerHeight="30">
+		<player visible="true" locX="30" locY="15" picX="210" picY="625" finalX="10" finalY="610" audioX="360" audioY="10" />
+		<player visible="true" locX="900" locY="15" picX="960" picY="625" finalX="1130" finalY="610" audioX="870" audioY="10" />
+	</players>
+	<mic fontSize="12" visible="true" locX="525" locY="620" width="240" height="25" />
+	<clock visible="true" fontSize="16" locX="500" locY="15" width="240" height="75" />
+	<pictures xGap="8" yGap="8" xSize="32" ySize="32" xNumber="3">
+		<picture>
+			<state src="sml2\04.png" />
+			<state src="sml2\04gold.png" />
+		</picture>
+		<picture>
+			<state src="sml2\03.png" />
+			<state src="sml2\03gold.png" />
+		</picture>
+		<picture>
+			<state src="sml2\05.png" />
+			<state src="sml2\05gold.png" />
+		</picture>
+		<picture>
+			<state src="sml2\06.png" />
+			<state src="sml2\06gold.png" />
+		</picture>
+		<picture>
+			<state src="sml2\01.png" />
+			<state src="sml2\01gold.png" />
+		</picture>
+		<picture>
+			<state src="sml2\02.png" />
+			<state src="sml2\02gold.png" />
+		</picture>
+	</pictures>
+</game>
+

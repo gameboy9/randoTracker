@@ -1,0 +1,86 @@
+<game name="Final Fantasy Rando" Font="Final Fantasy" players="4" background="ffr\ffr-bg.png" shortname="FFR">
+	<players fontSize="12" width="196" height="30" finalWidth="196" finalHeight="30" finalFont="12" speakerHeight="32" background="true">
+		<player visible="true" locX="15" locY="10" align="center" picX="44" picY="84" finalX="15" finalY="290" audioX="140" audioY="184" />
+		<player visible="true" locX="1070" locY="10" align="center" picX="1100" picY="84" finalX="1070" finalY="290" audioX="1090" audioY="184" />
+		<player visible="true" locX="15" locY="620" align="center" picX="44" picY="424" finalX="15" finalY="340" audioX="140" audioY="524" />
+		<player visible="true" locX="1070" locY="620" align="center" picX="1100" picY="424" finalX="1070" finalY="340" audioX="1090" audioY="524" />
+	</players>
+	<backgrounds playerSpecific="false">
+		<background file="ffr\bg-grass.png" name="Overworld" />
+		<background file="ffr\bg-earth.png" name="Earth" />
+		<background file="ffr\bg-sea.png" name="Sea" />
+		<background file="ffr\bg-ice.png" name="Ice" />
+		<background file="ffr\bg-marsh.png" name="Marsh" />
+		<background file="ffr\bg-mirage.png" name="Mirage" />
+		<background file="ffr\bg-ordeals.png" name="Ordeals" />
+		<background file="ffr\bg-sky.png" name="Sky" />
+		<background file="ffr\bg-temple.png" name="Temple" />
+		<background file="ffr\bg-volcano.png" name="Volcano" />
+	</backgrounds>
+	<logo file="ffr\logo-trans.png" locX="1136" locY="666" width="144" height="64" />
+	<mic fontSize="12" visible="true" locX="840" locY="656" width="280" height="20" micHeight="30" />
+	<clock visible="true" fontSize="18" locX="15" locY="664" width="160" height="24" xSize="20" specialSize="14" />
+	<freetext visible="true" fontSize="12" locX="200" locY="656" width="340" height="20" />
+	<pictures xGap="4" yGap="4" xSize="32" ySize="32" xNumber="4">
+		<picture>
+			<state src="ffr\empty.png" />
+			<state src="ffr\earth.png" />
+		</picture>
+		<picture>
+			<state src="ffr\empty.png" />
+			<state src="ffr\fire.png" />
+		</picture>
+		<picture>
+			<state src="ffr\empty.png" />
+			<state src="ffr\water.png" />
+		</picture>
+		<picture>
+			<state src="ffr\empty.png" />
+			<state src="ffr\wind.png" />
+		</picture>
+		<picture src="ffr\lute.png" />
+		<picture src="ffr\tnt.png" />
+		<picture>
+			<state src="ffr\nocrown.png" />
+			<state src="ffr\crown.png" />
+			<state src="ffr\crystal.png" />
+			<state src="ffr\herb.png" />
+			<state src="ffr\key.png" />
+		</picture>
+		<picture>
+			<state src="ffr\nobottle.png" />
+			<state src="ffr\bottle.png" />
+			<state src="ffr\oxyale.png" />
+		</picture>
+		<picture>
+			<state src="ffr\noslab.png" />
+			<state src="ffr\slab.png" />
+			<state src="ffr\translated.png" />
+			<state src="ffr\chime.png" />
+		</picture>
+		<picture>
+			<state src="ffr\noruby.png" />
+			<state src="ffr\ruby.png" />
+			<state src="ffr\rod.png" />
+		</picture>
+		<picture src="ffr\floater.png" />
+		<picture src="ffr\tail.png" />
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture src="ffr\adamant.png" />
+		<picture src="ffr\cube.png" />
+	</pictures>
+	<neutralPics xGap="8" yGap="8" xSize="32" ySize="32" xNumber="4" locX="572" locY="668">
+		<neutralPic repeat="4">
+			<state src="ffr/open2.png" />
+			<state src="ffr/fighter.png" />
+			<state src="ffr/thief.png" />
+			<state src="ffr/blackbelt.png" />
+			<state src="ffr/redmage.png" />
+			<state src="ffr/whitemage.png" />
+			<state src="ffr/blackmage.png" />
+		</neutralPic>
+	</neutralPics>
+</game>

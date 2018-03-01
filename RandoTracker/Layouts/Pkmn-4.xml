@@ -1,0 +1,19 @@
+<game name="Pokemon Crystal 4P" Font="PKMN RBYGSC" players="4" background="pokemon\Crystal_4-way.png" shortname="Pkmn-4">
+	<players fontSize="10" width="175" height="30" finalWidth="180" finalHeight="25" finalFont="10" speakerHeight="30">
+		<player visible="true" locX="400" locY="15" picX="584" picY="31" finalX="400" finalY="45" audioX="400" audioY="90" />
+		<player visible="true" locX="704" locY="15" picX="664" picY="31" finalX="704" finalY="45" audioX="839" audioY="90" />
+		<player visible="true" locX="400" locY="670" picX="584" picY="657" finalX="400" finalY="640" audioX="400" audioY="585" />
+		<player visible="true" locX="704" locY="670" picX="664" picY="657" finalX="704" finalY="640" audioX="839" audioY="585" />
+	</players>
+	<mic fontSize="12" visible="true" locX="460" locY="585" width="360" height="25" micHeight="40" />
+	<clock visible="true" fontSize="18" locX="450" locY="90" width="270" height="40" xSize="20" specialSize="14" />
+	<pictures xSize="30" ySize="30" xNumber="4">
+		<picture>
+			<state src="pokemon\Red Dot.png" />
+			<state src="pokemon\Orange Dot.png" />
+			<state src="pokemon\Green Dot.png" />
+			<state src="pokemon\Blue Dot.png" />
+			<state src="pokemon\Purple Dot.png" />
+		</picture>
+	</pictures>
+</game>

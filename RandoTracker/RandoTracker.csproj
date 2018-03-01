@@ -79,4 +79,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(ProjectDir)Layouts\* $(TargetDir)* /S /Y /Q /R</PostBuildEvent>
+  </PropertyGroup>
 </Project>

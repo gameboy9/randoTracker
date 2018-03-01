@@ -377,15 +377,16 @@ namespace RandoTracker
                 var asdf = 1234;
             }
 
-            XElement pictureHeader = (gameXML.Descendants("pictures").Count() == 0 ? null : gameXML.Descendants("pictures").First());
+            XElement pictureHeader = gameXML.Descendants("pictures").FirstOrDefault();
+            
+            int xNumber = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xNumber")?.Value);
+            int picXGap = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xGap")?.Value);
+            int picYGap = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("yGap")?.Value);
+            int picXSize = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xSize")?.Value);
+            int picYSize = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("ySize")?.Value);
 
-            int xNumber = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xNumber").Value);
-            int picXGap = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xGap").Value);
-            int picYGap = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("yGap").Value);
-            int picXSize = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xSize").Value);
-            int picYSize = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("ySize").Value);
-            int finalWidth = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalWidth").Value) * sizeRestriction / 100;
-            int finalHeight = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalHeight").Value) * sizeRestriction / 100;
+            int adjustedXGap = picXGap + picXSize;
+            int adjustedYGap = picYGap + picYSize;
 
             if (cboCompression.SelectedIndex == 0)
             {
@@ -398,7 +399,7 @@ namespace RandoTracker
             else if (cboCompression.SelectedIndex == 1)
             {
                 // Ignore for now.
-                //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * picXGap), picClock.Left + picClock.Width + 20);
+                //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
                 //this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
                 //this.Height = 786;
             }
@@ -409,15 +410,26 @@ namespace RandoTracker
             }
 
 
-            XElement game = gameXML.Root.Element("game");
+            XElement game = gameXML.Element("game");
 
-            lblGameName.Text = "Game:  " + gameXML.Element("game").Attribute("name").Value;
-            shortName = gameXML.Element("game").Attribute("shortname").Value;
-            players = Convert.ToInt32(gameXML.Element("game").Attribute("players").Value);
-            if (players != 4) players = 2;
+            if (game == null)
+            {
+                MessageBox.Show("Unable to find root game tag", "Required Tag");
+                return;
+            }
+
+            lblGameName.Text = "Game:  " + game.Attribute("name")?.Value;
+            shortName = game.Attribute("shortname")?.Value;
+            players = Convert.ToInt32(game.Attribute("players")?.Value);
+
+            if (players != 4)
+            {
+                players = 2;
+            }
+
             txtPlayer[2].Enabled = txtPlayer[3].Enabled = txtFinalTime[2].Enabled = txtFinalTime[3].Enabled = radAudio[2].Enabled = radAudio[3].Enabled = cboState[2].Enabled = cboState[3].Enabled = (players == 4);
             
-            string gameFont = gameXML.Element("game").Attribute("Font").Value;
+            string gameFont = game.Attribute("Font").Value;
 
             gameFontFamily = loadFont(gameFont);
 
@@ -477,7 +489,7 @@ namespace RandoTracker
                 }
                 else if (cboCompression.SelectedIndex == 1)
                 {
-                    lblPlayers[i].X = 10 + (i % 2 == 1 ? (xNumber + 2) * picXGap : 0) + LayoutXAdjust;
+                    lblPlayers[i].X = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + LayoutXAdjust;
                     lblPlayers[i].Y = (i / 2 == 1 ? 300 : 10);
                 }
                 else
@@ -558,7 +570,7 @@ namespace RandoTracker
 
             if (cboCompression.SelectedIndex == 1)
             {
-                this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * picXGap), picClock.Left + picClock.Width + 20);
+                this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
                 this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
                 this.Height = 786;
             }
@@ -698,12 +710,12 @@ namespace RandoTracker
 
                     if (cboCompression.SelectedIndex == 0)
                     {
-                        pictures[i, j].Left = (picX + (picXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                        pictures[i, j].Top = (picY + (picYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
+                        pictures[i, j].Left = (picX + (adjustedXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                        pictures[i, j].Top = (picY + (adjustedYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
                     } else if (cboCompression.SelectedIndex == 1)
                     {
-                        pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * picXGap : 0) + (picXGap * (j % xNumber)) + LayoutXAdjust;
-                        pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (picYGap * (j / xNumber));
+                        pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + (adjustedXGap * (j % xNumber)) + LayoutXAdjust;
+                        pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (adjustedYGap * (j / xNumber));
                     } else
                     {
                         pictures[i, j].Left = -1000;
@@ -724,8 +736,8 @@ namespace RandoTracker
 
                     picCovers[i, j].Parent = pictures[i, j];
                     picCovers[i, j].BackColor = Color.FromArgb(numberOfPics == -1 ? 192 : 0, Color.Black);
-                    picCovers[i, j].Left = 0; // picX + (picXGap * (j % xNumber));
-                    picCovers[i, j].Top = 0; // picY + (picYGap * (j / xNumber));
+                    picCovers[i, j].Left = 0; // picX + (adjustedXGap * (j % xNumber));
+                    picCovers[i, j].Top = 0; // picY + (adjustedYGap * (j / xNumber));
                     picCovers[i, j].Width = picXSize * sizeRestriction / 100;
                     picCovers[i, j].Height = picYSize * sizeRestriction / 100;
                     picCovers[i, j].Click += new EventHandler(picClick);
@@ -750,9 +762,11 @@ namespace RandoTracker
 
                 picXGap = Convert.ToInt32(neutralPicsElement.Attribute("xGap").Value);
                 picYGap = Convert.ToInt32(neutralPicsElement.Attribute("yGap").Value);
-
                 picXSize = Convert.ToInt32(neutralPicsElement.Attribute("xSize").Value);
                 picYSize = Convert.ToInt32(neutralPicsElement.Attribute("ySize").Value);
+
+                adjustedXGap = picXGap + picXSize;
+                adjustedYGap = picYGap + picYSize;
                 
                 for (int i = 0; i < neutralPicsElement.Descendants("neutralPic").Count(); i++)
                 {
@@ -788,13 +802,13 @@ namespace RandoTracker
 
                         if (cboCompression.SelectedIndex == 0)
                         {
-                            neutralPictures[k].Left = ((picX + (picXGap * (neutralPicIndex % xNumber))) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                            neutralPictures[k].Top = ((picY + (picYGap * (neutralPicIndex / xNumber))) * sizeRestriction / 100) + yAdjustment;
+                            neutralPictures[k].Left = ((picX + (adjustedXGap * (neutralPicIndex % xNumber))) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                            neutralPictures[k].Top = ((picY + (adjustedYGap * (neutralPicIndex / xNumber))) * sizeRestriction / 100) + yAdjustment;
                         }
                         else if (cboCompression.SelectedIndex == 1)
                         {
-                            neutralPictures[k].Left = 10 + (picXGap * (neutralPicIndex % xNumber)) + LayoutXAdjust;
-                            neutralPictures[k].Top = 610 + (picYGap * (neutralPicIndex / xNumber));
+                            neutralPictures[k].Left = 10 + (adjustedXGap * (neutralPicIndex % xNumber)) + LayoutXAdjust;
+                            neutralPictures[k].Top = 610 + (adjustedYGap * (neutralPicIndex / xNumber));
                         }
                         else
                         {

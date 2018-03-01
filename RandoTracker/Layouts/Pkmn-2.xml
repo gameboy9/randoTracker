@@ -1,0 +1,17 @@
+<game name="Pokemon Crystal 2P" Font="PKMN RBYGSC" players="2" background="pokemon\Crystal Tourney v2.png" shortname="Pkmn-2">
+	<players fontSize="16" width="350" height="30" finalWidth="240" finalHeight="40" finalFont="16" speakerHeight="60">
+		<player visible="true" locX="10" locY="565" picX="409" picY="565" finalX="100" finalY="630" audioX="20" audioY="630" />
+		<player visible="true" locX="920" locY="565" picX="841" picY="565" finalX="940" finalY="630" audioX="1200" audioY="630" />
+	</players>
+	<mic fontSize="12" visible="true" locX="420" locY="640" width="360" height="25" micHeight="40" />
+	<clock visible="true" fontSize="18" locX="450" locY="560" width="270" height="40" xSize="20" specialSize="14" />
+	<pictures xSize="30" ySize="30" xNumber="4">
+		<picture>
+			<state src="pokemon\Red Dot.png" />
+			<state src="pokemon\Orange Dot.png" />
+			<state src="pokemon\Green Dot.png" />
+			<state src="pokemon\Blue Dot.png" />
+			<state src="pokemon\Purple Dot.png" />
+		</picture>
+	</pictures>
+</game>

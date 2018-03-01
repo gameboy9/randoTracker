@@ -1,0 +1,12 @@
+<game name="Super Mario Bros. 2 Rando-2 player" Font="Press Start 2P" players="2" background="smb2r\smb2r-back.png" shortname="SMB2R-2p">
+	<players fontSize="16" width="362" height="54" finalWidth="186" finalHeight="54" finalFont="16" speakerHeight="36">
+		<player visible="true" locX="26" locY="128" picX="210" picY="620" finalX="422" finalY="123" audioX="360" audioY="123" />
+		<player visible="true" locX="890" locY="128" picX="950" picY="620" finalX="671" finalY="123" audioX="860" audioY="123" />
+	</players>
+	<backgrounds playerSpecific="false">
+		<background file="smb2r\smb2r-back.png" name="Background" />
+		<background file="smb2r\smb2r-back-overlay.png" name="Overlay" />
+	</backgrounds>
+	<mic visible="true" fontSize="12" locX="56" locY="648" width="360" height="22" />
+	<clock visible="true" fontSize="16" locX="490" locY="650" width="240" height="75" />
+</game>

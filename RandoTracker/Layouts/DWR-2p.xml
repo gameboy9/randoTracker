@@ -1,0 +1,85 @@
+<game name="Dragon Warrior Rando 2p" Font="Warrior Quest I and II" players="2" background="dwr\chaos-layout-puzzle-slime.png" shortname="DWR2P">
+	<players fontSize="16" width="410" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="32">
+		<player visible="true" locX="16" locY="470" picX="16" picY="537" finalX="294" finalY="529" audioX="361" audioY="467" />
+		<player visible="true" locX="850" locY="470" picX="992" picY="537" finalX="823" finalY="529" audioX="864" audioY="467" />
+	</players>
+	<mic visible="true" fontSize="11" locX="470" locY="540" width="340" height="22" />
+	<clock visible="true" fontSize="16" locX="480" locY="478" width="240" height="24" />
+	<freetext visible="true" fontSize="12" locX="700" locY="340" width="340" height="24" />
+	<pictures xSize="55" ySize="55" xNumber="5">
+		<picture>
+			<state src="dwr\item\staff-no.png" />
+			<state src="dwr\item\staff.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\harp-no.png" />
+			<state src="dwr\item\harp.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\key-no.png" />
+			<state src="dwr\item\key.png" />
+		</picture>
+		<picture>
+			<state src="dwr\spell\hurtmore-no.png" statOffset="4" statBit="1" statState="0" />
+			<state src="dwr\spell\hurtmore.png" statOffset="4" statBit="1" statState="0" />
+		</picture>	
+		<picture statChange="4">
+			<state src="dwr\weapon\weapon-no.png" change="0" />
+			<state src="dwr\weapon\bamboo.png" change="2" />
+			<state src="dwr\weapon\club.png" change="4" />
+			<state src="dwr\weapon\copper.png" change="10" />
+			<state src="dwr\weapon\axe.png" change="15" />
+			<state src="dwr\weapon\broad.png" change="20" />
+			<state src="dwr\weapon\flame.png" change="28" />
+			<state src="dwr\weapon\erdricks.png" change="40" />
+		</picture>	
+		<picture>
+			<state src="dwr\item\stone-no.png" />
+			<state src="dwr\item\stone.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\drop-no.png" />
+			<state src="dwr\item\drop.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\ball-no.png" />
+			<state src="dwr\item\ball.png" />
+		</picture>
+		<picture>
+			<state src="dwr\spell\healmore-no.png" statOffset="4" statBit="0" statState="0" />
+			<state src="dwr\spell\healmore.png" statOffset="4" statBit="0" statState="1" />
+		</picture>
+		<picture statChange="5" statOffset="0">
+			<state src="dwr\armor\armor-no.png" change="0" />
+			<state src="dwr\armor\clothes.png" change="2" />
+			<state src="dwr\armor\leather.png" change="4" />
+			<state src="dwr\armor\chain.png" change="10" />
+			<state src="dwr\armor\half.png" change="16" />
+			<state src="dwr\armor\full.png" change="24" />
+			<state src="dwr\armor\magic.png" change="24" />
+			<state src="dwr\armor\erdricks.png" change="28" />
+		</picture>
+		<picture>
+			<state src="dwr\item\token-no.png" />
+			<state src="dwr\item\token.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\flute-no.png" />
+			<state src="dwr\item\flute.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\gps-no.png" />
+			<state src="dwr\item\gps.png" />
+		</picture>
+		<picture statChange="2,4">
+			<state src="dwr\item\necklace-no.png" change="0%,0" />
+			<state src="dwr\item\necklace.png" change="-10%,10" />
+		</picture>
+		<picture statChange="5">
+			<state src="dwr\shield\shield-no.png" change="0" />
+			<state src="dwr\shield\small.png" change="4" />
+			<state src="dwr\shield\large.png" change="10" />
+			<state src="dwr\shield\silver.png" change="20" />
+		</picture>
+	</pictures>
+</game>

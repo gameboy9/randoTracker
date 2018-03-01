@@ -1,0 +1,81 @@
+<game name="Zelda 2 Rando" Font="Press Start 2P" players="4" background="z2r\bg-grass.png" shortname="Z2R">
+	<players fontSize="8" width="195" height="30" finalWidth="195" finalHeight="30" finalFont="12" speakerHeight="30" background="true">
+		<player visible="true" locX="10" locY="10" align="center" picX="50" picY="130" finalX="10" finalY="60" audioX="40" audioY="270" />
+		<player visible="true" locX="1075" locY="10" align="center" picX="1110" picY="130" finalX="1075" finalY="60" audioX="1100" audioY="270" />
+		<player visible="true" locX="10" locY="610" align="center" picX="50" picY="350" finalX="10" finalY="560" audioX="40" audioY="490" />
+		<player visible="true" locX="1075" locY="610" align="center" picX="1110" picY="350" finalX="1075" finalY="560" audioX="1100" audioY="490" />
+	</players>
+	<backgrounds playerSpecific="false">
+		<background file="z2r\bg-grass.png" name="Grass" />
+		<background file="z2r\bg-forest.png" name="Forest" />
+		<background file="z2r\bg-desert.png" name="Desert" />
+		<background file="z2r\bg-water.png" name="Water" />
+		<background file="z2r\bg-mountain.png" name="Mountain" />
+		<background file="z2r\bg-lava.png" name="Lava" />
+		<background file="z2r\bg-swamp.png" name="Swamp" />
+	</backgrounds>
+	<mic fontSize="12" visible="true" locX="640" locY="670" width="620" height="25" micHeight="40" />
+	<clock visible="true" fontSize="18" locX="20" locY="670" width="300" height="40" xSize="20" specialSize="14" />
+	<pictures xSize="30" ySize="30" xNumber="4">
+		<picture src="z2r\fairy-on.png" />
+		<picture src="z2r\reflect-on.png" />
+		<picture src="z2r\thunder-on.png" />
+		<picture>
+			<state src="z2r\1.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\2.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture src="z2r\raft-on.png" />
+		<picture src="z2r\glove-on.png" />
+		<picture src="z2r\key-on.png" />
+		<picture>
+			<state src="z2r\3.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture src="z2r\boots-on.png" />
+		<picture src="z2r\hammer-on.png" />
+		<picture src="z2r\flute-on.png" />
+		<picture>
+			<state src="z2r\4.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture src="z2r\angel-on.png" />
+		<picture src="z2r\medicine-on.png" />
+		<picture src="z2r\kid-on.png" />
+		<picture>
+			<state src="z2r\5.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\6.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+	</pictures>
+</game>
