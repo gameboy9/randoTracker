@@ -183,7 +183,16 @@ namespace RandoTracker
 
             initialLoad = false;
             loadFonts();
-            loadGame();
+
+            try
+            {
+                loadGame();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading {gameFile}. {ex.Message}", "Error Loading Game");
+                return;
+            }
 
             if (cboCompression.SelectedIndex < 0) cboCompression.SelectedIndex = 0;
         }
@@ -1290,7 +1299,7 @@ namespace RandoTracker
                 listBox1.Items.Insert(0, "Client " + client.Sock.RemoteEndPoint + " joined");
             }));
 
-            List<byte> array = Encoding.ASCII.GetBytes(shortName).ToList();
+            List<byte> array = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)).ToList();
             array.Insert(0, 0xf4);
             byte[] gameArray = array.ToArray();
             client.Sock.Send(gameArray, gameArray.Length, 0);
@@ -1551,7 +1560,7 @@ namespace RandoTracker
                         else if (m_byBuff[0] <= 0x05)
                             changePicture(m_byBuff[0], m_byBuff[1], false);
                         else if (m_byBuff[0] <= 0x15 && m_byBuff[0] >= 0x10)
-                            changePicture(m_byBuff[0], m_byBuff[1], true);
+                            changePicture(m_byBuff[0] - 0x10, m_byBuff[1], true);
                         else if (m_byBuff[0] == 0x0f)
                             newBackground(m_byBuff[1]);
                     }));
