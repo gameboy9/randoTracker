@@ -107,6 +107,12 @@ namespace RandoTracker
                 // ignore error
             }
 
+            if (string.IsNullOrWhiteSpace(gameFile))
+            {
+                // Load something at least
+                gameFile = Path.Combine(GetExecutingDirectory(), "sml2.xml");
+            }
+
             this.Left = 200;
             this.Top = 200;
 
@@ -191,6 +197,7 @@ namespace RandoTracker
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading {gameFile}. {ex.Message}", "Error Loading Game");
+                gameFile = string.Empty;
                 return;
             }
 
@@ -345,7 +352,16 @@ namespace RandoTracker
 
         private void loadGame()
         {
-            if (initialLoad) return;
+            if (initialLoad)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(gameFile))
+            {
+                return;
+            }
+
             for (int i = 0; i < 4; i++)
             {
                 if (lblPlayers[i] != null)
@@ -423,7 +439,7 @@ namespace RandoTracker
 
             if (game == null)
             {
-                MessageBox.Show("Unable to find root game tag", "Required Tag");
+                MessageBox.Show($"Unable to find root game tag for {gameFile}", "Required Tag");
                 return;
             }
 
@@ -1678,7 +1694,17 @@ namespace RandoTracker
             }
             else
             {
-                loadGame();
+                try
+                {
+                    loadGame();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to reload {gameFile}. {ex.Message}", "Layout Load Error");
+                    gameFile = string.Empty;
+                    return;
+                }
+
                 serverSendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
             }
         }
