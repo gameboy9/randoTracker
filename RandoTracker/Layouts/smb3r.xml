@@ -1,0 +1,28 @@
+<game name="Super Mario Bros. 3 Rando" Font="Super Mario Bros. 3" players="2" background="smb3r\smb3-2p.png" shortname="smb3r-2">
+	<players fontSize="16" width="251" height="30" finalWidth="240" finalHeight="40" finalFont="16" speakerHeight="50">
+		<player visible="true" locX="28" locY="68" picX="176" picY="666" finalX="11" finalY="12" audioX="283" audioY="45" />
+		<player visible="true" locX="995" locY="68" picX="1056" picY="666" finalX="1030" finalY="12" audioX="925" audioY="45" />
+	</players>
+	<mic fontSize="12" visible="true" locX="425" locY="677" width="380" height="20" micHeight="0" />
+	<clock visible="true" fontSize="16" locX="0" locY="666" width="147" height="40" xSize="20" specialSize="18" />
+	<pictures xGap="0" yGap="0" xSize="48" ySize="48" xNumber="1">
+		<picture>
+			<state src="smb3r\red-1.png" />
+			<state src="smb3r\red-2.png" />
+			<state src="smb3r\red-3.png" />
+			<state src="smb3r\red-4.png" />
+			<state src="smb3r\red-5.png" />
+			<state src="smb3r\red-6.png" />
+			<state src="smb3r\red-7.png" />
+			<state src="smb3r\red-8.png" />
+			<state src="smb3r\blue-1.png" />
+			<state src="smb3r\blue-2.png" />
+			<state src="smb3r\blue-3.png" />
+			<state src="smb3r\blue-4.png" />
+			<state src="smb3r\blue-5.png" />
+			<state src="smb3r\blue-6.png" />
+			<state src="smb3r\blue-7.png" />
+			<state src="smb3r\blue-8.png" />
+		</picture>
+	</pictures>
+</game>
