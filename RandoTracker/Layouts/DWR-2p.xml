@@ -5,8 +5,7 @@
 	</players>
 	<mic visible="true" fontSize="11" locX="470" locY="540" width="340" height="22" />
 	<clock visible="true" fontSize="16" locX="480" locY="478" width="240" height="24" />
-	<freetext visible="true" fontSize="12" locX="700" locY="340" width="340" height="24" />
-	<pictures xSize="55" ySize="55" xNumber="5">
+	<pictures xGap="0" yGap="2" xSize="55" ySize="55" xNumber="5">
 		<picture>
 			<state src="dwr\item\staff-no.png" />
 			<state src="dwr\item\staff.png" />
@@ -16,13 +15,13 @@
 			<state src="dwr\item\harp.png" />
 		</picture>
 		<picture>
-			<state src="dwr\item\key-no.png" />
-			<state src="dwr\item\key.png" />
-		</picture>
-		<picture>
 			<state src="dwr\spell\hurtmore-no.png" statOffset="4" statBit="1" statState="0" />
 			<state src="dwr\spell\hurtmore.png" statOffset="4" statBit="1" statState="0" />
-		</picture>	
+		</picture>
+		<picture>
+			<state src="dwr\item\ring-no.png" />
+			<state src="dwr\item\ring.png" />
+		</picture>
 		<picture statChange="4">
 			<state src="dwr\weapon\weapon-no.png" change="0" />
 			<state src="dwr\weapon\bamboo.png" change="2" />
@@ -42,12 +41,12 @@
 			<state src="dwr\item\drop.png" />
 		</picture>
 		<picture>
-			<state src="dwr\item\ball-no.png" />
-			<state src="dwr\item\ball.png" />
-		</picture>
-		<picture>
 			<state src="dwr\spell\healmore-no.png" statOffset="4" statBit="0" statState="0" />
 			<state src="dwr\spell\healmore.png" statOffset="4" statBit="0" statState="1" />
+		</picture>
+		<picture>
+			<state src="dwr\item\scale-no.png" />
+			<state src="dwr\item\scale.png" />
 		</picture>
 		<picture statChange="5" statOffset="0">
 			<state src="dwr\armor\armor-no.png" change="0" />
