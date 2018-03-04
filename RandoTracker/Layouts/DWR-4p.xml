@@ -18,8 +18,8 @@
 			<state src="dwr\item\harp.png" />
 		</picture>
 		<picture>
-			<state src="dwr\item\key-no.png" />
-			<state src="dwr\item\key.png" />
+			<state src="dwr\spell\hurtmore-no.png" />
+			<state src="dwr\spell\hurtmore.png" />
 		</picture>
 		<picture>
 			<state src="dwr\item\stone-no.png" />
@@ -30,8 +30,8 @@
 			<state src="dwr\item\drop.png" />
 		</picture>
 		<picture>
-			<state src="dwr\item\ball-no.png" />
-			<state src="dwr\item\ball.png" />
+			<state src="dwr\spell\healmore-no.png" />
+			<state src="dwr\spell\healmore.png" />
 		</picture>
 		<picture>
 			<state src="dwr\item\token-no.png" />
@@ -46,12 +46,12 @@
 			<state src="dwr\item\gps.png" />
 		</picture>
 		<picture>
-			<state src="dwr\spell\hurtmore-no.png" />
-			<state src="dwr\spell\hurtmore.png" />
+			<state src="dwr\item\ring-no.png" />
+			<state src="dwr\item\ring.png" />
 		</picture>
 		<picture>
-			<state src="dwr\spell\healmore-no.png" />
-			<state src="dwr\spell\healmore.png" />
+			<state src="dwr\item\scale-no.png" />
+			<state src="dwr\item\scale.png" />
 		</picture>
 		<picture>
 			<state src="dwr\item\necklace-no.png" />
