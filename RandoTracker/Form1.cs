@@ -60,9 +60,7 @@ namespace RandoTracker
         int xAdjustment = 10;
         int yAdjustment = 10;
         bool cboUpdate = true;
-
-        string shortName = "";
-
+        
         int extraTime = 0;
 
         private Socket m_sock;                      // Server connection
@@ -71,10 +69,20 @@ namespace RandoTracker
 
         bool client = false;
 
+        string subLayoutName = string.Empty;
+
         const int LayoutXAdjust = 260;
         const int consoleXAdjust = 0;
 
         bool initialLoad = true;
+
+        private static class SocketMessages
+        {
+            public const byte START_CLOCK = 0xf1;
+            public const byte STOP_CLOCK = 0xf2;
+            public const byte RESET_CLOCK = 0xf3;
+            public const byte LOAD_LAYOUT = 0xf4;
+        }
 
         public Form1()
         {
@@ -306,10 +314,10 @@ namespace RandoTracker
             loadGame();
         }
 
-        private void loadGame(byte[] gameBytes)
+        private void loadGame(string game)
         {
             string startDir = GetExecutingDirectory();
-            string gameName = (Encoding.UTF8.GetString(gameBytes)).Replace("\0", "") + ".XML";
+            string gameName = game + ".XML";
             gameFile = Path.Combine(startDir, gameName);
             loadGame();
         }
@@ -401,40 +409,7 @@ namespace RandoTracker
             {
                 var asdf = 1234;
             }
-
-            XElement pictureHeader = gameXML.Descendants("pictures").FirstOrDefault();
             
-            int xNumber = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xNumber")?.Value);
-            int picXGap = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xGap")?.Value);
-            int picYGap = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("yGap")?.Value);
-            int picXSize = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("xSize")?.Value);
-            int picYSize = pictureHeader == null ? 0 : Convert.ToInt32(pictureHeader.Attribute("ySize")?.Value);
-
-            int adjustedXGap = picXGap + picXSize;
-            int adjustedYGap = picYGap + picYSize;
-
-            if (cboCompression.SelectedIndex == 0)
-            {
-                this.Width = 1574;
-                this.Height = 786;
-                int optimalSize = 1574 - LayoutXAdjust;
-                int actualSize = optimalSize - (1574 - this.Width);
-                sizeRestriction = Math.Min(actualSize * 100 / optimalSize, this.Height * 100 / 786);
-            }
-            else if (cboCompression.SelectedIndex == 1)
-            {
-                // Ignore for now.
-                //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
-                //this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
-                //this.Height = 786;
-            }
-            else
-            {
-                this.Width = LayoutXAdjust + 30;
-                this.Height = 344;
-            }
-
-
             XElement game = gameXML.Element("game");
 
             if (game == null)
@@ -444,7 +419,6 @@ namespace RandoTracker
             }
 
             lblGameName.Text = "Game:  " + game.Attribute("name")?.Value;
-            shortName = game.Attribute("shortname")?.Value;
             players = Convert.ToInt32(game.Attribute("players")?.Value);
 
             if (players != 4)
@@ -457,8 +431,7 @@ namespace RandoTracker
             string gameFont = game.Attribute("Font").Value;
 
             gameFontFamily = loadFont(gameFont);
-
-            pics = gameXML.Descendants("picture").Count();
+            
             neutralPics = gameXML.Descendants("neutralPic").Count();
 
             if (gameXML.Descendants("neutralPics").Count() > 0)
@@ -503,10 +476,80 @@ namespace RandoTracker
             else
                 comMic.Height = comMic.Width = 32 * sizeRestriction / 100;
 
+            // Load pictures
+            var pictureElements = gameXML.Descendants("pictures");
+            XElement pictureElement = null;
+
+            cboSublayout.Enabled = false;
+            cboSublayout.Items.Clear();
+
+            if (pictureElements.Any())
+            {
+                if (pictureElements.Count() == 1)
+                {
+                    pictureElement = pictureElements.FirstOrDefault();
+                }
+                else
+                {
+                    cboSublayout.Enabled = true;
+                    
+                    foreach (var picture in pictureElements)
+                    {
+                        cboSublayout.Items.Add(picture.Attribute("name")?.Value ?? string.Empty);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(subLayoutName) == false)
+                    {
+                        cboSublayout.SelectedItem = subLayoutName;
+                    }
+                    else
+                    {
+                        cboSublayout.SelectedIndex = 0;
+                    }
+
+                    // If one is selected, load that.  Otherwise load first
+                    pictureElement = pictureElements.Skip(cboSublayout.SelectedIndex).First();
+                }
+            }
+
+            pics = pictureElement.Descendants("picture").Count();
+
+            int xNumber = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("xNumber")?.Value);
+            int picXGap = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("xGap")?.Value);
+            int picYGap = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("yGap")?.Value);
+            int picXSize = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("xSize")?.Value);
+            int picYSize = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("ySize")?.Value);
+            int adjustedXGap = picXGap + picXSize;
+            int adjustedYGap = picYGap + picYSize;
+
+            if (cboCompression.SelectedIndex == 0)
+            {
+                Width = 1574;
+                Height = 786;
+
+                int optimalSize = 1574 - LayoutXAdjust;
+                int actualSize = optimalSize - (1574 - Width);
+
+                sizeRestriction = Math.Min(actualSize * 100 / optimalSize, Height * 100 / 786);
+            }
+            else if (cboCompression.SelectedIndex == 1)
+            {
+                // Ignore for now.
+                //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
+                //this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                //this.Height = 786;
+            }
+            else
+            {
+                Width = LayoutXAdjust + 30;
+                Height = 344;
+            }
+
             for (int i = 0; i < players; i++)
             {
                 lblPlayers[i] = new SimpleLabel();
                 lblPlayers[i].Font = playerFont;
+
                 if (cboCompression.SelectedIndex == 0)
                 {
                     lblPlayers[i].X = (Convert.ToInt32(gameXML.Descendants("player").Skip(i).First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
@@ -522,6 +565,7 @@ namespace RandoTracker
                     lblPlayers[i].X = -1000;
                     lblPlayers[i].Y = -1000;
                 }
+
                 lblPlayers[i].Width = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("width").Value) * sizeRestriction / 100;
                 lblPlayers[i].Height = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("height").Value) * sizeRestriction / 100;
 
@@ -718,30 +762,36 @@ namespace RandoTracker
 
                 for (int j = 0; j < pics; j++)
                 {
+                    var picture = pictureElement.Descendants("picture").Skip(j).First();
+
                     pictures[i, j] = new superPic();
 
                     string firstPicture = "";
                     int numberOfPics = -1;
-                    if (gameXML.Descendants("picture").Skip(j).First().Attribute("src") == null)
+
+                    if (picture.Attribute("src") == null)
                     {
-                        firstPicture = Path.Combine(GetExecutingDirectory(), gameXML.Descendants("picture").Skip(j).First().Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
-                        numberOfPics = gameXML.Descendants("picture").Skip(j).First().Descendants("state").Count();
+                        firstPicture = Path.Combine(GetExecutingDirectory(), picture.Descendants("state").First().Attribute("src").Value.Replace("/", "\\"));
+                        numberOfPics = picture.Descendants("state").Count();
                     }
                     else
                     {
-                        firstPicture = Path.Combine(GetExecutingDirectory(), gameXML.Descendants("picture").Skip(j).First().Attribute("src").Value.Replace("/", "\\"));
+                        firstPicture = Path.Combine(GetExecutingDirectory(), picture.Attribute("src").Value.Replace("/", "\\"));
                     }
+
                     pictures[i, j].Image = Image.FromFile(firstPicture);
 
                     if (cboCompression.SelectedIndex == 0)
                     {
                         pictures[i, j].Left = (picX + (adjustedXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                         pictures[i, j].Top = (picY + (adjustedYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
-                    } else if (cboCompression.SelectedIndex == 1)
+                    }
+                    else if (cboCompression.SelectedIndex == 1)
                     {
                         pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + (adjustedXGap * (j % xNumber)) + LayoutXAdjust;
                         pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (adjustedYGap * (j / xNumber));
-                    } else
+                    }
+                    else
                     {
                         pictures[i, j].Left = -1000;
                         pictures[i, j].Top = -1000;
@@ -757,7 +807,7 @@ namespace RandoTracker
                     this.Controls.Add(pictures[i, j]);
 
                     picCovers[i, j] = new picLabel();
-                    picCovers[i, j].loadPictures(gameXML.Descendants("picture").Skip(j).First());
+                    picCovers[i, j].loadPictures(picture);
 
                     picCovers[i, j].Parent = pictures[i, j];
                     picCovers[i, j].BackColor = Color.FromArgb(numberOfPics == -1 ? 192 : 0, Color.Black);
@@ -900,6 +950,12 @@ namespace RandoTracker
             }
             comChange();
             freeTextChange();
+        }
+
+        private void CboSublayout_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            subLayoutName = cboSublayout.SelectedItem as string;
+            reloadLayout();
         }
 
         private void picHover(object sender, EventArgs e)
@@ -1186,22 +1242,22 @@ namespace RandoTracker
             byte extraTime2 = (byte)(extraTime / 256);
 
             if (client == true)
-                sendBytes(new byte[] { 0xf1, extraTime1, extraTime2 });
+                sendBytes(new byte[] { SocketMessages.START_CLOCK, extraTime1, extraTime2 });
             else
             {
                 startClocks();
-                serverSendBytes(new byte[] { 0xf1, extraTime1, extraTime2 });
+                serverSendBytes(new byte[] { SocketMessages.START_CLOCK, extraTime1, extraTime2 });
             }
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
             if (client == true)
-                sendBytes(new byte[] { 0xf2 });
+                sendBytes(new byte[] { SocketMessages.STOP_CLOCK });
             else
             {
                 stopClocks();
-                serverSendBytes(new byte[] { 0xf2 });
+                serverSendBytes(new byte[] { SocketMessages.STOP_CLOCK });
             }
         }
 
@@ -1210,11 +1266,11 @@ namespace RandoTracker
             if (MessageBox.Show("Are you sure?", "DualSplit", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 if (client == true)
-                    sendBytes(new byte[] { 0xf3 });
+                    sendBytes(new byte[] { SocketMessages.RESET_CLOCK });
                 else
                 {
                     resetClocks();
-                    serverSendBytes(new byte[] { 0xf3 });
+                    serverSendBytes(new byte[] { SocketMessages.RESET_CLOCK });
                 }
             }
         }
@@ -1298,6 +1354,44 @@ namespace RandoTracker
             listener.BeginAccept(new AsyncCallback(OnConnectRequest), listener);
         }
 
+        private void SendLoadLayout()
+        {
+            var data = Path.GetFileNameWithoutExtension(gameFile);
+
+            if (string.IsNullOrWhiteSpace(subLayoutName) == false)
+            {
+                data += "|" + subLayoutName;
+            }
+
+            var bytes = Encoding.UTF8.GetBytes(data);
+
+            if (client == true)
+            {
+                sendBytes(SocketMessages.LOAD_LAYOUT, bytes);
+            }
+            else
+            {
+                serverSendBytes(SocketMessages.LOAD_LAYOUT, bytes);
+            }
+        }
+
+        private void ReceiveLoadLayout(byte[] bytes)
+        {
+            var data = Encoding.UTF8.GetString(bytes).Replace("\0", "");
+            var splitData = data.Split('|');
+
+            if (splitData.Length > 1)
+            {
+                subLayoutName = splitData[1];
+            }
+            else
+            {
+                subLayoutName = string.Empty;
+            }
+
+            loadGame(splitData[0]);
+        }
+
         /// <summary>
         /// Add the given connection to our list of clients
         /// Note we have a new friend
@@ -1315,8 +1409,17 @@ namespace RandoTracker
                 listBox1.Items.Insert(0, "Client " + client.Sock.RemoteEndPoint + " joined");
             }));
 
-            List<byte> array = Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)).ToList();
-            array.Insert(0, 0xf4);
+            // SendLoadLayout
+            var data = Path.GetFileNameWithoutExtension(gameFile);
+
+            if (string.IsNullOrWhiteSpace(subLayoutName) == false)
+            {
+                data += "|" + subLayoutName;
+            }
+
+            var array = Encoding.UTF8.GetBytes(data).ToList();
+            
+            array.Insert(0, SocketMessages.LOAD_LAYOUT); 
             byte[] gameArray = array.ToArray();
             client.Sock.Send(gameArray, gameArray.Length, 0);
 
@@ -1359,19 +1462,19 @@ namespace RandoTracker
                 listBox1.Items.Insert(0, "Server Data Get:  " + aryRet[0]);
                 cleanListBox();
 
-                if (aryRet[0] == 0xf1)
+                if (aryRet[0] == SocketMessages.START_CLOCK)
                 {
                     extraTime = aryRet[1] + (aryRet[2] * 256);
                     txtStartClock.Text = Math.Floor((double)extraTime / 3600) + ":" + Math.Floor((double)(extraTime / 60) % 60).ToString("00") + ":" + Math.Floor((double)extraTime % 60).ToString("00");
                     startClocks();
                 }
-                else if (aryRet[0] == 0xf2) stopClocks();
-                else if (aryRet[0] == 0xf3) resetClocks();
-                else if (aryRet[0] == 0xf4)
+                else if (aryRet[0] == SocketMessages.STOP_CLOCK) stopClocks();
+                else if (aryRet[0] == SocketMessages.RESET_CLOCK) resetClocks();
+                else if (aryRet[0] == SocketMessages.LOAD_LAYOUT)
                 {
                     List<byte> byteArray = aryRet.ToList();
                     byteArray.RemoveAt(0);
-                    loadGame(byteArray.ToArray());
+                    ReceiveLoadLayout(byteArray.ToArray());
                 }
                 else if (aryRet[0] == 0xf5)
                 {
@@ -1521,19 +1624,19 @@ namespace RandoTracker
                         listBox1.Items.Insert(0, "Client Data Get:  " + m_byBuff[0]);
                         cleanListBox();
 
-                        if (m_byBuff[0] == 0xf1)
+                        if (m_byBuff[0] == SocketMessages.START_CLOCK)
                         {
                             extraTime = m_byBuff[1] + (m_byBuff[2] * 256);
                             txtStartClock.Text = Math.Floor((double)extraTime / 3600) + ":" + Math.Floor((double)(extraTime / 60) % 60).ToString("00") + ":" + Math.Floor((double)extraTime % 60).ToString("00");
                             startClocks();
                         }
-                        else if (m_byBuff[0] == 0xf2) stopClocks();
-                        else if (m_byBuff[0] == 0xf3) resetClocks();
-                        else if (m_byBuff[0] == 0xf4)
+                        else if (m_byBuff[0] == SocketMessages.STOP_CLOCK) stopClocks();
+                        else if (m_byBuff[0] == SocketMessages.RESET_CLOCK) resetClocks();
+                        else if (m_byBuff[0] == SocketMessages.LOAD_LAYOUT)
                         {
                             List<byte> byteArray = m_byBuff.ToList();
                             byteArray.RemoveAt(0);
-                            loadGame(byteArray.ToArray());
+                            ReceiveLoadLayout(byteArray.ToArray());
                         }
                         else if (m_byBuff[0] == 0xf5)
                         {
@@ -1673,9 +1776,9 @@ namespace RandoTracker
                 listBox1.Items.RemoveAt(20);
         }
 
-        private void reloadLayout()
+        private void reloadLayout(bool forceReload = false)
         {
-            if (clock.IsRunning)
+            if (clock.IsRunning && forceReload == false)
             {
                 var result = MessageBox.Show("Your clock is currently running.  Are you sure you want to reset?", "Confirmation", MessageBoxButtons.YesNo);
 
@@ -1687,12 +1790,8 @@ namespace RandoTracker
 
             // Mandatory reset clock
             resetClocks();
-
-            if (client == true)
-            {
-                sendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
-            }
-            else
+            
+            if (client == false)
             {
                 try
                 {
@@ -1704,9 +1803,9 @@ namespace RandoTracker
                     gameFile = string.Empty;
                     return;
                 }
-
-                serverSendBytes(0xf4, Encoding.UTF8.GetBytes(Path.GetFileNameWithoutExtension(gameFile)));
             }
+
+            SendLoadLayout();
         }
 
         private void btnChooseGame_Click(object sender, EventArgs e)
@@ -1721,7 +1820,8 @@ namespace RandoTracker
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 gameFile = openFileDialog1.FileName;
-                reloadLayout();
+                subLayoutName = string.Empty;
+                reloadLayout(true);
             }
         }
 

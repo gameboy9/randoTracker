@@ -57,6 +57,7 @@
             this.cboCompression = new System.Windows.Forms.ComboBox();
             this.cmdSplitReport = new System.Windows.Forms.Button();
             this.btnReloadLayout = new System.Windows.Forms.Button();
+            this.cboSublayout = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label2
@@ -125,9 +126,9 @@
             this.lblGameName.BackColor = System.Drawing.Color.Transparent;
             this.lblGameName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGameName.ForeColor = System.Drawing.Color.White;
-            this.lblGameName.Location = new System.Drawing.Point(105, 16);
+            this.lblGameName.Location = new System.Drawing.Point(105, 5);
             this.lblGameName.Name = "lblGameName";
-            this.lblGameName.Size = new System.Drawing.Size(142, 38);
+            this.lblGameName.Size = new System.Drawing.Size(142, 33);
             this.lblGameName.TabIndex = 93;
             this.lblGameName.Text = "Game:  Dragon Quest 1 SFC";
             // 
@@ -337,7 +338,7 @@
             "Commentator view"});
             this.cboCompression.Location = new System.Drawing.Point(14, 41);
             this.cboCompression.Name = "cboCompression";
-            this.cboCompression.Size = new System.Drawing.Size(234, 21);
+            this.cboCompression.Size = new System.Drawing.Size(114, 21);
             this.cboCompression.TabIndex = 130;
             this.cboCompression.SelectedIndexChanged += new System.EventHandler(this.cboCompression_SelectedIndexChanged);
             // 
@@ -361,11 +362,23 @@
             this.btnReloadLayout.UseVisualStyleBackColor = true;
             this.btnReloadLayout.Click += new System.EventHandler(this.btnReloadLayout_Click);
             // 
+            // cboSublayout
+            // 
+            this.cboSublayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSublayout.Enabled = false;
+            this.cboSublayout.FormattingEnabled = true;
+            this.cboSublayout.Location = new System.Drawing.Point(135, 41);
+            this.cboSublayout.Name = "cboSublayout";
+            this.cboSublayout.Size = new System.Drawing.Size(113, 21);
+            this.cboSublayout.TabIndex = 133;
+            this.cboSublayout.SelectionChangeCommitted += new System.EventHandler(this.CboSublayout_SelectionChangeCommitted);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1558, 748);
+            this.Controls.Add(this.cboSublayout);
             this.Controls.Add(this.btnReloadLayout);
             this.Controls.Add(this.cmdSplitReport);
             this.Controls.Add(this.cboCompression);
@@ -434,6 +447,7 @@
         private System.Windows.Forms.ComboBox cboCompression;
         private System.Windows.Forms.Button cmdSplitReport;
         private System.Windows.Forms.Button btnReloadLayout;
+        private System.Windows.Forms.ComboBox cboSublayout;
     }
 }
 
