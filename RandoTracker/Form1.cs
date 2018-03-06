@@ -93,13 +93,16 @@ namespace RandoTracker
 
             try
             {
-                using (TextReader reader = File.OpenText("randoSettings.txt"))
+                if (File.Exists("randoSettings.txt"))
                 {
-                    txtIP.Text = reader.ReadLine();
-                    txtPort.Text = reader.ReadLine(); 
+                    using (TextReader reader = File.OpenText("randoSettings.txt"))
+                    {
+                        txtIP.Text = reader.ReadLine();
+                        txtPort.Text = reader.ReadLine();
 
-                    gameFile = reader.ReadLine();
-                    cboCompression.SelectedIndex = Convert.ToInt32(reader.ReadLine());
+                        gameFile = reader.ReadLine();
+                        cboCompression.SelectedIndex = Convert.ToInt32(reader.ReadLine());
+                    }
                 }
             }
             catch
@@ -1928,13 +1931,28 @@ namespace RandoTracker
                 return true;
             }
 
-            // See if the pixel clicked is transparent or not
+            if (images == null)
+            {
+                return false;
+            }
+
             Image image = images[currentState];
+
+            if (image == null)
+            {
+                return false;
+            }
+
+            int pixelX = (int)((me.X * 1.0f / Width) * image.Width);
+            int pixelY = (int)((me.Y * 1.0f / Height) * image.Height);
+
+            if (pixelX < 0 || pixelY < 0 || pixelX > image.Width || pixelY > image.Height)
+            {
+                return false;
+            }
 
             using (Bitmap bitmap = new Bitmap(image))
             {
-                int pixelX = (int)((me.X * 1.0f / Width) * image.Width);
-                int pixelY = (int)((me.Y * 1.0f / Height) * image.Height);
                 Color pixel = bitmap.GetPixel(pixelX, pixelY);
 
                 if (pixel.A == 0)
