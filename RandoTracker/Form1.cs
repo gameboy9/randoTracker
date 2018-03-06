@@ -390,12 +390,16 @@ namespace RandoTracker
 
             try
             {
-                for (int i = 0; i < neutralPics; i++)
+                if (neutralPictures != null)
                 {
-                    this.Controls.Remove(neutralPictures[i]);
-                    this.Controls.Remove(NPicCovers[i]);
+                    for (int i = 0; i < neutralPictures.Count(); i++)
+                    {
+                        Controls.Remove(neutralPictures[i]);
+                        Controls.Remove(NPicCovers[i]);
+                    }
                 }
             } catch { }
+
             try
             {
                 this.Controls.Remove(logo);
@@ -432,27 +436,6 @@ namespace RandoTracker
 
             gameFontFamily = loadFont(gameFont);
             
-            neutralPics = gameXML.Descendants("neutralPic").Count();
-
-            if (gameXML.Descendants("neutralPics").Count() > 0)
-            {
-                int finalNeutral = 0;
-                for (int i = 0; i < neutralPics; i++)
-                {
-                    int repeat = 1;
-                    try
-                    {
-                        repeat = Convert.ToInt32(gameXML.Descendants("neutralPic").Skip(i).First().Attribute("repeat").Value);
-                    }
-                    catch
-                    {
-                        // Do nothing and do one repeat.
-                    }
-                    finalNeutral += repeat;
-                }
-                neutralPics = finalNeutral;
-            }
-
             if (gameXML.Descendants("mic").First().Attribute("visible").Value == "false")
                 lblCommentary.Visible = false;
             else
@@ -480,7 +463,7 @@ namespace RandoTracker
             var pictureElements = gameXML.Descendants("pictures");
             XElement pictureElement = null;
 
-            cboSublayout.Enabled = false;
+            cboSublayout.Visible = false;
             cboSublayout.Items.Clear();
 
             if (pictureElements.Any())
@@ -491,7 +474,7 @@ namespace RandoTracker
                 }
                 else
                 {
-                    cboSublayout.Enabled = true;
+                    cboSublayout.Visible = true;
                     
                     foreach (var picture in pictureElements)
                     {
@@ -511,7 +494,30 @@ namespace RandoTracker
                     pictureElement = pictureElements.Skip(cboSublayout.SelectedIndex).First();
                 }
             }
+            
+            List<XElement> neutralPicsElements = gameXML.Descendants("neutralPics").ToList();
 
+            if (cboSublayout.Visible)
+            {
+                neutralPicsElements = neutralPicsElements.Where(el => el.Attribute("name")?.Value == (string) cboSublayout.SelectedItem).ToList();
+            }
+            
+            int finalNeutral = 0;
+            for (int i = 0; i < neutralPicsElements.Count(); i++)
+            {
+                int repeat = 1;
+                try
+                {
+                    repeat = Convert.ToInt32(neutralPicsElements.Descendants("neutralPic").Skip(i).First().Attribute("repeat").Value);
+                }
+                catch
+                {
+                    // Do nothing and do one repeat.
+                }
+                finalNeutral += repeat;
+            }
+            neutralPics = finalNeutral;
+            
             pics = pictureElement.Descendants("picture").Count();
 
             int xNumber = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("xNumber")?.Value);
@@ -828,7 +834,7 @@ namespace RandoTracker
             }
 
             int k = -1;
-            foreach (XElement neutralPicsElement in gameXML.Descendants("neutralPics"))
+            foreach (XElement neutralPicsElement in neutralPicsElements)
             {
                 xNumber = Convert.ToInt32(neutralPicsElement.Attribute("xNumber").Value);
 

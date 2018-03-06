@@ -365,7 +365,6 @@
             // cboSublayout
             // 
             this.cboSublayout.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSublayout.Enabled = false;
             this.cboSublayout.FormattingEnabled = true;
             this.cboSublayout.Location = new System.Drawing.Point(135, 41);
             this.cboSublayout.Name = "cboSublayout";
