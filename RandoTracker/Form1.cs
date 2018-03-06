@@ -146,13 +146,13 @@ namespace RandoTracker
 
                 txtPlayer[i].player = radAudio[i].player = txtFinalTime[i].player = cboState[i].player = i;
 
-                txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 330 + (25 * i);
+                txtPlayer[i].Top = radAudio[i].Top = txtFinalTime[i].Top = cboState[i].Top = 360 + (25 * i);
                 txtPlayer[i].Left = lblSplitNames[i].Left = 5 + consoleXAdjust;
                 txtPlayer[i].Width = 70;
                 radAudio[i].Left = txtFinalTime[i].Left = cboState[i].Left = 85 + consoleXAdjust;
 
                 lblSplitTimes[i].Left = 95 + consoleXAdjust;
-                lblSplitNames[i].Top = lblSplitTimes[i].Top = 216 + (22 * i);
+                lblSplitNames[i].Top = lblSplitTimes[i].Top = 246 + (22 * i);
                 lblSplitNames[i].AutoSize = false;
                 lblSplitNames[i].Width = 80;
                 lblSplitTimes[i].Text = lblSplitNames[i].Text = "";
@@ -464,6 +464,7 @@ namespace RandoTracker
             XElement pictureElement = null;
 
             cboSublayout.Visible = false;
+            lblSublayout.Visible = false;
             cboSublayout.Items.Clear();
 
             if (pictureElements.Any())
@@ -475,7 +476,8 @@ namespace RandoTracker
                 else
                 {
                     cboSublayout.Visible = true;
-                    
+                    lblSublayout.Visible = true;
+
                     foreach (var picture in pictureElements)
                     {
                         cboSublayout.Items.Add(picture.Attribute("name")?.Value ?? string.Empty);
