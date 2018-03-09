@@ -438,11 +438,17 @@ namespace RandoTracker
             string gameFont = game.Attribute("Font").Value;
 
             gameFontFamily = loadFont(gameFont);
-            
+
             if (gameXML.Descendants("mic").First().Attribute("visible").Value == "false")
+            {
                 lblCommentary.Visible = false;
+                comMic.Visible = false;
+            }
             else
+            {
                 lblCommentary.Visible = true;
+                comMic.Visible = true;
+            }
 
             playerFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("fontSize").Value) * sizeRestriction / 100;
             finalFontSize = Convert.ToInt32(gameXML.Descendants("players").First().Attribute("finalFont").Value) * sizeRestriction / 100;
