@@ -44,7 +44,7 @@ namespace RandoTracker
         SimpleLabel[] lblFinal = new SimpleLabel[4];
         SimpleLabel[] lblCom = new SimpleLabel[4];
         SimpleLabel[] lblFree = new SimpleLabel[4];
-        Label lblCommentary = new Label();
+        SimpleLabel lblCommentary = new SimpleLabel();
         Label lblFreeText = new Label();
         Label[] lblSplitNames = new Label[4];
         Label[] lblSplitTimes = new Label[4];
@@ -439,7 +439,9 @@ namespace RandoTracker
 
             gameFontFamily = loadFont(gameFont);
 
-            if (gameXML.Descendants("mic").First().Attribute("visible").Value == "false")
+            XElement micElement = gameXML.Descendants("mic").FirstOrDefault();
+
+            if (micElement.Attribute("visible").Value == "false")
             {
                 lblCommentary.Visible = false;
                 comMic.Visible = false;
@@ -463,8 +465,8 @@ namespace RandoTracker
             else
                 audioMic.Height = audioMic.Width = 32 * sizeRestriction / 100;
 
-            if (gameXML.Descendants("mic").Count() > 0 && gameXML.Descendants("mic").First().Attribute("micHeight") != null)
-                comMic.Height = comMic.Width = Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("micHeight").Value) * sizeRestriction / 100;
+            if (micElement.Attribute("micHeight") != null)
+                comMic.Height = comMic.Width = Convert.ToInt32(micElement.Attribute("micHeight").Value) * sizeRestriction / 100;
             else
                 comMic.Height = comMic.Width = 32 * sizeRestriction / 100;
 
@@ -529,7 +531,14 @@ namespace RandoTracker
             }
             neutralPics = finalNeutral;
             
-            pics = pictureElement.Descendants("picture").Count();
+            if (pictureElement != null)
+            {
+                pics = pictureElement.Descendants("picture").Count();
+            }
+            else
+            {
+                pics = 0;
+            }
 
             int xNumber = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("xNumber")?.Value);
             int picXGap = pictureElement == null ? 0 : Convert.ToInt32(pictureElement.Attribute("xGap")?.Value);
@@ -695,19 +704,23 @@ namespace RandoTracker
 
             try
             {
-                lblCommentary.Font = new Font(gameFontFamily, Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("fontSize").Value) * sizeRestriction / 100);
+                lblCommentary.Font = new Font(gameFontFamily, Convert.ToInt32(micElement.Attribute("fontSize").Value) * sizeRestriction / 100);
                 if (cboCompression.SelectedIndex == 0)
-                    lblCommentary.Left = ((Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) + 50) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                    lblCommentary.X = ((Convert.ToInt32(micElement.Attribute("locX").Value) + 50) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                 else
-                    lblCommentary.Left = -1000;
-                lblCommentary.Top = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
-                lblCommentary.Width = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("width").Value) - 50) * sizeRestriction / 100;
-                lblCommentary.Height = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("height").Value)) * sizeRestriction / 100;
-                lblCommentary.TextAlign = ContentAlignment.MiddleLeft;
+                    lblCommentary.X = -1000;
+                lblCommentary.Y = (Convert.ToInt32(micElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                lblCommentary.Width = (Convert.ToInt32(micElement.Attribute("width").Value) - 50) * sizeRestriction / 100;
+                lblCommentary.Height = (Convert.ToInt32(micElement.Attribute("height").Value)) * sizeRestriction / 100;
+                lblCommentary.HorizontalAlignment = StringAlignment.Near;
+                lblCommentary.VerticalAlignment = StringAlignment.Center;
+                lblCommentary.ForeColor = parseColor(micElement.Attribute("fontColor")?.Value, Color.White);
+                lblCommentary.ShadowColor = parseColor(micElement.Attribute("fontShadowColor")?.Value, Color.Black);
+
                 if (cboCompression.SelectedIndex == 0)
                 {
-                    comMic.Left = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                    comMic.Top = (Convert.ToInt32(gameXML.Descendants("mic").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                    comMic.Left = (Convert.ToInt32(micElement.Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                    comMic.Top = (Convert.ToInt32(micElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
                 } else
                 {
                     comMic.Left = -1000;
@@ -716,8 +729,8 @@ namespace RandoTracker
             }
             catch
             {
-                lblCommentary.Left = -1000;
-                lblCommentary.Top = -1000;
+                lblCommentary.X = -1000;
+                lblCommentary.Y = -1000;
                 lblCommentary.Width = 1;
                 lblCommentary.Height = 1;
                 comMic.Left = -1000;
@@ -1070,6 +1083,18 @@ namespace RandoTracker
         {
             if (playerNumber != 5)
             {
+                if (playerNumber >= picCovers.GetLength(0))
+                {
+                    MessageBox.Show($"Unable to change picture.  playerNumber is {playerNumber}, limit is {picCovers.GetLength(0)}", "Error");
+                    return;
+                }
+
+                if (labelNumber >= picCovers.GetLength(1))
+                {
+                    MessageBox.Show($"Unable to change picture.  labelNumber is {labelNumber}, limit is {picCovers.GetLength(1)}", "Error");
+                    return;
+                }
+
                 picLabel clicked = picCovers[playerNumber, labelNumber];
 
                 if (clicked.multiState)
@@ -1085,20 +1110,27 @@ namespace RandoTracker
                     if (clicked.BackColor == Color.FromArgb(0, Color.Black))
                     {
                         clicked.BackColor = Color.FromArgb(192, Color.Black);
-                        picCovers[playerNumber, labelNumber].elapsed[0] = new TimeSpan(0, 0, 0);
+                        clicked.elapsed[0] = new TimeSpan(0, 0, 0);
                     }
                     else
                     {
                         clicked.BackColor = Color.FromArgb(0, Color.Black);
-                        picCovers[playerNumber, labelNumber].elapsed[0] = clock.Elapsed.Add(new TimeSpan(0, 0, extraTime));
+                        clicked.elapsed[0] = clock.Elapsed.Add(new TimeSpan(0, 0, extraTime));
                     }
                 }
                 showTimes(clicked);
-            } else
+            }
+            else
             {
-                picLabel clicked = NPicCovers[labelNumber];
+                if (labelNumber >= NPicCovers.Length)
+                {
+                    MessageBox.Show($"Unable to change picture.  labelNumber is {labelNumber}, limit is {NPicCovers.Length}", "Error");
+                    return;
+                }
 
+                picLabel clicked = NPicCovers[labelNumber];
                 PictureBox picClicked = neutralPictures[labelNumber];
+
                 if (!backwards)
                     picClicked.Image = clicked.nextImage(clock.Elapsed.Add(new TimeSpan(0, 0, extraTime)));
                 else
@@ -1173,9 +1205,9 @@ namespace RandoTracker
             for (int i = 0; i < 4; i++)
             {
                 string comText = (i >= comLines.Length ? "" : comLines[i]);
-                lblCom[i] = new SimpleLabel(comText, lblCommentary.Left, lblCommentary.Top + (i * lblCommentary.Height), lblCommentary.Font, new SolidBrush(Color.White), lblCommentary.Width, lblCommentary.Height);
+                lblCom[i] = new SimpleLabel(comText, lblCommentary.X, lblCommentary.Y + (i * lblCommentary.Height), lblCommentary.Font, new SolidBrush(lblCommentary.ForeColor), lblCommentary.Width, lblCommentary.Height);
                 lblCom[i].HasShadow = true;
-                lblCom[i].ShadowColor = Color.Black;
+                lblCom[i].ShadowColor = lblCommentary.ShadowColor;
             }
             this.Invalidate();
         }
@@ -2116,6 +2148,7 @@ namespace RandoTracker
         public bool hasBG { get; set; }
         public bool HasShadow { get; set; }
         public bool IsMonospaced { get; set; }
+        public bool Visible { get; set; } = true;
 
         private StringFormat Format { get; set; }
 
@@ -2184,6 +2217,11 @@ namespace RandoTracker
 
         public void Draw(Graphics g)
         {
+            if (Visible == false)
+            {
+                return;
+            }
+
             Format.Alignment = HorizontalAlignment;
             Format.LineAlignment = VerticalAlignment;
 
@@ -2231,6 +2269,11 @@ namespace RandoTracker
 
         private void DrawText(string text, Graphics g, float x, float y, float width, float height, StringFormat format)
         {
+            if (Visible == false)
+            {
+                return;
+            }
+
             if (text != null)
             {
                 if (g.TextRenderingHint == TextRenderingHint.AntiAlias && OutlineColor.A > 0)

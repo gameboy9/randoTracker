@@ -5,7 +5,7 @@
 		<player visible="true" locX="400" locY="398" picX="405" picY="452" finalX="489" finalY="447" audioX="670" audioY="397" />
 		<player visible="true" locX="580" locY="523" picX="805" picY="402" finalX="660" finalY="468" audioX="560" audioY="522" />
 	</players>
-	<mic fontSize="12" visible="false" locX="515" locY="633" width="240" height="20" />
+	<mic fontSize="12" visible="false" locX="515" locY="635" width="230" height="20" fontColor="#000000" fontShadowColor="#DFF8D0" />
 	<clock visible="true" fontSize="24" locX="500" locY="288" width="300" height="75" />
 	<pictures xGap="8" yGap="8" xSize="32" ySize="32" xNumber="2">
 		<picture>
