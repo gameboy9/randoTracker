@@ -1566,7 +1566,7 @@ namespace RandoTracker
                 else if (aryRet[0] <= 0x05)
                     changePicture(aryRet[0], aryRet[1], false);
                 else if (aryRet[0] <= 0x15 && aryRet[0] >= 0x10)
-                    changePicture(aryRet[0], aryRet[1], true);
+                    changePicture(aryRet[0] - 0x10, aryRet[1], true);
                 else if (aryRet[0] == 0x0f)
                     newBackground(aryRet[1]);
             }));
