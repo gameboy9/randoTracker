@@ -793,8 +793,14 @@ namespace RandoTracker
                 for (int j = 0; j < pics; j++)
                 {
                     var picture = pictureElement.Descendants("picture").Skip(j).First();
+                    var mode = pictureElement.Attribute("layout")?.Value;
 
                     pictures[i, j] = new superPic();
+
+                    if (string.IsNullOrWhiteSpace(mode))
+                    {
+                        mode = "grid";
+                    }
 
                     string firstPicture = "";
                     int numberOfPics = -1;
@@ -811,47 +817,82 @@ namespace RandoTracker
 
                     pictures[i, j].Image = Image.FromFile(firstPicture);
 
-                    if (cboCompression.SelectedIndex == 0)
-                    {
-                        pictures[i, j].Left = (picX + (adjustedXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                        pictures[i, j].Top = (picY + (adjustedYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
-                    }
-                    else if (cboCompression.SelectedIndex == 1)
-                    {
-                        pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + (adjustedXGap * (j % xNumber)) + LayoutXAdjust;
-                        pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (adjustedYGap * (j / xNumber));
-                    }
-                    else
-                    {
-                        pictures[i, j].Left = -1000;
-                        pictures[i, j].Top = -1000;
-                    }
-
                     pictures[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
-                    pictures[i, j].Width = picXSize * sizeRestriction / 100;
-                    pictures[i, j].Height = picYSize * sizeRestriction / 100;
                     pictures[i, j].BackColor = Color.Transparent;
-
-                    pictures[i, j].Invalidate();
-
-                    this.Controls.Add(pictures[i, j]);
 
                     picCovers[i, j] = new picLabel();
                     picCovers[i, j].loadPictures(picture);
-
                     picCovers[i, j].Parent = pictures[i, j];
                     picCovers[i, j].BackColor = Color.FromArgb(numberOfPics == -1 ? 192 : 0, Color.Black);
-                    picCovers[i, j].Left = 0; // picX + (adjustedXGap * (j % xNumber));
-                    picCovers[i, j].Top = 0; // picY + (adjustedYGap * (j / xNumber));
-                    picCovers[i, j].Width = picXSize * sizeRestriction / 100;
-                    picCovers[i, j].Height = picYSize * sizeRestriction / 100;
                     picCovers[i, j].Click += new EventHandler(picClick);
                     picCovers[i, j].DoubleClick += new EventHandler(picClick);
                     picCovers[i, j].MouseWheel += new MouseEventHandler(picWheel);
                     picCovers[i, j].MouseHover += new EventHandler(picHover);
                     picCovers[i, j].playerNumber = i;
                     picCovers[i, j].labelNumber = j;
+                    picCovers[i, j].Left = 0; // picX + (adjustedXGap * (j % xNumber));
+                    picCovers[i, j].Top = 0; // picY + (adjustedYGap * (j / xNumber));
 
+                    if (mode == "freeform" && cboCompression.SelectedIndex == 0)
+                    {
+                        var location = new Point(picX, picY);
+                        var size = new Point(picXSize, picYSize);
+                        var pictureLocationX = picture.Attribute("locX");
+                        var pictureLocationY = picture.Attribute("locY");
+                        var pictureSizeX = picture.Attribute("xSize");
+                        var pictureSizeY = picture.Attribute("ySize");
+
+                        if (pictureLocationX != null)
+                        {
+                            location.X = Convert.ToInt32(pictureLocationX.Value);
+                        }
+
+                        if (pictureLocationY != null)
+                        {
+                            location.Y = Convert.ToInt32(pictureLocationY.Value);
+                        }
+
+                        if (pictureSizeX != null)
+                        {
+                            size.X = Convert.ToInt32(pictureSizeX.Value);
+                        }
+
+                        if (pictureSizeY != null)
+                        {
+                            size.Y = Convert.ToInt32(pictureSizeY.Value);
+                        }
+
+                        pictures[i, j].Left = (picX + location.X * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                        pictures[i, j].Top = (picY + location.Y * sizeRestriction / 100) + yAdjustment;
+                        pictures[i, j].Width = size.X * sizeRestriction / 100;
+                        pictures[i, j].Height = size.Y * sizeRestriction / 100;
+                    }
+                    else
+                    {
+                        if (cboCompression.SelectedIndex == 0)
+                        {
+                            pictures[i, j].Left = (picX + (adjustedXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                            pictures[i, j].Top = (picY + (adjustedYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
+                        }
+                        else if (cboCompression.SelectedIndex == 1)
+                        {
+                            pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + (adjustedXGap * (j % xNumber)) + LayoutXAdjust;
+                            pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (adjustedYGap * (j / xNumber));
+                        }
+                        else
+                        {
+                            pictures[i, j].Left = -1000;
+                            pictures[i, j].Top = -1000;
+                        }
+
+                        pictures[i, j].Width = picXSize * sizeRestriction / 100;
+                        pictures[i, j].Height = picYSize * sizeRestriction / 100;
+                    }
+
+                    picCovers[i, j].Width = pictures[i, j].Width;
+                    picCovers[i, j].Height = pictures[i, j].Height;
+                    pictures[i, j].Invalidate();
+                    Controls.Add(pictures[i, j]);
                     pictures[i, j].Controls.Add(picCovers[i, j]);
                     picCovers[i, j].BringToFront();
                 }
