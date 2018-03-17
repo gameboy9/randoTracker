@@ -60,6 +60,7 @@
             this.cboSublayout = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lblSublayout = new System.Windows.Forms.Label();
+            this.cboFreeText = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label2
@@ -221,7 +222,7 @@
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(15, 542);
+            this.label7.Location = new System.Drawing.Point(15, 528);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(52, 13);
             this.label7.TabIndex = 121;
@@ -398,11 +399,22 @@
             this.lblSublayout.TabIndex = 135;
             this.lblSublayout.Text = "Sub Layout View:";
             // 
+            // cboFreeText
+            // 
+            this.cboFreeText.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFreeText.FormattingEnabled = true;
+            this.cboFreeText.Location = new System.Drawing.Point(10, 544);
+            this.cboFreeText.Name = "cboFreeText";
+            this.cboFreeText.Size = new System.Drawing.Size(66, 21);
+            this.cboFreeText.TabIndex = 136;
+            this.cboFreeText.SelectedIndexChanged += new System.EventHandler(this.cboFreeText_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(1558, 748);
+            this.Controls.Add(this.cboFreeText);
             this.Controls.Add(this.lblSublayout);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cboSublayout);
@@ -477,6 +489,7 @@
         private System.Windows.Forms.ComboBox cboSublayout;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblSublayout;
+        private System.Windows.Forms.ComboBox cboFreeText;
     }
 }
 

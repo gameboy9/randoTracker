@@ -43,9 +43,9 @@ namespace RandoTracker
         SimpleLabel[] lblPlayers = new SimpleLabel[4];
         SimpleLabel[] lblFinal = new SimpleLabel[4];
         SimpleLabel[] lblCom = new SimpleLabel[4];
-        SimpleLabel[] lblFree = new SimpleLabel[4];
+        List<SimpleLabel> lblFree = new List<SimpleLabel>();
         SimpleLabel lblCommentary = new SimpleLabel();
-        Label lblFreeText = new Label();
+        List<Label> lblFreeTexts = new List<Label>();
         Label[] lblSplitNames = new Label[4];
         Label[] lblSplitTimes = new Label[4];
 
@@ -756,103 +756,110 @@ namespace RandoTracker
                 comMic.Top = -1000;
             }
 
-            if (gameXML.Descendants("freetext").Any())
+            var freeTextElements = gameXML.Descendants("freetext");
+
+            if (freeTextElements.Any())
             {
-                XElement freeTextElement = gameXML.Descendants("freetext").First();
+                cboFreeText.Visible = true;
 
-                lblFreeText.Font = new Font(gameFontFamily, Convert.ToInt32(freeTextElement.Attribute("fontSize").Value) * sizeRestriction / 100);
+                foreach (var freeTextElement in freeTextElements)
+                {
+                    lblFreeText.Font = new Font(gameFontFamily, Convert.ToInt32(freeTextElement.Attribute("fontSize").Value) * sizeRestriction / 100);
 
-                if (cboCompression.SelectedIndex == 0)
-                {
-                    lblFreeText.Left = (Convert.ToInt32(freeTextElement.Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                }
-                else
-                {
-                    lblFreeText.Left = -1000;
-                }
+                    if (cboCompression.SelectedIndex == 0)
+                    {
+                        lblFreeText.Left = (Convert.ToInt32(freeTextElement.Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                    }
+                    else
+                    {
+                        lblFreeText.Left = -1000;
+                    }
 
-                lblFreeText.Top = (Convert.ToInt32(freeTextElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
-                lblFreeText.Width = (Convert.ToInt32(freeTextElement.Attribute("width").Value) * sizeRestriction / 100);
-                lblFreeText.Height = (Convert.ToInt32(freeTextElement.Attribute("height").Value) * sizeRestriction / 100);
+                    lblFreeText.Top = (Convert.ToInt32(freeTextElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                    lblFreeText.Width = (Convert.ToInt32(freeTextElement.Attribute("width").Value) * sizeRestriction / 100);
+                    lblFreeText.Height = (Convert.ToInt32(freeTextElement.Attribute("height").Value) * sizeRestriction / 100);
 
-                // TODO (Hans): This will eventually be shared, so put into a method when appropriate to re-use
-                // TODO (Hans): vAlign currently does nothing as each line is split into a separate SimpleLabel.  Good amount of work necessary to get this implemented.
-                var hAlign = "left";
-                var vAlign = "middle";
-                var hAlignAttribute = freeTextElement.Attribute("hAlign");
-                var vAlignAttribute = freeTextElement.Attribute("vAlign");
+                    // TODO (Hans): This will eventually be shared, so put into a method when appropriate to re-use
+                    // TODO (Hans): vAlign currently does nothing as each line is split into a separate SimpleLabel.  Good amount of work necessary to get this implemented.
+                    var hAlign = "left";
+                    var vAlign = "middle";
+                    var hAlignAttribute = freeTextElement.Attribute("hAlign");
+                    var vAlignAttribute = freeTextElement.Attribute("vAlign");
 
-                if (hAlignAttribute != null)
-                {
-                    hAlign = hAlignAttribute.Value;
-                }
+                    if (hAlignAttribute != null)
+                    {
+                        hAlign = hAlignAttribute.Value;
+                    }
 
-                if (vAlignAttribute != null)
-                {
-                    vAlign = vAlignAttribute.Value;
-                }
-                
-                if (hAlign != "left" && hAlign != "center" && hAlign != "right")
-                {
-                    hAlign = "left";
-                }
+                    if (vAlignAttribute != null)
+                    {
+                        vAlign = vAlignAttribute.Value;
+                    }
 
-                if (vAlign != "top" && vAlign != "middle" && vAlign != "bottom")
-                {
-                    vAlign = "middle";
-                }
+                    if (hAlign != "left" && hAlign != "center" && hAlign != "right")
+                    {
+                        hAlign = "left";
+                    }
 
-                if (hAlign == "left")
-                {
-                    if (vAlign == "top")
+                    if (vAlign != "top" && vAlign != "middle" && vAlign != "bottom")
                     {
-                        lblFreeText.TextAlign = ContentAlignment.TopLeft;
+                        vAlign = "middle";
                     }
-                    else if (vAlign == "middle")
+
+                    if (hAlign == "left")
                     {
-                        lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+                        if (vAlign == "top")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.TopLeft;
+                        }
+                        else if (vAlign == "middle")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+                        }
+                        else if (vAlign == "bottom")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.BottomLeft;
+                        }
                     }
-                    else if (vAlign == "bottom")
+                    else if (hAlign == "center")
                     {
-                        lblFreeText.TextAlign = ContentAlignment.BottomLeft;
+                        if (vAlign == "top")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.TopCenter;
+                        }
+                        else if (vAlign == "middle")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.MiddleCenter;
+                        }
+                        else if (vAlign == "bottom")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.BottomCenter;
+                        }
+                    }
+                    else if (hAlign == "right")
+                    {
+                        if (vAlign == "top")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.TopRight;
+                        }
+                        else if (vAlign == "middle")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.MiddleRight;
+                        }
+                        else if (vAlign == "bottom")
+                        {
+                            lblFreeText.TextAlign = ContentAlignment.BottomRight;
+                        }
                     }
                 }
-                else if (hAlign == "center")
-                {
-                    if (vAlign == "top")
-                    {
-                        lblFreeText.TextAlign = ContentAlignment.TopCenter;
-                    }
-                    else if (vAlign == "middle")
-                    {
-                        lblFreeText.TextAlign = ContentAlignment.MiddleCenter;
-                    }
-                    else if (vAlign == "bottom")
-                    {
-                        lblFreeText.TextAlign = ContentAlignment.BottomCenter;
-                    }
-                }
-                else if (hAlign == "right")
-                {
-                    if (vAlign == "top")
-                    {
-                        lblFreeText.TextAlign = ContentAlignment.TopRight;
-                    }
-                    else if (vAlign == "middle")
-                    {
-                        lblFreeText.TextAlign = ContentAlignment.MiddleRight;
-                    }
-                    else if (vAlign == "bottom")
-                    {
-                        lblFreeText.TextAlign = ContentAlignment.BottomRight;
-                    }
-                }
-            } else
+            }
+            else
             {
                 lblFreeText.Left = -1000;
                 lblFreeText.Top = -1000;
                 lblFreeText.Width = 1;
                 lblFreeText.Height = 1;
+                cboFreeText.Visible = false;
             }
 
             picCovers = new picLabel[players, pics];
@@ -2121,6 +2128,11 @@ namespace RandoTracker
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void cboFreeText_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 
