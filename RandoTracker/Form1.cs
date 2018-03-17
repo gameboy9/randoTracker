@@ -99,12 +99,6 @@ namespace RandoTracker
             this.DoubleBuffered = true;
             this.AutoScaleMode = AutoScaleMode.None;
 
-            string[] lineArgs = Environment.GetCommandLineArgs();
-
-            if (lineArgs.Count() > 1)
-            {
-                gameFile = Path.Combine(GetExecutingDirectory(), lineArgs[1]);
-            }
             try
             {
                 if (File.Exists("randoSettings.txt"))
@@ -114,11 +108,7 @@ namespace RandoTracker
                         txtIP.Text = reader.ReadLine();
                         txtPort.Text = reader.ReadLine();
 
-                        if (string.IsNullOrWhiteSpace(gameFile))
-                        {
-                            gameFile = reader.ReadLine();
-                        }
-
+                        gameFile = reader.ReadLine();
                         cboCompression.SelectedIndex = Convert.ToInt32(reader.ReadLine());
                     }
                 }
@@ -126,6 +116,12 @@ namespace RandoTracker
             catch
             {
                 // ignore error
+            }
+
+            string[] lineArgs = Environment.GetCommandLineArgs();
+            if (lineArgs.Count() > 1)
+            {
+                gameFile = Path.Combine(GetExecutingDirectory(), lineArgs[1]);
             }
 
             if (string.IsNullOrWhiteSpace(gameFile))
