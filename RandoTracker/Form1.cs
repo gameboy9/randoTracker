@@ -104,7 +104,7 @@ namespace RandoTracker
                 if (File.Exists("randoSettings.txt"))
                 {
                     using (TextReader reader = File.OpenText("randoSettings.txt"))
-                    {
+                    {   
                         txtIP.Text = reader.ReadLine();
                         txtPort.Text = reader.ReadLine();
 
@@ -116,6 +116,12 @@ namespace RandoTracker
             catch
             {
                 // ignore error
+            }
+
+            string[] lineArgs = Environment.GetCommandLineArgs();
+            if (lineArgs.Count() > 1)
+            {
+                gameFile = Path.Combine(GetExecutingDirectory(), lineArgs[1]);
             }
 
             if (string.IsNullOrWhiteSpace(gameFile))
