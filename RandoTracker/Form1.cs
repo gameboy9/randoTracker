@@ -105,26 +105,27 @@ namespace RandoTracker
             {
                 gameFile = Path.Combine(GetExecutingDirectory(), lineArgs[1]);
             }
-            else
+            try
             {
-                try
+                if (File.Exists("randoSettings.txt"))
                 {
-                    if (File.Exists("randoSettings.txt"))
-                    {
-                        using (TextReader reader = File.OpenText("randoSettings.txt"))
-                        {
-                            txtIP.Text = reader.ReadLine();
-                            txtPort.Text = reader.ReadLine();
+                    using (TextReader reader = File.OpenText("randoSettings.txt"))
+                    {   
+                        txtIP.Text = reader.ReadLine();
+                        txtPort.Text = reader.ReadLine();
 
+                        if (string.IsNullOrWhiteSpace(gameFile))
+                        {
                             gameFile = reader.ReadLine();
-                            cboCompression.SelectedIndex = Convert.ToInt32(reader.ReadLine());
                         }
+
+                        cboCompression.SelectedIndex = Convert.ToInt32(reader.ReadLine());
                     }
                 }
-                catch
-                {
-                    // ignore error
-                }
+            }
+            catch
+            {
+                // ignore error
             }
 
             if (string.IsNullOrWhiteSpace(gameFile))
