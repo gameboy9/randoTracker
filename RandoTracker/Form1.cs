@@ -409,12 +409,15 @@ namespace RandoTracker
             } catch { }
 
             XDocument gameXML = new XDocument();
+
             try
             {
                 gameXML = XDocument.Load(gameFile);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                var asdf = 1234;
+                MessageBox.Show($"Error loading file {gameFile}. {ex.Message}", "Layout Error");
+                return;
             }
             
             XElement game = gameXML.Element("game");
@@ -428,12 +431,14 @@ namespace RandoTracker
             lblGameName.Text = "Game:  " + game.Attribute("name")?.Value;
             players = Convert.ToInt32(game.Attribute("players")?.Value);
 
-            if (players != 4)
+            if (players > 4)
             {
-                players = 2;
+                players = 4;
             }
 
-            txtPlayer[2].Enabled = txtPlayer[3].Enabled = txtFinalTime[2].Enabled = txtFinalTime[3].Enabled = radAudio[2].Enabled = radAudio[3].Enabled = cboState[2].Enabled = cboState[3].Enabled = (players == 4);
+            txtPlayer[1].Enabled = txtFinalTime[1].Enabled = radAudio[1].Enabled = cboState[1].Enabled = (players >= 2);
+            txtPlayer[2].Enabled = txtFinalTime[2].Enabled = radAudio[2].Enabled = cboState[2].Enabled = (players >= 3);
+            txtPlayer[3].Enabled = txtFinalTime[3].Enabled = radAudio[3].Enabled = cboState[3].Enabled = (players >= 4);
             
             string gameFont = game.Attribute("Font").Value;
 
@@ -562,7 +567,10 @@ namespace RandoTracker
             {
                 // Ignore for now.
                 //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
-                //this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                //if (players > 1)
+                //{
+                //    this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                //}
                 //this.Height = 786;
             }
             else
@@ -666,7 +674,12 @@ namespace RandoTracker
             if (cboCompression.SelectedIndex == 1)
             {
                 this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
-                this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+
+                if (players > 1)
+                {
+                    this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                }
+
                 this.Height = 786;
             }
 
@@ -1091,10 +1104,21 @@ namespace RandoTracker
                     writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20) + txtPlayer[1].Text.PadRight(20) + txtPlayer[2].Text.PadRight(20) + txtPlayer[3].Text.PadRight(20));
                     writer.WriteLine("--------------------------------------------------------------------------------------------------------------");
                 }
-                else
+                else if (players == 3)
+                {
+                    writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20) + txtPlayer[1].Text.PadRight(20) + txtPlayer[2].Text.PadRight(20));
+                    writer.WriteLine("------------------------------------------------------------------------------------------");
+                }
+                else if (players == 2)
                 {
                     writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20) + txtPlayer[1].Text.PadRight(20));
                     writer.WriteLine("----------------------------------------------------------------------");
+                }
+                else
+                {
+                    writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20));
+                    writer.WriteLine("--------------------------------------------------");
+
                 }
 
                 for (int j = 0; j < picCovers.GetLength(1); j++)
