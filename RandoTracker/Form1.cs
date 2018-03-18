@@ -82,6 +82,7 @@ namespace RandoTracker
             public const byte STOP_CLOCK = 0xf2;
             public const byte RESET_CLOCK = 0xf3;
             public const byte LOAD_LAYOUT = 0xf4;
+            public const byte FREETEXT_UPDATE = 0xf6;
         }
 
         public Form1()
@@ -758,28 +759,33 @@ namespace RandoTracker
 
             var freeTextElements = gameXML.Descendants("freetext");
 
+            lblFreeTexts.Clear();
+            cboFreeText.Items.Clear();
+
             if (freeTextElements.Any())
             {
                 cboFreeText.Visible = true;
 
                 foreach (var freeTextElement in freeTextElements)
                 {
-                    lblFreeText.Font = new Font(gameFontFamily, Convert.ToInt32(freeTextElement.Attribute("fontSize").Value) * sizeRestriction / 100);
+                    var label = new Label();
+
+                    label.Font = new Font(gameFontFamily, Convert.ToInt32(freeTextElement.Attribute("fontSize").Value) * sizeRestriction / 100);
 
                     if (cboCompression.SelectedIndex == 0)
                     {
-                        lblFreeText.Left = (Convert.ToInt32(freeTextElement.Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                        label.Left = (Convert.ToInt32(freeTextElement.Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
                     }
                     else
                     {
-                        lblFreeText.Left = -1000;
+                        label.Left = -1000;
                     }
 
-                    lblFreeText.Top = (Convert.ToInt32(freeTextElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
-                    lblFreeText.Width = (Convert.ToInt32(freeTextElement.Attribute("width").Value) * sizeRestriction / 100);
-                    lblFreeText.Height = (Convert.ToInt32(freeTextElement.Attribute("height").Value) * sizeRestriction / 100);
+                    label.Top = (Convert.ToInt32(freeTextElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                    label.Width = (Convert.ToInt32(freeTextElement.Attribute("width").Value) * sizeRestriction / 100);
+                    label.Height = (Convert.ToInt32(freeTextElement.Attribute("height").Value) * sizeRestriction / 100);
 
-                    // TODO (Hans): This will eventually be shared, so put into a method when appropriate to re-use
+                    // TODO (Hans): This will eventually be shared with other labels, so put into a method when appropriate to re-use when needed.
                     // TODO (Hans): vAlign currently does nothing as each line is split into a separate SimpleLabel.  Good amount of work necessary to get this implemented.
                     var hAlign = "left";
                     var vAlign = "middle";
@@ -810,55 +816,66 @@ namespace RandoTracker
                     {
                         if (vAlign == "top")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.TopLeft;
+                            label.TextAlign = ContentAlignment.TopLeft;
                         }
                         else if (vAlign == "middle")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+                            label.TextAlign = ContentAlignment.MiddleLeft;
                         }
                         else if (vAlign == "bottom")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.BottomLeft;
+                            label.TextAlign = ContentAlignment.BottomLeft;
                         }
                     }
                     else if (hAlign == "center")
                     {
                         if (vAlign == "top")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.TopCenter;
+                            label.TextAlign = ContentAlignment.TopCenter;
                         }
                         else if (vAlign == "middle")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.MiddleCenter;
+                            label.TextAlign = ContentAlignment.MiddleCenter;
                         }
                         else if (vAlign == "bottom")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.BottomCenter;
+                            label.TextAlign = ContentAlignment.BottomCenter;
                         }
                     }
                     else if (hAlign == "right")
                     {
                         if (vAlign == "top")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.TopRight;
+                            label.TextAlign = ContentAlignment.TopRight;
                         }
                         else if (vAlign == "middle")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.MiddleRight;
+                            label.TextAlign = ContentAlignment.MiddleRight;
                         }
                         else if (vAlign == "bottom")
                         {
-                            lblFreeText.TextAlign = ContentAlignment.BottomRight;
+                            label.TextAlign = ContentAlignment.BottomRight;
                         }
                     }
+
+                    lblFreeTexts.Add(label);
+
+                    var nameAttribute = freeTextElement.Attribute("name");
+
+                    if (nameAttribute != null)
+                    {
+                        cboFreeText.Items.Add(nameAttribute.Value);
+                    }
+                    else
+                    {
+                        cboFreeText.Items.Add(lblFreeTexts.Count);
+                    }
                 }
+
+                cboFreeText.SelectedIndex = 0;
             }
             else
             {
-                lblFreeText.Left = -1000;
-                lblFreeText.Top = -1000;
-                lblFreeText.Width = 1;
-                lblFreeText.Height = 1;
                 cboFreeText.Visible = false;
             }
 
@@ -1372,34 +1389,46 @@ namespace RandoTracker
 
         private void freeTextChange()
         {
-            string[] comLines = txtFreeText.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            for (int i = 0; i < 4; i++)
+            lblFree.Clear();
+            
+            // Rebuild the labels
+            foreach (var freeText in lblFreeTexts)
             {
-                string comText = (i >= comLines.Length ? "" : comLines[i]);
-                lblFree[i] = new SimpleLabel(comText, lblFreeText.Left, lblFreeText.Top + (i * lblFreeText.Height), lblFreeText.Font, new SolidBrush(Color.White), lblFreeText.Width, lblFreeText.Height);
-                lblFree[i].HasShadow = true;
-                lblFree[i].ShadowColor = Color.Black;
+                string[] comLines = freeText.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-                if (lblFreeText.TextAlign == ContentAlignment.TopLeft || lblFreeText.TextAlign == ContentAlignment.MiddleLeft || lblFreeText.TextAlign == ContentAlignment.BottomLeft)
+                for (int i = 0; i < comLines.Length; i++)
                 {
-                    lblFree[i].HorizontalAlignment = StringAlignment.Near;
-                }
-                else if (lblFreeText.TextAlign == ContentAlignment.TopCenter || lblFreeText.TextAlign == ContentAlignment.MiddleCenter || lblFreeText.TextAlign == ContentAlignment.BottomCenter)
-                {
-                    lblFree[i].HorizontalAlignment = StringAlignment.Center;
-                }
-                else
-                {
-                    lblFree[i].HorizontalAlignment = StringAlignment.Far;
+                    string comText = (i >= comLines.Length ? "" : comLines[i]);
+                    var simpleLabel = new SimpleLabel(comText, freeText.Left, freeText.Top + (i * freeText.Height), freeText.Font, new SolidBrush(Color.White), freeText.Width, freeText.Height);
+                    simpleLabel.HasShadow = true;
+                    simpleLabel.ShadowColor = Color.Black;
+
+                    if (freeText.TextAlign == ContentAlignment.TopLeft || freeText.TextAlign == ContentAlignment.MiddleLeft || freeText.TextAlign == ContentAlignment.BottomLeft)
+                    {
+                        simpleLabel.HorizontalAlignment = StringAlignment.Near;
+                    }
+                    else if (freeText.TextAlign == ContentAlignment.TopCenter || freeText.TextAlign == ContentAlignment.MiddleCenter || freeText.TextAlign == ContentAlignment.BottomCenter)
+                    {
+                        simpleLabel.HorizontalAlignment = StringAlignment.Center;
+                    }
+                    else
+                    {
+                        simpleLabel.HorizontalAlignment = StringAlignment.Far;
+                    }
+
+                    lblFree.Add(simpleLabel);
                 }
             }
-            this.Invalidate();
+            
+            Invalidate();
         }
 
         private void txtCommentary_Leave(object sender, EventArgs e)
         {
             if (client == true)
+            {
                 sendBytes(0xf5, Encoding.UTF8.GetBytes(txtCommentary.Text));
+            }
             else
             {
                 comChange();
@@ -1409,12 +1438,31 @@ namespace RandoTracker
 
         private void txtFreeText_Leave(object sender, EventArgs e)
         {
+            if (cboFreeText.SelectedIndex < 0)
+            {
+                return;
+            }
+
+            var freeTextName = cboFreeText.SelectedItem.ToString();
+
+            if (string.IsNullOrWhiteSpace(freeTextName))
+            {
+                // No configured freetext elements, so do nothing
+                return;
+            }
+
+            var label = lblFreeTexts[cboFreeText.SelectedIndex];
+
+            label.Text = txtFreeText.Text;
+            freeTextChange();
+
             if (client == true)
-                sendBytes(0xf6, Encoding.UTF8.GetBytes(txtFreeText.Text));
+            {
+                sendBytes(SocketMessages.FREETEXT_UPDATE, Encoding.UTF8.GetBytes(freeTextName + "|" + txtFreeText.Text));
+            }
             else
             {
-                freeTextChange();
-                serverSendBytes(0xf6, Encoding.UTF8.GetBytes(txtFreeText.Text));
+                serverSendBytes(SocketMessages.FREETEXT_UPDATE, Encoding.UTF8.GetBytes(freeTextName + "|" + txtFreeText.Text));
             }
         }
 
@@ -1703,12 +1751,11 @@ namespace RandoTracker
                     txtCommentary.Text = Encoding.UTF8.GetString(byteArray.ToArray());
                     comChange();
                 }
-                else if (aryRet[0] == 0xf6)
+                else if (aryRet[0] == SocketMessages.FREETEXT_UPDATE)
                 {
                     List<byte> byteArray = aryRet.ToList();
                     byteArray.RemoveAt(0);
-                    txtFreeText.Text = Encoding.UTF8.GetString(byteArray.ToArray());
-                    freeTextChange();
+                    FreeTextUpdateReceived(byteArray);
                 }
                 else if (aryRet[0] == 0xf8)
                 {
@@ -1815,6 +1862,16 @@ namespace RandoTracker
             }
         }
 
+        private void FreeTextUpdateReceived(List<byte> data)
+        {
+            var text = Encoding.UTF8.GetString(data.ToArray()).Split('|');
+            var freeTextName = text[0];
+            var value = text[1];
+
+            lblFreeTexts[cboFreeText.Items.IndexOf(freeTextName)].Text = value;
+            freeTextChange();
+        }
+
         /// <summary>
         /// Get the new data and send it out to all other connections. 
         /// Note: If not data was recieved the connection has probably 
@@ -1865,12 +1922,11 @@ namespace RandoTracker
                             txtCommentary.Text = Encoding.UTF8.GetString(byteArray.ToArray());
                             comChange();
                         }
-                        else if (m_byBuff[0] == 0xf6)
+                        else if (m_byBuff[0] == SocketMessages.FREETEXT_UPDATE)
                         {
                             List<byte> byteArray = m_byBuff.ToList();
                             byteArray.RemoveAt(0);
-                            txtFreeText.Text = Encoding.UTF8.GetString(byteArray.ToArray());
-                            freeTextChange();
+                            FreeTextUpdateReceived(byteArray);
                         }
                         else if (m_byBuff[0] == 0xf8)
                         {
@@ -2068,12 +2124,12 @@ namespace RandoTracker
                     if (lblCom[i] == null) continue;
                     lblCom[i].Draw(e.Graphics);
                 }
-                for (int i = 0; i < 4; i++)
-                {
-                    if (lblFree[i] == null) continue;
-                    lblFree[i].Draw(e.Graphics);
-                }
 
+                foreach (var label in lblFree)
+                {
+                    label.Draw(e.Graphics);
+                }
+                
                 for (int i = 0; i < 4; i++)
                 {
                     if (lblFinal[i] == null || lblFinal[i].Text == "") continue;
@@ -2132,7 +2188,7 @@ namespace RandoTracker
 
         private void cboFreeText_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            txtFreeText.Text = lblFreeTexts[cboFreeText.SelectedIndex].Text;
         }
     }
 
