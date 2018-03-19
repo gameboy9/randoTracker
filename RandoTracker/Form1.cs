@@ -104,7 +104,7 @@ namespace RandoTracker
                 if (File.Exists("randoSettings.txt"))
                 {
                     using (TextReader reader = File.OpenText("randoSettings.txt"))
-                    {
+                    {   
                         txtIP.Text = reader.ReadLine();
                         txtPort.Text = reader.ReadLine();
 
@@ -116,6 +116,12 @@ namespace RandoTracker
             catch
             {
                 // ignore error
+            }
+
+            string[] lineArgs = Environment.GetCommandLineArgs();
+            if (lineArgs.Count() > 1)
+            {
+                gameFile = Path.Combine(GetExecutingDirectory(), lineArgs[1]);
             }
 
             if (string.IsNullOrWhiteSpace(gameFile))
@@ -409,12 +415,15 @@ namespace RandoTracker
             } catch { }
 
             XDocument gameXML = new XDocument();
+
             try
             {
                 gameXML = XDocument.Load(gameFile);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                var asdf = 1234;
+                MessageBox.Show($"Error loading file {gameFile}. {ex.Message}", "Layout Error");
+                return;
             }
             
             XElement game = gameXML.Element("game");
@@ -428,12 +437,14 @@ namespace RandoTracker
             lblGameName.Text = "Game:  " + game.Attribute("name")?.Value;
             players = Convert.ToInt32(game.Attribute("players")?.Value);
 
-            if (players != 4)
+            if (players > 4)
             {
-                players = 2;
+                players = 4;
             }
 
-            txtPlayer[2].Enabled = txtPlayer[3].Enabled = txtFinalTime[2].Enabled = txtFinalTime[3].Enabled = radAudio[2].Enabled = radAudio[3].Enabled = cboState[2].Enabled = cboState[3].Enabled = (players == 4);
+            txtPlayer[1].Enabled = txtFinalTime[1].Enabled = radAudio[1].Enabled = cboState[1].Enabled = (players >= 2);
+            txtPlayer[2].Enabled = txtFinalTime[2].Enabled = radAudio[2].Enabled = cboState[2].Enabled = (players >= 3);
+            txtPlayer[3].Enabled = txtFinalTime[3].Enabled = radAudio[3].Enabled = cboState[3].Enabled = (players >= 4);
             
             string gameFont = game.Attribute("Font").Value;
 
@@ -562,7 +573,10 @@ namespace RandoTracker
             {
                 // Ignore for now.
                 //this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
-                //this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                //if (players > 1)
+                //{
+                //    this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                //}
                 //this.Height = 786;
             }
             else
@@ -666,7 +680,12 @@ namespace RandoTracker
             if (cboCompression.SelectedIndex == 1)
             {
                 this.Width = Math.Max(LayoutXAdjust + 30 + (((xNumber * 2) + 2) * adjustedXGap), picClock.Left + picClock.Width + 20);
-                this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+
+                if (players > 1)
+                {
+                    this.Width = Math.Max(this.Width, (int)lblPlayers[1].X + (int)lblPlayers[1].Width + 20);
+                }
+
                 this.Height = 786;
             }
 
@@ -737,17 +756,97 @@ namespace RandoTracker
                 comMic.Top = -1000;
             }
 
-            if (gameXML.Descendants("freetext").Count() > 0)
+            if (gameXML.Descendants("freetext").Any())
             {
-                lblFreeText.Font = new Font(gameFontFamily, Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("fontSize").Value) * sizeRestriction / 100);
+                XElement freeTextElement = gameXML.Descendants("freetext").First();
+
+                lblFreeText.Font = new Font(gameFontFamily, Convert.ToInt32(freeTextElement.Attribute("fontSize").Value) * sizeRestriction / 100);
+
                 if (cboCompression.SelectedIndex == 0)
-                    lblFreeText.Left = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                {
+                    lblFreeText.Left = (Convert.ToInt32(freeTextElement.Attribute("locX").Value) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                }
                 else
+                {
                     lblFreeText.Left = -1000;
-                lblFreeText.Top = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
-                lblFreeText.Width = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("width").Value) * sizeRestriction / 100);
-                lblFreeText.Height = (Convert.ToInt32(gameXML.Descendants("freetext").First().Attribute("height").Value) * sizeRestriction / 100);
-                lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+                }
+
+                lblFreeText.Top = (Convert.ToInt32(freeTextElement.Attribute("locY").Value) * sizeRestriction / 100) + yAdjustment;
+                lblFreeText.Width = (Convert.ToInt32(freeTextElement.Attribute("width").Value) * sizeRestriction / 100);
+                lblFreeText.Height = (Convert.ToInt32(freeTextElement.Attribute("height").Value) * sizeRestriction / 100);
+
+                // TODO (Hans): This will eventually be shared, so put into a method when appropriate to re-use
+                // TODO (Hans): vAlign currently does nothing as each line is split into a separate SimpleLabel.  Good amount of work necessary to get this implemented.
+                var hAlign = "left";
+                var vAlign = "middle";
+                var hAlignAttribute = freeTextElement.Attribute("hAlign");
+                var vAlignAttribute = freeTextElement.Attribute("vAlign");
+
+                if (hAlignAttribute != null)
+                {
+                    hAlign = hAlignAttribute.Value;
+                }
+
+                if (vAlignAttribute != null)
+                {
+                    vAlign = vAlignAttribute.Value;
+                }
+                
+                if (hAlign != "left" && hAlign != "center" && hAlign != "right")
+                {
+                    hAlign = "left";
+                }
+
+                if (vAlign != "top" && vAlign != "middle" && vAlign != "bottom")
+                {
+                    vAlign = "middle";
+                }
+
+                if (hAlign == "left")
+                {
+                    if (vAlign == "top")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.TopLeft;
+                    }
+                    else if (vAlign == "middle")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.MiddleLeft;
+                    }
+                    else if (vAlign == "bottom")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.BottomLeft;
+                    }
+                }
+                else if (hAlign == "center")
+                {
+                    if (vAlign == "top")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.TopCenter;
+                    }
+                    else if (vAlign == "middle")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.MiddleCenter;
+                    }
+                    else if (vAlign == "bottom")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.BottomCenter;
+                    }
+                }
+                else if (hAlign == "right")
+                {
+                    if (vAlign == "top")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.TopRight;
+                    }
+                    else if (vAlign == "middle")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.MiddleRight;
+                    }
+                    else if (vAlign == "bottom")
+                    {
+                        lblFreeText.TextAlign = ContentAlignment.BottomRight;
+                    }
+                }
             } else
             {
                 lblFreeText.Left = -1000;
@@ -793,8 +892,14 @@ namespace RandoTracker
                 for (int j = 0; j < pics; j++)
                 {
                     var picture = pictureElement.Descendants("picture").Skip(j).First();
+                    var mode = pictureElement.Attribute("layout")?.Value;
 
                     pictures[i, j] = new superPic();
+
+                    if (string.IsNullOrWhiteSpace(mode))
+                    {
+                        mode = "grid";
+                    }
 
                     string firstPicture = "";
                     int numberOfPics = -1;
@@ -811,47 +916,82 @@ namespace RandoTracker
 
                     pictures[i, j].Image = Image.FromFile(firstPicture);
 
-                    if (cboCompression.SelectedIndex == 0)
-                    {
-                        pictures[i, j].Left = (picX + (adjustedXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
-                        pictures[i, j].Top = (picY + (adjustedYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
-                    }
-                    else if (cboCompression.SelectedIndex == 1)
-                    {
-                        pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + (adjustedXGap * (j % xNumber)) + LayoutXAdjust;
-                        pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (adjustedYGap * (j / xNumber));
-                    }
-                    else
-                    {
-                        pictures[i, j].Left = -1000;
-                        pictures[i, j].Top = -1000;
-                    }
-
                     pictures[i, j].SizeMode = PictureBoxSizeMode.StretchImage;
-                    pictures[i, j].Width = picXSize * sizeRestriction / 100;
-                    pictures[i, j].Height = picYSize * sizeRestriction / 100;
                     pictures[i, j].BackColor = Color.Transparent;
-
-                    pictures[i, j].Invalidate();
-
-                    this.Controls.Add(pictures[i, j]);
 
                     picCovers[i, j] = new picLabel();
                     picCovers[i, j].loadPictures(picture);
-
                     picCovers[i, j].Parent = pictures[i, j];
                     picCovers[i, j].BackColor = Color.FromArgb(numberOfPics == -1 ? 192 : 0, Color.Black);
-                    picCovers[i, j].Left = 0; // picX + (adjustedXGap * (j % xNumber));
-                    picCovers[i, j].Top = 0; // picY + (adjustedYGap * (j / xNumber));
-                    picCovers[i, j].Width = picXSize * sizeRestriction / 100;
-                    picCovers[i, j].Height = picYSize * sizeRestriction / 100;
                     picCovers[i, j].Click += new EventHandler(picClick);
                     picCovers[i, j].DoubleClick += new EventHandler(picClick);
                     picCovers[i, j].MouseWheel += new MouseEventHandler(picWheel);
                     picCovers[i, j].MouseHover += new EventHandler(picHover);
                     picCovers[i, j].playerNumber = i;
                     picCovers[i, j].labelNumber = j;
+                    picCovers[i, j].Left = 0; // picX + (adjustedXGap * (j % xNumber));
+                    picCovers[i, j].Top = 0; // picY + (adjustedYGap * (j / xNumber));
 
+                    if (mode == "freeform" && cboCompression.SelectedIndex == 0)
+                    {
+                        var location = new Point(picX, picY);
+                        var size = new Point(picXSize, picYSize);
+                        var pictureLocationX = picture.Attribute("locX");
+                        var pictureLocationY = picture.Attribute("locY");
+                        var pictureSizeX = picture.Attribute("xSize");
+                        var pictureSizeY = picture.Attribute("ySize");
+
+                        if (pictureLocationX != null)
+                        {
+                            location.X = Convert.ToInt32(pictureLocationX.Value);
+                        }
+
+                        if (pictureLocationY != null)
+                        {
+                            location.Y = Convert.ToInt32(pictureLocationY.Value);
+                        }
+
+                        if (pictureSizeX != null)
+                        {
+                            size.X = Convert.ToInt32(pictureSizeX.Value);
+                        }
+
+                        if (pictureSizeY != null)
+                        {
+                            size.Y = Convert.ToInt32(pictureSizeY.Value);
+                        }
+
+                        pictures[i, j].Left = (picX + location.X * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                        pictures[i, j].Top = (picY + location.Y * sizeRestriction / 100) + yAdjustment;
+                        pictures[i, j].Width = size.X * sizeRestriction / 100;
+                        pictures[i, j].Height = size.Y * sizeRestriction / 100;
+                    }
+                    else
+                    {
+                        if (cboCompression.SelectedIndex == 0)
+                        {
+                            pictures[i, j].Left = (picX + (adjustedXGap * (j % xNumber)) * sizeRestriction / 100) + xAdjustment + LayoutXAdjust;
+                            pictures[i, j].Top = (picY + (adjustedYGap * (j / xNumber)) * sizeRestriction / 100) + yAdjustment;
+                        }
+                        else if (cboCompression.SelectedIndex == 1)
+                        {
+                            pictures[i, j].Left = 10 + (i % 2 == 1 ? (xNumber + 2) * adjustedXGap : 0) + (adjustedXGap * (j % xNumber)) + LayoutXAdjust;
+                            pictures[i, j].Top = 10 + (i / 2 == 1 ? 335 : 35) + (adjustedYGap * (j / xNumber));
+                        }
+                        else
+                        {
+                            pictures[i, j].Left = -1000;
+                            pictures[i, j].Top = -1000;
+                        }
+
+                        pictures[i, j].Width = picXSize * sizeRestriction / 100;
+                        pictures[i, j].Height = picYSize * sizeRestriction / 100;
+                    }
+
+                    picCovers[i, j].Width = pictures[i, j].Width;
+                    picCovers[i, j].Height = pictures[i, j].Height;
+                    pictures[i, j].Invalidate();
+                    Controls.Add(pictures[i, j]);
                     pictures[i, j].Controls.Add(picCovers[i, j]);
                     picCovers[i, j].BringToFront();
                 }
@@ -1050,10 +1190,21 @@ namespace RandoTracker
                     writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20) + txtPlayer[1].Text.PadRight(20) + txtPlayer[2].Text.PadRight(20) + txtPlayer[3].Text.PadRight(20));
                     writer.WriteLine("--------------------------------------------------------------------------------------------------------------");
                 }
-                else
+                else if (players == 3)
+                {
+                    writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20) + txtPlayer[1].Text.PadRight(20) + txtPlayer[2].Text.PadRight(20));
+                    writer.WriteLine("------------------------------------------------------------------------------------------");
+                }
+                else if (players == 2)
                 {
                     writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20) + txtPlayer[1].Text.PadRight(20));
                     writer.WriteLine("----------------------------------------------------------------------");
+                }
+                else
+                {
+                    writer.WriteLine("Game".PadRight(30) + txtPlayer[0].Text.PadRight(20));
+                    writer.WriteLine("--------------------------------------------------");
+
                 }
 
                 for (int j = 0; j < picCovers.GetLength(1); j++)
@@ -1221,6 +1372,19 @@ namespace RandoTracker
                 lblFree[i] = new SimpleLabel(comText, lblFreeText.Left, lblFreeText.Top + (i * lblFreeText.Height), lblFreeText.Font, new SolidBrush(Color.White), lblFreeText.Width, lblFreeText.Height);
                 lblFree[i].HasShadow = true;
                 lblFree[i].ShadowColor = Color.Black;
+
+                if (lblFreeText.TextAlign == ContentAlignment.TopLeft || lblFreeText.TextAlign == ContentAlignment.MiddleLeft || lblFreeText.TextAlign == ContentAlignment.BottomLeft)
+                {
+                    lblFree[i].HorizontalAlignment = StringAlignment.Near;
+                }
+                else if (lblFreeText.TextAlign == ContentAlignment.TopCenter || lblFreeText.TextAlign == ContentAlignment.MiddleCenter || lblFreeText.TextAlign == ContentAlignment.BottomCenter)
+                {
+                    lblFree[i].HorizontalAlignment = StringAlignment.Center;
+                }
+                else
+                {
+                    lblFree[i].HorizontalAlignment = StringAlignment.Far;
+                }
             }
             this.Invalidate();
         }
@@ -1566,7 +1730,7 @@ namespace RandoTracker
                 else if (aryRet[0] <= 0x05)
                     changePicture(aryRet[0], aryRet[1], false);
                 else if (aryRet[0] <= 0x15 && aryRet[0] >= 0x10)
-                    changePicture(aryRet[0], aryRet[1], true);
+                    changePicture(aryRet[0] - 0x10, aryRet[1], true);
                 else if (aryRet[0] == 0x0f)
                     newBackground(aryRet[1]);
             }));
