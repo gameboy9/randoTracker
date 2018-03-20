@@ -868,7 +868,7 @@ namespace RandoTracker
                     }
                     else
                     {
-                        cboFreeText.Items.Add(lblFreeTexts.Count);
+                        cboFreeText.Items.Add(lblFreeTexts.Count.ToString());
                     }
                 }
 
