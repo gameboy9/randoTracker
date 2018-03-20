@@ -1,0 +1,24 @@
+<game name="Marathon 2018 1p" Font="Press Start 2P" players="1" background="marathon2018\4x3 base (Item Tracker) Neon 1 Green.png" shortname="2018-1p">
+	<players fontColor="#fff" fontShadowColor="#000" fontSize="18" width="380" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="0">
+		<player align="center" visible="true" locX="870" locY="185" picX="1280" picY="720" finalX="294" finalY="529" audioX="361" audioY="467" />
+	</players>
+	<mic visible="true" fontSize="11" locX="900" locY="56" width="340" height="22" />
+	<clock visible="true" fontSize="18" locX="855" locY="390" width="240" height="24" />
+	<freetext hAlign="center" visible="true" fontSize="15" locX="870" locY="560" width="400" height="20" />
+	<pictures xSize="32" ySize="32" xNumber="4">
+		<picture transparentClickable="false">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+	</pictures>
+	<backgrounds playerSpecific="false">
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Green.png" name="Green" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Blue.png" name="Blue" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Orange.png" name="Orange" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Pink.png" name="Pink" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Purple.png" name="Purple" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Red.png" name="Red" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Teal.png" name="Teal" />
+		<background file="marathon2018\4x3 base (Item Tracker) Neon 1 Yellow.png" name="Yellow" />
+	</backgrounds>
+</game>

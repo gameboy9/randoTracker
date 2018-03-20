@@ -1,0 +1,15 @@
+<game name="Marathon 2018 1p 16x9" Font="Press Start 2P" players="1" background="marathon2017\Prototype_5_3_boxes.png" shortname="2018-1p-16x9">
+	<players fontSize="16" width="410" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="0">
+		<player visible="true" locX="116" locY="645" picX="1280" picY="720" finalX="294" finalY="529" audioX="361" audioY="467" />
+		<player visible="true" locX="850" locY="470" picX="1280" picY="720" finalX="823" finalY="529" audioX="864" audioY="467" />
+	</players>
+	<mic visible="true" fontSize="11" locX="900" locY="540" width="340" height="22" />
+	<clock visible="true" fontSize="16" locX="480" locY="645" width="240" height="24" />
+	<freetext align="center" visible="true" fontSize="12" locX="900" locY="56" width="340" height="20" />
+	<pictures xSize="32" ySize="32" xNumber="4">
+		<picture transparentClickable="false">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+	</pictures>
+</game>

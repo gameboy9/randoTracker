@@ -1,0 +1,249 @@
+<game name="Marathon 2018 2p" Font="Press Start 2P" players="2" background="marathon2017\Prototype_5_2_racers.png" shortname="2018-2p">
+	<players fontSize="16" width="410" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="32">
+		<player visible="true" locX="16" locY="470" picX="16" picY="537" finalX="294" finalY="529" audioX="361" audioY="467" />
+		<player visible="true" locX="850" locY="470" picX="992" picY="537" finalX="823" finalY="529" audioX="864" audioY="467" />
+	</players>
+	<mic visible="true" fontSize="11" locX="470" locY="540" width="340" height="22" />
+	<clock visible="true" fontSize="16" locX="480" locY="478" width="240" height="24" />
+	<freetext align="center" visible="true" fontSize="12" locX="200" locY="656" width="340" height="20" />
+	
+	<!-- DRAGON WARRIOR RANDOMIZER -->
+
+	<pictures name="DWR" xGap="0" yGap="2" xSize="55" ySize="55" xNumber="5">
+		<picture>
+			<state src="dwr\item\staff-no.png" />
+			<state src="dwr\item\staff.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\harp-no.png" />
+			<state src="dwr\item\harp.png" />
+		</picture>
+		<picture>
+			<state src="dwr\spell\hurtmore-no.png" statOffset="4" statBit="1" statState="0" />
+			<state src="dwr\spell\hurtmore.png" statOffset="4" statBit="1" statState="0" />
+		</picture>
+		<picture>
+			<state src="dwr\item\ring-no.png" />
+			<state src="dwr\item\ring.png" />
+		</picture>
+		<picture statChange="4">
+			<state src="dwr\weapon\weapon-no.png" change="0" />
+			<state src="dwr\weapon\bamboo.png" change="2" />
+			<state src="dwr\weapon\club.png" change="4" />
+			<state src="dwr\weapon\copper.png" change="10" />
+			<state src="dwr\weapon\axe.png" change="15" />
+			<state src="dwr\weapon\broad.png" change="20" />
+			<state src="dwr\weapon\flame.png" change="28" />
+			<state src="dwr\weapon\erdricks.png" change="40" />
+		</picture>	
+		<picture>
+			<state src="dwr\item\stone-no.png" />
+			<state src="dwr\item\stone.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\drop-no.png" />
+			<state src="dwr\item\drop.png" />
+		</picture>
+		<picture>
+			<state src="dwr\spell\healmore-no.png" statOffset="4" statBit="0" statState="0" />
+			<state src="dwr\spell\healmore.png" statOffset="4" statBit="0" statState="1" />
+		</picture>
+		<picture>
+			<state src="dwr\item\scale-no.png" />
+			<state src="dwr\item\scale.png" />
+		</picture>
+		<picture statChange="5" statOffset="0">
+			<state src="dwr\armor\armor-no.png" change="0" />
+			<state src="dwr\armor\clothes.png" change="2" />
+			<state src="dwr\armor\leather.png" change="4" />
+			<state src="dwr\armor\chain.png" change="10" />
+			<state src="dwr\armor\half.png" change="16" />
+			<state src="dwr\armor\full.png" change="24" />
+			<state src="dwr\armor\magic.png" change="24" />
+			<state src="dwr\armor\erdricks.png" change="28" />
+		</picture>
+		<picture>
+			<state src="dwr\item\token-no.png" />
+			<state src="dwr\item\token.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\flute-no.png" />
+			<state src="dwr\item\flute.png" />
+		</picture>
+		<picture>
+			<state src="dwr\item\gps-no.png" />
+			<state src="dwr\item\gps.png" />
+		</picture>
+		<picture statChange="2,4">
+			<state src="dwr\item\necklace-no.png" change="0%,0" />
+			<state src="dwr\item\necklace.png" change="-10%,10" />
+		</picture>
+		<picture statChange="5">
+			<state src="dwr\shield\shield-no.png" change="0" />
+			<state src="dwr\shield\small.png" change="4" />
+			<state src="dwr\shield\large.png" change="10" />
+			<state src="dwr\shield\silver.png" change="20" />
+		</picture>
+	</pictures>
+
+	<!-- SUPER MARIO BROS. 3 RANDOMIZER -->
+	
+	<pictures name="SMB3" xGap="0" yGap="0" xSize="48" ySize="48" xNumber="1">
+		<picture>
+			<state src="smb3r\red-1.png" />
+			<state src="smb3r\red-2.png" />
+			<state src="smb3r\red-3.png" />
+			<state src="smb3r\red-4.png" />
+			<state src="smb3r\red-5.png" />
+			<state src="smb3r\red-6.png" />
+			<state src="smb3r\red-7.png" />
+			<state src="smb3r\red-8.png" />
+			<state src="smb3r\blue-1.png" />
+			<state src="smb3r\blue-2.png" />
+			<state src="smb3r\blue-3.png" />
+			<state src="smb3r\blue-4.png" />
+			<state src="smb3r\blue-5.png" />
+			<state src="smb3r\blue-6.png" />
+			<state src="smb3r\blue-7.png" />
+			<state src="smb3r\blue-8.png" />
+		</picture>
+	</pictures>
+	
+	<!-- ZELDA 1 RANDOMIZER -->
+	
+	<pictures name="Z1R" xGap="7" yGap="21" xSize="48" ySize="48" xNumber="6">
+		<picture>
+			<state src="z1r\items\ladder-no.png" />
+			<state src="z1r\items\ladder.png" />
+		</picture>
+		<picture>
+			<state src="z1r\items\bracelet-no.png" />
+			<state src="z1r\items\bracelet.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-1-off.png" />
+			<state src="z1r\tri\tri-1-on.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-2-off.png" />
+			<state src="z1r\tri\tri-2-on.png" />
+		</picture>
+		<picture>
+			<state src="z1r\items\bow-no.png" />
+			<state src="z1r\items\bow.png" />
+		</picture>
+		<picture>
+			<state src="z1r\items\raft-no.png" />
+			<state src="z1r\items\raft.png" />
+		</picture>
+		<picture>
+			<state src="z1r\items\recorder-no.png" />
+			<state src="z1r\items\recorder.png" />
+		</picture>
+		<picture transparentClickable="false">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-3-off.png" />
+			<state src="z1r\tri\tri-3-on.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-4-off.png" />
+			<state src="z1r\tri\tri-4-on.png" />
+		</picture>
+		<picture transparentClickable="false">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z1r\items\arrow-no.png" />
+			<state src="z1r\items\arrow.png" />
+		</picture>
+		<picture transparentClickable="false">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-5-off.png" />
+			<state src="z1r\tri\tri-5-on.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-6-off.png" />
+			<state src="z1r\tri\tri-6-on.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-7-off.png" />
+			<state src="z1r\tri\tri-7-on.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z1r\tri\tri-8-off.png" />
+			<state src="z1r\tri\tri-8-on.png" />
+		</picture>
+	</pictures>
+	
+		<!-- ZELDA 2 RANDOMIZER-->
+	
+	<pictures name='Z2R' xSize="32" ySize="32" xNumber="4">
+		<picture src="z2r\fairy-on.png" />
+		<picture src="z2r\reflect-on.png" />
+		<picture src="z2r\thunder-on.png" />
+		<picture>
+			<state src="z2r\1.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\2.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture src="z2r\raft-on.png" />
+		<picture src="z2r\glove-on.png" />
+		<picture src="z2r\key-on.png" />
+		<picture>
+			<state src="z2r\3.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture src="z2r\boots-on.png" />
+		<picture src="z2r\hammer-on.png" />
+		<picture src="z2r\flute-on.png" />
+		<picture>
+			<state src="z2r\4.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture src="z2r\angel-on.png" />
+		<picture src="z2r\medicine-on.png" />
+		<picture src="z2r\kid-on.png" />
+		<picture>
+			<state src="z2r\5.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z2r\6.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+	</pictures>
+	</game>
