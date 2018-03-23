@@ -1,15 +1,32 @@
-<game name="Marathon 2018 2p" Font="Press Start 2P" players="2" background="marathon2017\Prototype_5_2_racers.png" shortname="2018-2p">
-	<players fontSize="16" width="410" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="32">
-		<player visible="true" locX="16" locY="470" picX="16" picY="537" finalX="294" finalY="529" audioX="361" audioY="467" />
-		<player visible="true" locX="850" locY="470" picX="992" picY="537" finalX="823" finalY="529" audioX="864" audioY="467" />
+<game name="Marathon 2018 2p" Font="Press Start 2P" players="2" background="marathon2018\2p\2 Player Race Blue Test.png" shortname="2018-2p">
+	<players fontSize="18" width="375" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="48">
+		<player align="center" visible="true" locX="20" locY="490" picX="20" picY="607" finalX="294" finalY="529" audioX="405" audioY="487" />
+		<player align="center" visible="true" locX="845" locY="490" picX="958" picY="607" finalX="823" finalY="529" audioX="795" audioY="487" />
 	</players>
-	<mic visible="true" fontSize="11" locX="470" locY="540" width="340" height="22" />
-	<clock visible="true" fontSize="16" locX="480" locY="478" width="240" height="24" />
-	<freetext align="center" visible="true" fontSize="12" locX="200" locY="656" width="340" height="20" />
-	
+	<mic visible="true" fontSize="12" locX="470" locY="610" width="370" height="40" micHeight="50"/>
+	<clock visible="true" fontSize="18" locX="500" locY="502" width="240" height="24" />
+	<freetext name="GAME:" hAlign="center" visible="true" fontSize="14" locX="20" locY="610" width="310" height="20" />
+	<freetext name="NEXT:" hAlign="center" visible="true" fontSize="14" locX="960" locY="645" width="310" height="20" />
+	<backgrounds playerSpecific="false">
+		<background file="marathon2018\2p\2 Player Race Blue Mod.png" name="Blue" />
+		<background file="marathon2018\2p\2 Player Race Green.png" name="Green" />
+		<background file="marathon2018\2p\2 Player Race Orange.png" name="Orange" />
+		<background file="marathon2018\2p\2 Player Race Pink.png" name="Pink" />
+		<background file="marathon2018\2p\2 Player Race Purple.png" name="Purple" />
+		<background file="marathon2018\2p\2 Player Race Red.png" name="Red" />
+		<background file="marathon2018\2p\2 Player Race Teal.png" name="Teal" />
+		<background file="marathon2018\2p\2 Player Race Yellow.png" name="Yellow" />
+	</backgrounds>
+	<pictures name="NONE" xGap="2" yGap="2" xSize="32" ySize="32" xNumber="5">
+		<picture transparentClickable="false">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+	</pictures>
+		
 	<!-- DRAGON WARRIOR RANDOMIZER -->
 
-	<pictures name="DWR" xGap="0" yGap="2" xSize="55" ySize="55" xNumber="5">
+	<pictures name="DWR" xGap="32" yGap="4" xSize="32" ySize="32" xNumber="5">
 		<picture>
 			<state src="dwr\item\staff-no.png" />
 			<state src="dwr\item\staff.png" />
@@ -86,37 +103,15 @@
 		</picture>
 	</pictures>
 
-	<!-- SUPER MARIO BROS. 3 RANDOMIZER -->
-	
-	<pictures name="SMB3" xGap="0" yGap="0" xSize="48" ySize="48" xNumber="1">
-		<picture>
-			<state src="smb3r\red-1.png" />
-			<state src="smb3r\red-2.png" />
-			<state src="smb3r\red-3.png" />
-			<state src="smb3r\red-4.png" />
-			<state src="smb3r\red-5.png" />
-			<state src="smb3r\red-6.png" />
-			<state src="smb3r\red-7.png" />
-			<state src="smb3r\red-8.png" />
-			<state src="smb3r\blue-1.png" />
-			<state src="smb3r\blue-2.png" />
-			<state src="smb3r\blue-3.png" />
-			<state src="smb3r\blue-4.png" />
-			<state src="smb3r\blue-5.png" />
-			<state src="smb3r\blue-6.png" />
-			<state src="smb3r\blue-7.png" />
-			<state src="smb3r\blue-8.png" />
-		</picture>
-	</pictures>
 	
 	<!-- ZELDA 1 RANDOMIZER -->
 	
-	<pictures name="Z1R" xGap="7" yGap="21" xSize="48" ySize="48" xNumber="6">
-		<picture>
+	<pictures name="Z1R" xGap="20" yGap="4" xSize="32" ySize="32" xNumber="6">
+		<picture locX="0" locY="0">
 			<state src="z1r\items\ladder-no.png" />
 			<state src="z1r\items\ladder.png" />
 		</picture>
-		<picture>
+		<picture locX="48" locY="0">
 			<state src="z1r\items\bracelet-no.png" />
 			<state src="z1r\items\bracelet.png" />
 		</picture>
@@ -184,44 +179,34 @@
 	
 		<!-- ZELDA 2 RANDOMIZER-->
 	
-	<pictures name='Z2R' xSize="32" ySize="32" xNumber="4">
+	<pictures name='Z2R' xGap="20" yGap="4" xSize="32" ySize="32" xNumber="6">
 		<picture src="z2r\fairy-on.png" />
-		<picture src="z2r\reflect-on.png" />
-		<picture src="z2r\thunder-on.png" />
+		<picture src="z2r\glove-on.png" />
+		<picture src="z2r\raft-on.png" />
+		<picture src="z2r\key-on.png" />		
 		<picture>
 			<state src="z2r\1.png" />
 			<state src="z2r\palace-on.png" />
 		</picture>
 		<picture>
-			<state src="z2r\blank.png" />
-			<state src="z2r\blank.png" />
-		</picture>
-		<picture>
-			<state src="z2r\blank.png" />
-			<state src="z2r\blank.png" />
-		</picture>
-		<picture>
-			<state src="z2r\blank.png" />
-			<state src="z2r\blank.png" />
-		</picture>
-		<picture>
 			<state src="z2r\2.png" />
 			<state src="z2r\palace-on.png" />
 		</picture>
-		<picture src="z2r\raft-on.png" />
-		<picture src="z2r\glove-on.png" />
-		<picture src="z2r\key-on.png" />
-		<picture>
-			<state src="z2r\3.png" />
-			<state src="z2r\palace-on.png" />
-		</picture>
+
+		<picture src="z2r\reflect-on.png" />
 		<picture src="z2r\boots-on.png" />
 		<picture src="z2r\hammer-on.png" />
 		<picture src="z2r\flute-on.png" />
 		<picture>
+			<state src="z2r\3.png" />
+			<state src="z2r\palace-on.png" />
+		</picture>
+		<picture>
 			<state src="z2r\4.png" />
 			<state src="z2r\palace-on.png" />
 		</picture>
+		
+		<picture src="z2r\thunder-on.png" />
 		<picture src="z2r\angel-on.png" />
 		<picture src="z2r\medicine-on.png" />
 		<picture src="z2r\kid-on.png" />
@@ -230,20 +215,70 @@
 			<state src="z2r\palace-on.png" />
 		</picture>
 		<picture>
-			<state src="z2r\blank.png" />
-			<state src="z2r\blank.png" />
-		</picture>
-		<picture>
-			<state src="z2r\blank.png" />
-			<state src="z2r\blank.png" />
-		</picture>
-		<picture>
-			<state src="z2r\blank.png" />
-			<state src="z2r\blank.png" />
-		</picture>
-		<picture>
 			<state src="z2r\6.png" />
 			<state src="z2r\palace-on.png" />
 		</picture>
 	</pictures>
+	
+	<!-- ZELDA 3 RANDOMIZER (LTTP)-->
+	
+	<pictures name="Z3R" xGap="32" yGap="4" xSize="32" ySize="32" xNumber="5">
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+		<picture transparentClickable="true">
+			<state src="z2r\blank.png" />
+			<state src="z2r\blank.png" />
+		</picture>
+		<picture>
+			<state src="z3r\icons\crystal-no.png" />
+			<state src="z3r\icons\crystal.png" />
+		</picture>
+	</pictures>
+
 	</game>
