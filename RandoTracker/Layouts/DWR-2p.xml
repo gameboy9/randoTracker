@@ -81,4 +81,10 @@
 			<state src="dwr\shield\silver.png" change="20" />
 		</picture>
 	</pictures>
+	<neutralPics xGap="8" yGap="8" xSize="100" ySize="100" xNumber="1" locX="588" locY="357">
+		<neutralPic>
+			<state src="dwr/shifty-drollgon.gif" />
+			<state src="dwr/shifty-drollgon.gif" />
+		</neutralPic>
+	</neutralPics>
 </game>
