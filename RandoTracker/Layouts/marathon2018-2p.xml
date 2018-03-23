@@ -1,14 +1,14 @@
-<game name="Marathon 2018 2p" Font="Press Start 2P" players="2" background="marathon2018\2p\2 Player Race Blue Test.png" shortname="2018-2p">
+<game name="Marathon 2018 2p" Font="Press Start 2P" players="2" background="marathon2018\2p\2 Player Race Blue.png" shortname="2018-2p">
 	<players fontSize="18" width="375" height="50" finalWidth="162" finalHeight="50" finalFont="16" speakerHeight="48">
-		<player align="center" visible="true" locX="20" locY="490" picX="20" picY="607" finalX="294" finalY="529" audioX="405" audioY="487" />
-		<player align="center" visible="true" locX="845" locY="490" picX="958" picY="607" finalX="823" finalY="529" audioX="795" audioY="487" />
+		<player align="center" visible="true" locX="20" locY="490" picX="22" picY="607" finalX="294" finalY="529" audioX="405" audioY="487" />
+		<player align="center" visible="true" locX="895" locY="490" picX="968" picY="607" finalX="823" finalY="529" audioX="795" audioY="487" />
 	</players>
 	<mic visible="true" fontSize="12" locX="470" locY="610" width="370" height="40" micHeight="50"/>
 	<clock visible="true" fontSize="18" locX="500" locY="502" width="240" height="24" />
 	<freetext name="GAME:" hAlign="center" visible="true" fontSize="14" locX="20" locY="610" width="310" height="20" />
 	<freetext name="NEXT:" hAlign="center" visible="true" fontSize="14" locX="960" locY="645" width="310" height="20" />
 	<backgrounds playerSpecific="false">
-		<background file="marathon2018\2p\2 Player Race Blue Mod.png" name="Blue" />
+		<background file="marathon2018\2p\2 Player Race Blue.png" name="Blue" />
 		<background file="marathon2018\2p\2 Player Race Green.png" name="Green" />
 		<background file="marathon2018\2p\2 Player Race Orange.png" name="Orange" />
 		<background file="marathon2018\2p\2 Player Race Pink.png" name="Pink" />
@@ -26,7 +26,7 @@
 		
 	<!-- DRAGON WARRIOR RANDOMIZER -->
 
-	<pictures name="DWR" xGap="32" yGap="4" xSize="32" ySize="32" xNumber="5">
+	<pictures name="DWR" xGap="32" yGap="1" xSize="32" ySize="32" xNumber="5">
 		<picture>
 			<state src="dwr\item\staff-no.png" />
 			<state src="dwr\item\staff.png" />
@@ -106,7 +106,7 @@
 	
 	<!-- ZELDA 1 RANDOMIZER -->
 	
-	<pictures name="Z1R" xGap="20" yGap="4" xSize="32" ySize="32" xNumber="6">
+	<pictures name="Z1R" xGap="20" yGap="1" xSize="32" ySize="32" xNumber="6">
 		<picture locX="0" locY="0">
 			<state src="z1r\items\ladder-no.png" />
 			<state src="z1r\items\ladder.png" />
