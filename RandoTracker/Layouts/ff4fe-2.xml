@@ -1,0 +1,90 @@
+<game name="FF4 Free Ent 2P" Font="Final Fantasy IV SNES" players="2" background="ff4fe\overlays\OVERLAY-FreeEnterprise-2Player.png" shortname="ff4fe-2">
+	<players fontSize="48" width="380" height="50" finalWidth="200" finalHeight="40" finalFont="36" speakerHeight="32">
+		<player visible="true" locX="16" locY="470" picX="16" picY="534" finalX="180" finalY="534" audioX="240" audioY="210" />
+		<player visible="true" locX="890" locY="470" picX="1128" picY="534" finalX="900" finalY="534" audioX="800" audioY="210" />
+	</players>
+	<mic fontSize="36" visible="true" locX="478" locY="537" width="360" height="25" micHeight="36" />
+	<clock visible="true" fontSize="48" locX="450" locY="476" width="270" height="40" xSize="20" specialSize="14" />
+	<pictures xGap="2" yGap="2" xSize="32" ySize="32" xNumber="4">
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-1THECrystal-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-1THECrystal.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-2Pass-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-2Pass.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-3Hook-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-3Hook.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-4DarkCrystal-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-4DarkCrystal.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-5EarthCrystal-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-5EarthCrystal.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-6TwinHarp-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-6TwinHarp.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-7Package-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-7Package.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-8SandRuby-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-8SandRuby.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-9BaronKey-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-9BaronKey.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-10MagmaKey-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-10MagmaKey.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-11TowerKey-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-11TowerKey.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-12LucaKey-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-12LucaKey.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-13Adamant-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-13Adamant.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-14LegendSword-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-14LegendSword.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-15Pan-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-15Pan.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-16Spoon-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-16Spoon.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\blank.png" />
+			<state src="ff4fe\tracker\blank.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-17RatTail-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-17RatTail.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\FFIVFE-Icons-18PinkTail-Gray.png" />
+			<state src="ff4fe\tracker\FFIVFE-Icons-18PinkTail.png" />
+		</picture>
+		<picture>
+			<state src="ff4fe\tracker\blank.png" />
+			<state src="ff4fe\tracker\blank.png" />
+		</picture>
+	</pictures>
+</game>
